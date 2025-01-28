@@ -10,9 +10,12 @@ const config: Config = {
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy'
   },
   transform: {
-    '^.+\\.(ts|tsx)$': ['ts-jest', {
-      tsconfig: 'tsconfig.json',
-      useESM: true
+    '^.+\\.(ts|tsx)$': ['babel-jest', {
+      presets: [
+        '@babel/preset-env',
+        '@babel/preset-typescript',
+        ['@babel/preset-react', { runtime: 'automatic' }]
+      ]
     }]
   },
   transformIgnorePatterns: [
