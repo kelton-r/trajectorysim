@@ -1,4 +1,4 @@
-import { SiFlightaware } from 'react-icons/si';
+import { GiGolfFlag } from 'react-icons/gi';
 import { Settings } from 'lucide-react';
 import {
   DropdownMenu,
@@ -12,7 +12,7 @@ export function Header() {
   return (
     <header className="h-[60px] border-b bg-white flex items-center px-6 justify-between">
       <div className="flex items-center gap-4">
-        <SiFlightaware className="h-8 w-8 text-[#D92429]" />
+        <GiGolfFlag className="h-8 w-8 text-[#D92429]" />
         <h1 className="text-xl font-semibold">Golf Shot Trajectory Optimizer</h1>
       </div>
 
