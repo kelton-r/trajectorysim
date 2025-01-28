@@ -12,7 +12,7 @@ export function Header() {
   return (
     <header className="h-[60px] border-b bg-white flex items-center px-6 justify-between">
       <div className="flex items-center gap-4">
-        <GiGolfFlag className="h-8 w-8 text-[#D92429]" />
+        <GiGolfFlag className="h-8 w-8 text-[#D92429]" data-testid="golf-logo" />
         <h1 className="text-xl font-semibold">Golf Shot Trajectory Optimizer</h1>
       </div>
 
