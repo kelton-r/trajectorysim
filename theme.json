@@ -1,0 +1,27 @@
+{
+  "variant": "professional",
+  "primary": "#D92429",
+  "appearance": "light",
+  "radius": 0.5,
+  "colors": {
+    "background": "#F5F5F5",
+    "foreground": "#333333",
+    "border": "#E5E5E5",
+    "primary": {
+      "DEFAULT": "#D92429",
+      "foreground": "#FFFFFF"
+    },
+    "secondary": {
+      "DEFAULT": "#4CD964",
+      "foreground": "#FFFFFF"
+    },
+    "muted": {
+      "DEFAULT": "#F5F5F5",
+      "foreground": "#666666"
+    },
+    "accent": {
+      "DEFAULT": "#4CD964",
+      "foreground": "#FFFFFF"
+    }
+  }
+}
