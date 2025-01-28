@@ -1,0 +1,145 @@
+Create detailed components with these requirements:
+1. Use 'use client' directive for client-side components
+2. Style with Tailwind CSS utility classes for responsive design
+3. Use Lucide React for icons (from lucide-react package). Do NOT use other UI libraries unless requested
+4. Use stock photos from picsum.photos where appropriate, only valid URLs you know exist
+5. Configure next.config.js image remotePatterns to enable stock photos from picsum.photos
+6. Create root layout.tsx page that wraps necessary navigation items to all pages
+7. MUST implement the navigation elements items in their rightful place i.e. Left sidebar, Top header
+8. Accurately implement necessary grid layouts
+9. Follow proper import practices:
+   - Use @/ path aliases
+   - Keep component imports organized
+   - Update current src/app/page.tsx with new comprehensive code
+   - Don't forget root route (page.tsx) handling
+   - You MUST complete the entire prompt before stopping
+
+Golf Shot Trajectory Optimizer Dashboard
+</summary_title>
+
+<image_analysis>
+
+1. Navigation Elements:
+- Top header with: FlightScope logo, app title, and dropdown settings
+- Tab navigation with: "DATA TABLE" and "TRAJECTORY 3D MODEL"
+- Left sidebar with: Weather conditions and Shot Parameters sections
+
+
+2. Layout Components:
+- Header height: 60px
+- Left sidebar width: 380px
+- Main content area: Flexible width
+- Data table with fixed columns and scrollable content
+- Export button: ~200px width
+
+
+3. Content Sections:
+- Weather conditions panel with 4 metric displays
+- Shot parameters input section with multiple fields
+- Data table with 13 columns showing trajectory data
+- Empty state message: "No data available"
+
+
+4. Interactive Controls:
+- Toggle switches (ON/OFF)
+- Dropdown selectors for: Imperial/Standard, Ball type, Wind direction
+- Numeric input fields for shot parameters
+- "DISPLAY SHOT" action button
+- Pagination controls
+- "EXPORT TO CSV" button
+
+
+5. Colors:
+- Primary red: #D92429 (buttons, active states)
+- Background gray: #F5F5F5
+- Text dark: #333333
+- Border light: #E5E5E5
+- Accent green: #4CD964 (export button)
+
+
+6. Grid/Layout Structure:
+- Two-column layout (sidebar + main content)
+- Data table: 13-column grid
+- Form inputs: 2-column layout within sidebar
+- Responsive breakpoint at 1200px
+</image_analysis>
+
+<development_planning>
+
+1. Project Structure:
+```
+src/
+├── components/
+│   ├── layout/
+│   │   ├── Header
+│   │   ├── Sidebar
+│   │   └── DataTable
+│   ├── features/
+│   │   ├── WeatherConditions
+│   │   ├── ShotParameters
+│   │   └── TrajectoryView
+│   └── shared/
+├── assets/
+├── styles/
+├── hooks/
+└── utils/
+```
+
+
+2. Key Features:
+- Real-time weather condition monitoring
+- Shot parameter input validation
+- Trajectory calculation engine
+- Data export functionality
+- Unit conversion system
+
+
+3. State Management:
+```typescript
+interface AppState {
+├── weather: {
+│   ├── windSpeed: number
+│   ├── airPressure: number
+│   ├── humidity: number
+│   └── temperature: number
+├── }
+├── shotParams: {
+│   ├── launchV: number
+│   ├── launchH: number
+│   ├── spin: number
+│   └── ballType: string
+├── }
+└── trajectoryData: TrajectoryPoint[]
+}
+```
+
+
+4. Routes:
+```typescript
+const routes = [
+├── '/',
+├── '/trajectory',
+├── '/settings',
+└── '/history'
+]
+```
+
+
+5. Component Architecture:
+- WeatherConditionsPanel (container)
+- ShotParametersForm (container)
+- TrajectoryDataTable (presentation)
+- TrajectoryModel3D (container)
+- SharedControls (presentation)
+
+
+6. Responsive Breakpoints:
+```scss
+$breakpoints: (
+├── 'desktop': 1200px,
+├── 'tablet': 992px,
+├── 'mobile': 768px,
+└── 'small': 576px
+);
+```
+</development_planning>
