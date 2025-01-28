@@ -15,6 +15,9 @@ const config: Config = {
       useESM: true
     }]
   },
+  transformIgnorePatterns: [
+    '/node_modules/(?!(lucide-react|@radix-ui|react-icons)/)'
+  ],
   testMatch: [
     '<rootDir>/client/src/**/__tests__/**/*.{ts,tsx}',
     '<rootDir>/client/src/**/*.{spec,test}.{ts,tsx}'
