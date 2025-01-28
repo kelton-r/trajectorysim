@@ -10,30 +10,47 @@ export function calculateTrajectory(
 ): TrajectoryPoint[] {
   const points: TrajectoryPoint[] = [];
   const dt = 0.01; // Time step in seconds
-  
+
   let x = 0, y = 0, z = 0;
   let vx = params.launchVelocity * Math.cos(params.launchAngle * Math.PI / 180);
   let vy = params.launchVelocity * Math.sin(params.launchAngle * Math.PI / 180);
   let vz = 0;
-  
+
   let t = 0;
-  
+
+  // Record initial point first
+  points.push({
+    time: t,
+    x: x,
+    y: y,
+    z: z,
+    velocity: params.launchVelocity,
+    spin: params.spin,
+    altitude: y,
+    distance: 0,
+    drag: calculateDrag(params.launchVelocity, weather.airPressure),
+    lift: calculateLift(params.spin, params.launchVelocity),
+    side: z,
+    total: 0,
+    carry: x
+  });
+
   while (y >= 0 && t < 10) { // Max 10 seconds flight time
     const v = Math.sqrt(vx * vx + vy * vy + vz * vz);
     const drag = calculateDrag(v, weather.airPressure);
     const lift = calculateLift(params.spin, v);
-    
+
     // Update velocities
     vx -= (drag * vx / v) * dt;
     vy -= (GRAVITY + drag * vy / v) * dt;
     vy += lift * dt;
     vz -= (drag * vz / v) * dt;
-    
+
     // Update positions
     x += vx * dt;
     y += vy * dt;
     z += vz * dt;
-    
+
     // Record point
     points.push({
       time: t,
@@ -48,10 +65,10 @@ export function calculateTrajectory(
       total: Math.sqrt(x * x + y * y + z * z),
       carry: x
     });
-    
+
     t += dt;
   }
-  
+
   return points;
 }
 
