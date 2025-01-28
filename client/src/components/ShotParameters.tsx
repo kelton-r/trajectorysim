@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { ShotParameters as ShotParamsType } from '@/types';
 import { validateShotParameters } from '@/lib/calculations';
 import { Gauge, RotateCw, ArrowRight, WindIcon } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 interface ShotParametersProps {
   onCalculate: (params: ShotParamsType) => void;
@@ -16,6 +17,7 @@ const BALL_TYPES = ['Pro V1', 'Pro V1x', 'TP5', 'Chrome Soft'];
 const WIND_DIRECTIONS = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
 
 export function ShotParameters({ onCalculate }: ShotParametersProps) {
+  const { toast } = useToast();
   const [params, setParams] = useState<ShotParamsType>({
     launchVelocity: 50,
     launchAngle: 15,
@@ -32,9 +34,19 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
   };
 
   const handleCalculate = () => {
-    if (validateShotParameters(params)) {
-      onCalculate(params);
+    if (!validateShotParameters(params)) {
+      toast({
+        title: "Invalid Parameters",
+        description: "Please check the values are within valid ranges",
+        variant: "destructive"
+      });
+      return;
     }
+    onCalculate(params);
+    toast({
+      title: "Calculating Trajectory",
+      description: "Your shot trajectory is being calculated"
+    });
   };
 
   return (
@@ -101,7 +113,7 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
               value={params.windDirection}
               onValueChange={value => handleChange('windDirection')({ value })}
             >
-              <SelectTrigger>
+              <SelectTrigger id="windDirection">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -120,7 +132,7 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
               value={params.ballType}
               onValueChange={value => handleChange('ballType')({ value })}
             >
-              <SelectTrigger>
+              <SelectTrigger id="ballType">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -135,10 +147,11 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
         </div>
 
         <Button 
-          className="w-full mt-6 bg-[#D92429] hover:bg-[#B91C21]"
+          className="w-full mt-6 bg-[#D92429] hover:bg-[#B91C21] text-white font-bold"
           onClick={handleCalculate}
+          size="lg"
         >
-          DISPLAY SHOT
+          CALCULATE AND DISPLAY SHOT
         </Button>
       </CardContent>
     </Card>
