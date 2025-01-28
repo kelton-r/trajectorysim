@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Header } from '@/components/layout/Header';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { TrajectoryTable } from '@/components/TrajectoryTable';
+import { TrajectoryView3D } from '@/components/TrajectoryView3D';
 import { WeatherConditions, ShotParameters, TrajectoryPoint } from '@/types';
 import { calculateTrajectory } from '@/lib/calculations';
 
@@ -60,10 +61,13 @@ export function HomePage() {
           onShotCalculate={handleShotCalculate}
         />
         <main className="flex-1 p-6 bg-white overflow-auto">
-          <TrajectoryTable
-            data={trajectoryData}
-            onExport={handleExport}
-          />
+          <div className="space-y-6">
+            <TrajectoryView3D data={trajectoryData} />
+            <TrajectoryTable
+              data={trajectoryData}
+              onExport={handleExport}
+            />
+          </div>
         </main>
       </div>
     </div>
