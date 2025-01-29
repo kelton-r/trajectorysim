@@ -153,9 +153,9 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
           <img
             src="/mlm2pro-logo.png"
             alt="MLM2 Pro"
-            className="h-10 w-auto"
+            className="h-16 w-auto mb-2"
           />
-          <CardTitle className="text-3xl font-condensed font-bold text-white">SHOT PARAMETERS</CardTitle>
+          <CardTitle className="text-3xl font-condensed font-bold text-white">ENTER METRICS BELOW</CardTitle>
         </div>
       </CardHeader>
       <CardContent className="space-y-6 px-4">
