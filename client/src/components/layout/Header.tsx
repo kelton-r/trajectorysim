@@ -1,4 +1,3 @@
-import { Target } from 'lucide-react';
 import { Settings } from 'lucide-react';
 import {
   DropdownMenu,
@@ -12,8 +11,13 @@ export function Header() {
   return (
     <header className="h-[60px] border-b bg-white flex items-center px-6 justify-between">
       <div className="flex items-center gap-4">
-        <Target className="h-8 w-8 text-[#D92429]" data-testid="rapsodo-logo" />
-        <h1 className="text-xl font-barlow font-semibold">Rapsodo Golf Shot Trajectory Simulator</h1>
+        <img
+          src="/logo.png"  // You can place your logo.png in the client/public folder
+          alt="Rapsodo Logo"
+          className="h-8 w-auto"
+          data-testid="rapsodo-logo"
+        />
+        <h1 className="text-xl font-barlow font-semibold">R Golf  Trajectory Simulator</h1>
       </div>
 
       <DropdownMenu>
