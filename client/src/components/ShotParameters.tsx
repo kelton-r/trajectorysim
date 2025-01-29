@@ -178,113 +178,14 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 gap-x-4 gap-y-6">
-          <div className="space-y-3">
-            <Label htmlFor="launchDirection" className="flex items-center gap-2 text-lg font-barlow font-medium">
-              <ArrowRight className="h-5 w-5" />
-              Launch Direction (°)
-            </Label>
-            <div className="flex gap-2">
-              <Input
-                id="launchDirection"
-                type="number"
-                value={params.launchDirection ?? ''}
-                onChange={handleNumericInput('launchDirection')}
-                min={-90}
-                max={90}
-                step={0.1}
-                className="w-[80px] text-lg font-barlow font-bold h-12"
-              />
-              <Select
-                value={params.launchDirectionSide}
-                onValueChange={handleDirectionChange('launchDirectionSide')}
-              >
-                <SelectTrigger className="w-[120px] text-base h-12">
-                  <SelectValue placeholder="Direction" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="right" className="text-base">Right (+)</SelectItem>
-                  <SelectItem value="left" className="text-base">Left (-)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            <Label htmlFor="launchAngle" className="flex items-center gap-2 text-lg font-barlow font-medium">
-              <ArrowRight className="h-5 w-5 rotate-90" />
-              Launch Angle (°)
-            </Label>
-            <Input
-              id="launchAngle"
-              type="number"
-              value={params.launchAngle ?? ''}
-              onChange={handleNumericInput('launchAngle')}
-              min={0}
-              max={90}
-              step={0.1}
-              className="w-[100px] text-lg font-barlow font-bold h-12"
-            />
-          </div>
-
-          <div className="space-y-3">
-            <Label htmlFor="spin" className="flex items-center gap-2 text-lg font-barlow font-medium">
-              <RotateCw className="h-5 w-5" />
-              Spin Rate (rpm)
-            </Label>
-            <Input
-              id="spin"
-              type="number"
-              value={params.spin ?? ''}
-              onChange={handleNumericInput('spin')}
-              min={0}
-              max={10000}
-              step={100}
-              className="w-[100px] text-lg font-barlow font-bold h-12"
-              disabled={isSpinDisabled}
-            />
-          </div>
-
-          <div className="space-y-3">
-            <Label htmlFor="spinAxis" className="flex items-center gap-2 text-lg font-barlow font-medium">
-              <RotateCw className="h-5 w-5 rotate-90" />
-              Spin Axis (°)
-            </Label>
-            <div className="flex gap-2">
-              <Input
-                id="spinAxis"
-                type="number"
-                value={params.spinAxis ?? ''}
-                onChange={handleNumericInput('spinAxis')}
-                min={-90}
-                max={90}
-                step={1}
-                className="w-[80px] text-lg font-barlow font-bold h-12"
-                disabled={isSpinDisabled}
-              />
-              <Select
-                value={params.spinDirection}
-                onValueChange={handleDirectionChange('spinDirection')}
-                disabled={isSpinDisabled}
-              >
-                <SelectTrigger className="w-[120px] text-base h-12">
-                  <SelectValue placeholder="Direction" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="right" className="text-base">Right (+)</SelectItem>
-                  <SelectItem value="left" className="text-base">Left (-)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
+        <div className="grid grid-cols-1 gap-y-6">
           <div className="space-y-3">
             <Label htmlFor="ballType" className="text-lg font-barlow font-medium">Ball Type</Label>
             <Select
               value={params.ballType}
               onValueChange={handleDirectionChange('ballType')}
             >
-              <SelectTrigger id="ballType" className="text-base h-12">
+              <SelectTrigger id="ballType" className="text-base h-12 w-full">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -310,8 +211,107 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
               min={0}
               max={200}
               step={1}
-              className="w-[100px] text-lg font-barlow font-bold h-12"
+              className="w-full text-lg font-barlow font-bold h-12"
             />
+          </div>
+
+          <div className="space-y-3">
+            <Label htmlFor="launchAngle" className="flex items-center gap-2 text-lg font-barlow font-medium">
+              <ArrowRight className="h-5 w-5 rotate-90" />
+              Launch Angle (°)
+            </Label>
+            <Input
+              id="launchAngle"
+              type="number"
+              value={params.launchAngle ?? ''}
+              onChange={handleNumericInput('launchAngle')}
+              min={0}
+              max={90}
+              step={0.1}
+              className="w-full text-lg font-barlow font-bold h-12"
+            />
+          </div>
+
+          <div className="space-y-3">
+            <Label htmlFor="launchDirection" className="flex items-center gap-2 text-lg font-barlow font-medium">
+              <ArrowRight className="h-5 w-5" />
+              Launch Direction (°)
+            </Label>
+            <div className="flex gap-3">
+              <Input
+                id="launchDirection"
+                type="number"
+                value={params.launchDirection ?? ''}
+                onChange={handleNumericInput('launchDirection')}
+                min={-90}
+                max={90}
+                step={0.1}
+                className="flex-1 text-lg font-barlow font-bold h-12"
+              />
+              <Select
+                value={params.launchDirectionSide}
+                onValueChange={handleDirectionChange('launchDirectionSide')}
+              >
+                <SelectTrigger className="w-[120px] text-base h-12">
+                  <SelectValue placeholder="Direction" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="right" className="text-base">Right (+)</SelectItem>
+                  <SelectItem value="left" className="text-base">Left (-)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <Label htmlFor="spin" className="flex items-center gap-2 text-lg font-barlow font-medium">
+              <RotateCw className="h-5 w-5" />
+              Spin Rate (rpm)
+            </Label>
+            <Input
+              id="spin"
+              type="number"
+              value={params.spin ?? ''}
+              onChange={handleNumericInput('spin')}
+              min={0}
+              max={10000}
+              step={100}
+              className="w-full text-lg font-barlow font-bold h-12"
+              disabled={isSpinDisabled}
+            />
+          </div>
+
+          <div className="space-y-3">
+            <Label htmlFor="spinAxis" className="flex items-center gap-2 text-lg font-barlow font-medium">
+              <RotateCw className="h-5 w-5 rotate-90" />
+              Spin Axis (°)
+            </Label>
+            <div className="flex gap-3">
+              <Input
+                id="spinAxis"
+                type="number"
+                value={params.spinAxis ?? ''}
+                onChange={handleNumericInput('spinAxis')}
+                min={-90}
+                max={90}
+                step={1}
+                className="flex-1 text-lg font-barlow font-bold h-12"
+                disabled={isSpinDisabled}
+              />
+              <Select
+                value={params.spinDirection}
+                onValueChange={handleDirectionChange('spinDirection')}
+                disabled={isSpinDisabled}
+              >
+                <SelectTrigger className="w-[120px] text-base h-12">
+                  <SelectValue placeholder="Direction" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="right" className="text-base">Right (+)</SelectItem>
+                  <SelectItem value="left" className="text-base">Left (-)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </div>
       </CardContent>
