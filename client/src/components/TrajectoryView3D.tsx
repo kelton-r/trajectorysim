@@ -23,7 +23,7 @@ function TrajectoryPath({ points, progress = 1 }: { points: number[][], progress
   return (
     <line>
       <primitive object={lineGeometry} />
-      <lineBasicMaterial attach="material" color="#D92429" linewidth={6} />
+      <lineBasicMaterial attach="material" color="#FF5F1F" linewidth={12} />
     </line>
   );
 }
@@ -33,12 +33,8 @@ function Ground({ size }: { size: number }) {
     <group position={[size / 2, 0, 0]}>
       <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
         <planeGeometry args={[size * 2, size * 2]} />
-        <meshStandardMaterial color="#1a1a1a" />
+        <meshStandardMaterial color="#3A5F0B" />
       </mesh>
-      <gridHelper 
-        args={[size * 2, 20, '#333333', '#2a2a2a']}
-        position={[0, 0.01, 0]}
-      />
     </group>
   );
 }
@@ -57,7 +53,7 @@ export function TrajectoryView3D({ data, autoPlay = false }: TrajectoryView3DPro
 
   useEffect(() => {
     if (data.length > 0) {
-      // Reset progress when new data arrives
+      // Reset progress when new data arrives or view changes
       setProgress(0);
 
       let animationFrame: number;
@@ -65,7 +61,7 @@ export function TrajectoryView3D({ data, autoPlay = false }: TrajectoryView3DPro
 
       const animate = (currentTime: number) => {
         const elapsed = currentTime - startTime;
-        const duration = 2000; // 2 seconds for full animation
+        const duration = 7000; // 7 seconds for full animation
 
         const newProgress = Math.min(elapsed / duration, 1);
         setProgress(newProgress);
@@ -83,7 +79,7 @@ export function TrajectoryView3D({ data, autoPlay = false }: TrajectoryView3DPro
         }
       };
     }
-  }, [data]); // Only re-run when data changes
+  }, [data, viewMode]); // Re-run on data or view changes
 
   // Calculate camera positions and rotations based on trajectory
   const cameraSettings = useMemo(() => {
@@ -107,7 +103,7 @@ export function TrajectoryView3D({ data, autoPlay = false }: TrajectoryView3DPro
 
     return {
       side: {
-        position: [-distance * 0.2, maxY * 1.2, 0], // Position behind start point
+        position: [-distance * 0.3, 1.8, -2.4], // Position at ~6ft height, 8ft behind
         rotation: [0, Math.PI / 2, 0] // Look along the X axis
       },
       top: {
