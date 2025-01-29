@@ -10,16 +10,16 @@ import { Button } from '@/components/ui/button';
 export function Header() {
   return (
     <div>
-      <header className="h-[60px] bg-black flex items-center px-6 justify-center">
+      <header className="h-[80px] bg-black flex items-center px-12">
         <img
           src="/rapsodo-logo.png"
           alt="Rapsodo Logo"
-          className="h-8 w-auto"
+          className="h-12 w-auto"
           data-testid="rapsodo-logo"
         />
       </header>
-      <div className="h-[60px] border-b bg-white flex items-center px-6 justify-between">
-        <div className="flex-1 flex justify-center">
+      <div className="h-[60px] border-b bg-white flex items-center px-12 justify-between">
+        <div className="flex-1">
           <h2 className="text-2xl font-barlow font-semibold text-gray-800">
             Trajectory Simulator
           </h2>
