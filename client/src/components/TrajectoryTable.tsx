@@ -1,3 +1,4 @@
+
 import { 
   Table,
   TableBody,
@@ -39,72 +40,72 @@ export function TrajectoryTable({ data, onExport }: TrajectoryTableProps) {
         <div className="relative overflow-hidden">
           <div className="absolute inset-0 bg-black transform -skew-x-12"></div>
           <div className="relative p-6 text-white">
-            <div className="text-4xl font-bold">{metersToYards(finalPoint?.carry || 0).toFixed(1)}</div>
-            <div className="text-lg font-condensed uppercase">CARRY DISTANCE (YD)</div>
+            <div className="text-4xl font-bold">{metersToYards(finalPoint?.carry || 0).toFixed(1)} YD</div>
+            <div className="text-lg font-condensed uppercase">CARRY DISTANCE</div>
           </div>
         </div>
 
         <div className="relative overflow-hidden">
           <div className="absolute inset-0 bg-black transform -skew-x-12"></div>
           <div className="relative p-6 text-white">
-            <div className="text-4xl font-bold">{finalPoint?.ballSpeed.toFixed(1) || 0}</div>
-            <div className="text-lg font-condensed uppercase">BALL SPEED (MPH)</div>
+            <div className="text-4xl font-bold">{finalPoint?.ballSpeed.toFixed(1)} MPH</div>
+            <div className="text-lg font-condensed uppercase">BALL SPEED</div>
           </div>
         </div>
 
         <div className="relative overflow-hidden">
           <div className="absolute inset-0 bg-black transform -skew-x-12"></div>
           <div className="relative p-6 text-white">
-            <div className="text-4xl font-bold">{finalPoint?.spin || 0}</div>
-            <div className="text-lg font-condensed uppercase">SPIN RATE (RPM)</div>
+            <div className="text-4xl font-bold">{finalPoint?.spin || 0} RPM</div>
+            <div className="text-lg font-condensed uppercase">SPIN RATE</div>
           </div>
         </div>
 
         <div className="relative overflow-hidden">
           <div className="absolute inset-0 bg-black transform -skew-x-12"></div>
           <div className="relative p-6 text-white">
-            <div className="text-4xl font-bold">{metersToYards(finalPoint?.total || 0).toFixed(1)}</div>
-            <div className="text-lg font-condensed uppercase">TOTAL DISTANCE (YD)</div>
+            <div className="text-4xl font-bold">{metersToYards(finalPoint?.total || 0).toFixed(1)} YD</div>
+            <div className="text-lg font-condensed uppercase">TOTAL DISTANCE</div>
           </div>
         </div>
 
         <div className="relative overflow-hidden">
           <div className="absolute inset-0 bg-black transform -skew-x-12"></div>
           <div className="relative p-6 text-white">
-            <div className="text-4xl font-bold">{finalPoint?.launchAngle.toFixed(1) || 0}</div>
-            <div className="text-lg font-condensed uppercase">LAUNCH ANGLE (°)</div>
+            <div className="text-4xl font-bold">{finalPoint?.launchAngle.toFixed(1)}°</div>
+            <div className="text-lg font-condensed uppercase">LAUNCH ANGLE</div>
           </div>
         </div>
 
         <div className="relative overflow-hidden">
           <div className="absolute inset-0 bg-black transform -skew-x-12"></div>
           <div className="relative p-6 text-white">
-            <div className="text-4xl font-bold">{metersToFeet(finalPoint?.altitude || 0).toFixed(1)}</div>
-            <div className="text-lg font-condensed uppercase">APEX (FT)</div>
+            <div className="text-4xl font-bold">{metersToFeet(finalPoint?.altitude || 0).toFixed(1)} FT</div>
+            <div className="text-lg font-condensed uppercase">APEX</div>
           </div>
         </div>
 
         <div className="relative overflow-hidden">
           <div className="absolute inset-0 bg-black transform -skew-x-12"></div>
           <div className="relative p-6 text-white">
-            <div className="text-4xl font-bold">{metersToYards(finalPoint?.side || 0).toFixed(1)}</div>
-            <div className="text-lg font-condensed uppercase">SIDE CARRY (YD)</div>
+            <div className="text-4xl font-bold">{metersToYards(finalPoint?.side || 0).toFixed(1)} YD</div>
+            <div className="text-lg font-condensed uppercase">SIDE CARRY</div>
           </div>
         </div>
 
         <div className="relative overflow-hidden">
           <div className="absolute inset-0 bg-black transform -skew-x-12"></div>
           <div className="relative p-6 text-white">
-            <div className="text-4xl font-bold">{finalPoint?.spinAxis || 0}</div>
-            <div className="text-lg font-condensed uppercase">SPIN AXIS (°)</div>
+            <div className="text-4xl font-bold">{finalPoint?.spinAxis || 0}°</div>
+            <div className="text-lg font-condensed uppercase">SPIN AXIS</div>
           </div>
         </div>
 
         <div className="relative overflow-hidden">
           <div className="absolute inset-0 bg-black transform -skew-x-12"></div>
           <div className="relative p-6 text-white">
-            <div className="text-4xl font-bold">{finalPoint?.launchDirection.toFixed(1) || 0}</div>
-            <div className="text-lg font-condensed uppercase">LAUNCH DIRECTION (°)</div>
+            <div className="text-4xl font-bold">{finalPoint?.launchDirection.toFixed(1)}°</div>
+            <div className="text-lg font-condensed uppercase">LAUNCH DIRECTION</div>
           </div>
         </div>
       </div>
