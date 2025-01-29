@@ -67,7 +67,7 @@ export function TrajectoryTable({ data, onExport }: TrajectoryTableProps) {
                 <TableCell>{metersToYards(finalPoint.side).toFixed(1)}</TableCell>
                 <TableCell>{finalPoint.launchAngle.toFixed(1)}</TableCell>
                 <TableCell>{finalPoint.launchDirection.toFixed(1)}</TableCell>
-                <TableCell>{metersToFeet(Math.max(...data.map(p => p.altitude))).toFixed(1)}</TableCell>
+                <TableCell>{metersToFeet(finalPoint.altitude).toFixed(1)}</TableCell>
               </TableRow>
             )}
           </TableBody>
