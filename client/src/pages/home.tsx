@@ -2,19 +2,19 @@ import { useState } from 'react';
 import { Header } from '@/components/layout/Header';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { TrajectoryTable } from '@/components/TrajectoryTable';
-import { TrajectoryView3D } from '@/components/TrajectoryView3D';
+import { TrajectoryView } from '@/components/TrajectoryView';
 import { ShotParameters, TrajectoryPoint } from '@/types';
 import { calculateTrajectory } from '@/lib/calculations';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export function HomePage() {
   const [trajectoryData, setTrajectoryData] = useState<TrajectoryPoint[]>([]);
-  const [animationKey, setAnimationKey] = useState(0); // Add key to force animation restart
+  const [animationKey, setAnimationKey] = useState(0);
 
   const handleShotCalculate = (params: ShotParameters) => {
     const data = calculateTrajectory(params);
     setTrajectoryData(data);
-    setAnimationKey(prev => prev + 1); // Increment key to trigger animation
+    setAnimationKey(prev => prev + 1);
   };
 
   const handleExport = () => {
@@ -93,10 +93,10 @@ export function HomePage() {
             </TabsContent>
 
             <TabsContent value="visualization" className="mt-6">
-              <TrajectoryView3D 
-                data={trajectoryData} 
-                key={animationKey} // Force remount on new calculation
-                autoPlay={true} // Add autoPlay prop
+              <TrajectoryView
+                data={trajectoryData}
+                key={animationKey}
+                autoPlay={true}
               />
             </TabsContent>
           </Tabs>

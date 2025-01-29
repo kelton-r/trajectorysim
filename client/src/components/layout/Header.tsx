@@ -1,5 +1,4 @@
 import { Settings } from 'lucide-react';
-import { Link } from 'wouter';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,11 +23,6 @@ export function Header() {
           <h2 className="text-lg font-barlow font-semibold text-gray-800">
             Trajectory Simulator
           </h2>
-          <Link href="/comparison">
-            <a className="text-sm text-primary hover:underline">
-              View 3D Engine Comparison
-            </a>
-          </Link>
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

@@ -4,7 +4,7 @@ import React from 'react';
 
 // Enhanced WebGL context mock with proper shader precision format support
 const mockWebGLContext = {
-  getParameter: vi.fn(() => 'high'),
+  getParameter: vi.fn(() => 'highp'),
   getShaderPrecisionFormat: vi.fn(() => ({
     precision: 23,
     rangeMin: 126,
@@ -30,15 +30,18 @@ const mockWebGLContext = {
   enable: vi.fn(),
   disable: vi.fn(),
   clear: vi.fn(),
+  canvas: document.createElement('canvas')
 };
 
 // Mock canvas getContext to return our enhanced WebGL context
-HTMLCanvasElement.prototype.getContext = vi.fn((contextType) => {
+const getContextMock = vi.fn((contextType) => {
   if (contextType === 'webgl2' || contextType === 'webgl') {
     return mockWebGLContext;
   }
   return null;
 });
+
+HTMLCanvasElement.prototype.getContext = getContextMock;
 
 // Enhanced Three.js components mocking
 vi.mock('@react-three/fiber', () => ({
@@ -81,6 +84,14 @@ vi.mock('@react-three/drei', () => ({
   Loader: () => null,
 }));
 
+// Mock Babylon.js
+vi.mock('react-babylonjs', () => ({
+  Engine: ({ children }: { children: React.ReactNode }) =>
+    React.createElement('div', { 'data-testid': 'babylon-canvas' }, children),
+  Scene: ({ children }: { children: React.ReactNode }) =>
+    React.createElement('div', null, children),
+}));
+
 // Mock requestAnimationFrame and cancelAnimationFrame
 window.requestAnimationFrame = vi.fn((cb) => setTimeout(() => cb(performance.now()), 0));
 window.cancelAnimationFrame = vi.fn((id) => clearTimeout(id));
@@ -91,22 +102,6 @@ window.ResizeObserver = vi.fn().mockImplementation(() => ({
   unobserve: vi.fn(),
   disconnect: vi.fn(),
 }));
-
-// Mock WebGL context constructors with enhanced precision support
-const WebGLMock = vi.fn(() => ({
-  ...mockWebGLContext,
-  canvas: document.createElement('canvas'),
-}));
-
-Object.defineProperty(window, 'WebGLRenderingContext', {
-  value: WebGLMock,
-  writable: true,
-});
-
-Object.defineProperty(window, 'WebGL2RenderingContext', {
-  value: WebGLMock,
-  writable: true,
-});
 
 // Mock console methods to catch WebGL warnings
 const originalConsoleError = console.error;
