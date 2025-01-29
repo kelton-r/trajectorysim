@@ -41,7 +41,7 @@ export function TrajectoryTable({ data, onExport }: TrajectoryTableProps) {
           <div className="absolute inset-0 bg-black transform -skew-x-12"></div>
           <div className="relative p-6 text-white">
             <div className="text-4xl font-bold">{metersToYards(finalPoint?.carry || 0).toFixed(1)} YD</div>
-            <div className="text-lg font-condensed uppercase">CARRY DISTANCE</div>
+            <div className="text-lg font-condensed uppercase">CARRY</div>
           </div>
         </div>
 
@@ -65,7 +65,7 @@ export function TrajectoryTable({ data, onExport }: TrajectoryTableProps) {
           <div className="absolute inset-0 bg-black transform -skew-x-12"></div>
           <div className="relative p-6 text-white">
             <div className="text-4xl font-bold">{metersToYards(finalPoint?.total || 0).toFixed(1)} YD</div>
-            <div className="text-lg font-condensed uppercase">TOTAL DISTANCE</div>
+            <div className="text-lg font-condensed uppercase">TOTAL CARRY</div>
           </div>
         </div>
 
