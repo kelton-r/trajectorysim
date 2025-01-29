@@ -36,9 +36,9 @@ const START_OFFSET = new Vector3(0, TEE_HEIGHT, MAT_OFFSET_Z);
 // Simplified fixed camera settings
 const CAMERA_SETTINGS = {
   alpha: Math.PI, // Fixed behind-ball view
-  beta: Math.PI * 0.3, // Slightly elevated angle
-  radius: RANGE_SIZE * 0.2, // Consistent distance
-  target: new Vector3(0, 1, -RANGE_SIZE * 0.1) // Look down range
+  beta: Math.PI * 0.25, // Higher elevation for better view
+  radius: RANGE_SIZE * 0.3, // Increased distance for wider view
+  target: new Vector3(0, 2, MAT_OFFSET_Z + RANGE_SIZE * 0.2) // Adjusted target to see more of trajectory
 };
 
 interface TrajectoryViewProps {
