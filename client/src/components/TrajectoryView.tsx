@@ -29,7 +29,13 @@ const CEILING_HEIGHT = 12; // 12 meters high ceiling (about 40 feet)
 const WALL_HEIGHT = 10; // 10 meters wall height
 const WALL_THICKNESS = 1; // 1 meter thick walls
 const FLOOR_TILE_SIZE = 3; // 3 meters per floor tile
-const GRASS_TILE_SIZE = 1; // 1 meter grass tile size
+
+interface DrivingRangeProps {
+  size: {
+    width: number;
+    length: number;
+  };
+}
 
 // Position the mat and starting point closer to the back
 const MAT_OFFSET_Z = -(RANGE_SIZE * 0.45); // 45% from the back wall
