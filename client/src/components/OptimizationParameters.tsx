@@ -46,14 +46,14 @@ export const OptimizationParameters = ({ onShotCalculate }: OptimizationParamete
   };
 
   return (
-    <Card className="w-[400px] bg-white h-full">
-      <CardHeader>
-        <CardTitle className="text-xl font-barlow font-bold">Shot Optimization</CardTitle>
+    <Card className="w-[600px] bg-white h-full">
+      <CardHeader className="scale-110">
+        <CardTitle className="text-2xl font-barlow font-bold">Shot Optimization</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="space-y-3">
-          <Label htmlFor="clubSpeed" className="flex items-center gap-2">
-            <Gauge className="h-4 w-4" />
+      <CardContent className="space-y-6">
+        <div className="space-y-4">
+          <Label htmlFor="clubSpeed" className="flex items-center gap-3 text-lg">
+            <Gauge className="h-5 w-5" />
             Club Speed (mph)
           </Label>
           <Input
@@ -61,19 +61,19 @@ export const OptimizationParameters = ({ onShotCalculate }: OptimizationParamete
             type="number"
             value={clubSpeed ?? ''}
             onChange={(e) => setClubSpeed(Number(e.target.value))}
-            className="h-9"
+            className="h-11 text-lg"
             min={60}
             max={130}
           />
         </div>
 
         {optimizedParams && (
-          <div className="mt-4 space-y-2 p-4 bg-gray-50 rounded-lg">
-            <p className="text-sm font-medium">Optimal Parameters:</p>
-            <p className="text-sm">Launch Angle: {optimizedParams.launchAngle.toFixed(1)}°</p>
-            <p className="text-sm">Ball Speed: {optimizedParams.ballSpeed.toFixed(1)} mph</p>
-            <p className="text-sm">Spin Rate: {optimizedParams.spinRate.toFixed(0)} rpm</p>
-            <p className="text-sm">Expected Carry: {optimizedParams.expectedCarry.toFixed(0)} yards</p>
+          <div className="mt-6 space-y-3 p-6 bg-gray-50 rounded-lg">
+            <p className="text-base font-medium">Optimal Parameters:</p>
+            <p className="text-base">Launch Angle: {optimizedParams.launchAngle.toFixed(1)}°</p>
+            <p className="text-base">Ball Speed: {optimizedParams.ballSpeed.toFixed(1)} mph</p>
+            <p className="text-base">Spin Rate: {optimizedParams.spinRate.toFixed(0)} rpm</p>
+            <p className="text-base">Expected Carry: {optimizedParams.expectedCarry.toFixed(0)} yards</p>
           </div>
         )}
       </CardContent>
