@@ -9,7 +9,16 @@ import {
   StandardMaterial,
   MeshBuilder,
   Scene as BabylonScene,
-  Engine as BabylonEngine
+  Engine as BabylonEngine,
+  BackgroundMaterial,
+  GradientMaterial,
+  HemisphericLight,
+  DirectionalLight,
+  ShadowGenerator,
+  ArcRotateCamera,
+  Sphere,
+  Ground,
+  Box
 } from '@babylonjs/core';
 import { TrajectoryPoint } from '@/types';
 import { Button } from '@/components/ui/button';
@@ -21,15 +30,13 @@ interface TrajectoryViewProps {
 }
 
 // Constants for trajectory visualization
-const TEE_HEIGHT = 0.1; // 10cm off the ground
-const START_OFFSET = new Vector3(0, TEE_HEIGHT, 0); // Starting position offset
+const TEE_HEIGHT = 0.05; // 5cm off the ground for mat height
+const START_OFFSET = new Vector3(0, TEE_HEIGHT, 0);
+const MAT_SIZE = { width: 1.5, length: 1.5 }; // Standard golf mat size in meters
 
-const GROUND_MATERIAL_OPTIONS = {
-  diffuseColor: new Color3(0.23, 0.37, 0.04),
-  specularColor: new Color3(0.1, 0.1, 0.1),
-  roughness: 0.95,
-  metallic: 0.05
-};
+// Scene constants
+const RANGE_SIZE = 100; // 100 meters range length
+const GRASS_TILE_SIZE = 2; // 2 meters per grass tile
 
 function LoadingFallback() {
   return (
@@ -39,33 +46,62 @@ function LoadingFallback() {
   );
 }
 
-const GolfGround: FC<{ size: number }> = ({ size }) => {
+const DrivingRange: FC<{ size: number }> = ({ size }) => {
   return (
     <>
+      {/* Sky dome */}
+      <hemisphericLight 
+        name="sunLight" 
+        intensity={1.2}
+        direction={new Vector3(0.45, 1.0, 0.45)}
+      />
+
+      {/* Ground plane with grass texture */}
       <ground
-        name="ground"
-        width={size * 2}
-        height={size * 2}
-        subdivisions={100}
+        name="rangeGround"
+        width={size}
+        height={size}
+        subdivisions={size / GRASS_TILE_SIZE}
         receiveShadows={true}
       >
         <standardMaterial
-          name="groundMaterial"
-          {...GROUND_MATERIAL_OPTIONS}
+          name="grassMaterial"
+          diffuseColor={new Color3(0.23, 0.37, 0.04)}
+          specularColor={new Color3(0.1, 0.1, 0.1)}
+          roughness={1}
+          metallic={0}
         />
       </ground>
-      <cylinder 
-        name="teeMarker"
-        height={TEE_HEIGHT * 2}
-        diameter={0.02}
-        position={START_OFFSET}
+
+      {/* Hitting mat */}
+      <box
+        name="hittingMat"
+        width={MAT_SIZE.width}
+        height={0.05}
+        depth={MAT_SIZE.length}
+        position={new Vector3(0, TEE_HEIGHT / 2, 0)}
       >
         <standardMaterial
-          name="teeMaterial"
-          diffuseColor={Color3.White()}
-          specularColor={Color3.Black()}
+          name="matMaterial"
+          diffuseColor={new Color3(0.2, 0.2, 0.2)}
+          specularColor={new Color3(0.1, 0.1, 0.1)}
         />
-      </cylinder>
+      </box>
+
+      {/* Sky dome */}
+      <sphere
+        name="skyDome"
+        diameter={size * 2}
+        segments={32}
+        position={new Vector3(0, 0, 0)}
+      >
+        <standardMaterial
+          name="skyMaterial"
+          disableLighting={true}
+          emissiveColor={new Color3(0.6, 0.8, 1.0)}
+          backFaceCulling={false}
+        />
+      </sphere>
     </>
   );
 };
@@ -79,13 +115,13 @@ const TrajectoryPath: FC<{
   const meshRef = useRef<any>();
   const textureRef = useRef<Texture>();
 
-  // Adjust points to start from tee height
+  // Adjust points to start from mat height
   const adjustedPoints = useMemo(() => {
     if (points.length === 0) return [];
     return points.map(point => point.add(START_OFFSET));
   }, [points]);
 
-  // Cleanup function to properly dispose of resources
+  // Cleanup function
   const cleanup = () => {
     if (textureRef.current) {
       textureRef.current.dispose();
@@ -102,11 +138,10 @@ const TrajectoryPath: FC<{
     if (!scene || adjustedPoints.length === 0) return;
 
     try {
-      // Create particle system for trail effect
+      // Create particle system for ball trail
       const particleSystem = new ParticleSystem("particles", 2000, scene);
       particleSystemRef.current = particleSystem;
 
-      // Create a default texture for particles
       const texture = new Texture("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=", scene);
       textureRef.current = texture;
 
@@ -177,8 +212,9 @@ export const TrajectoryView: FC<TrajectoryViewProps> = ({ data, autoPlay = false
   const points = data.map(point => new Vector3(point.x, point.y, point.z));
   const maxDistance = data.length > 0 ? 
     Math.max(...data.map(p => Math.sqrt(p.x * p.x + p.z * p.z))) : 0;
-  const gridSize = Math.ceil(maxDistance / 10) * 10;
+  const gridSize = Math.max(RANGE_SIZE, Math.ceil(maxDistance / 10) * 10);
 
+  // Animation effect
   useEffect(() => {
     if (data.length > 0 && autoPlay) {
       setProgress(0);
@@ -187,7 +223,7 @@ export const TrajectoryView: FC<TrajectoryViewProps> = ({ data, autoPlay = false
 
       const animate = (currentTime: number) => {
         const elapsed = currentTime - startTime;
-        const duration = 2000; // 2 seconds animation
+        const duration = 2000;
         const newProgress = Math.min(elapsed / duration, 1);
         setProgress(newProgress);
 
@@ -223,7 +259,6 @@ export const TrajectoryView: FC<TrajectoryViewProps> = ({ data, autoPlay = false
 
   useEffect(() => {
     return () => {
-      // Cleanup on unmount
       if (engineRef.current) {
         engineRef.current.dispose();
       }
@@ -280,28 +315,8 @@ export const TrajectoryView: FC<TrajectoryViewProps> = ({ data, autoPlay = false
             maxZ={gridSize * 4}
           />
 
-          <hemisphericLight
-            name="light1"
-            intensity={0.7}
-            direction={new Vector3(0, 1, 0)}
-          />
+          <DrivingRange size={gridSize} />
 
-          <directionalLight
-            name="light2"
-            intensity={0.5}
-            direction={new Vector3(-1, -2, -1)}
-            position={new Vector3(gridSize, gridSize * 2, gridSize)}
-          >
-            <shadowGenerator
-              mapSize={1024}
-              useBlurExponentialShadowMap={true}
-              blurKernel={32}
-              darkness={0.8}
-              bias={0.01}
-            />
-          </directionalLight>
-
-          <GolfGround size={gridSize} />
           {points.length > 0 && sceneRef.current && (
             <TrajectoryPath 
               points={points} 
