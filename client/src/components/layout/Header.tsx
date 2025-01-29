@@ -24,11 +24,6 @@ export function Header() {
           <h2 className="text-2xl font-condensed uppercase text-white tracking-wider">
             TRAJECTORY SIMULATOR
           </h2>
-          <img
-            src="/mlm2pro-logo.png"
-            alt="MLM2 Pro"
-            className="h-8 w-auto"
-          />
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
