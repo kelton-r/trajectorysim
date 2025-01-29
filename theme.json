@@ -2,25 +2,25 @@
   "variant": "professional",
   "primary": "#D92429",
   "appearance": "light",
-  "radius": 0.5,
+  "radius": 0.75,
   "colors": {
-    "background": "#F5F5F5",
-    "foreground": "#333333",
-    "border": "#E5E5E5",
+    "background": "#F8F9FA",
+    "foreground": "#1A1D1E",
+    "border": "#E2E8F0",
     "primary": {
       "DEFAULT": "#D92429",
       "foreground": "#FFFFFF"
     },
     "secondary": {
-      "DEFAULT": "#4CD964",
+      "DEFAULT": "#38B44A",
       "foreground": "#FFFFFF"
     },
     "muted": {
-      "DEFAULT": "#F5F5F5",
-      "foreground": "#666666"
+      "DEFAULT": "#F1F5F9",
+      "foreground": "#475569"
     },
     "accent": {
-      "DEFAULT": "#4CD964",
+      "DEFAULT": "#38B44A",
       "foreground": "#FFFFFF"
     }
   }

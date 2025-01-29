@@ -10,20 +10,47 @@
   }
 
   body {
-    @apply font-sans antialiased bg-background text-foreground;
+    @apply font-sans antialiased bg-background text-foreground leading-relaxed;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-barlow font-semibold;
+  h1 {
+    @apply font-barlow font-bold text-4xl tracking-tight mb-6;
+  }
+
+  h2 {
+    @apply font-barlow font-semibold text-3xl tracking-tight mb-4;
+  }
+
+  h3 {
+    @apply font-barlow font-semibold text-2xl tracking-tight mb-3;
+  }
+
+  h4, h5, h6 {
+    @apply font-barlow font-semibold text-xl tracking-tight mb-2;
   }
 
   /* Numerical values styling */
   .numeric-value {
-    @apply font-barlow font-bold text-lg;
+    @apply font-barlow font-bold text-lg tracking-wide;
   }
 
   /* Input fields styling */
   input[type="number"] {
-    @apply font-barlow font-medium text-lg;
+    @apply font-barlow font-medium text-lg px-4 py-2 rounded-md;
+  }
+
+  /* Enhanced tab styling */
+  .custom-tab {
+    @apply px-6 py-3 text-base font-semibold transition-colors duration-200;
+  }
+
+  /* Enhanced table styling */
+  .data-table {
+    @apply bg-white rounded-lg shadow-sm;
+  }
+
+  /* Enhanced card styling */
+  .content-card {
+    @apply bg-white rounded-lg shadow-sm p-6;
   }
 }
