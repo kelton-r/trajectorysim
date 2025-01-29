@@ -1,4 +1,4 @@
-import { ShotParameters, TrajectoryPoint } from '@/types';
+import { ShotParameters, TrajectoryPoint, WeatherConditions } from '@/types';
 
 // Constants for golf ball physics
 const GRAVITY = 9.81; // m/s^2
@@ -14,12 +14,16 @@ const SPIN_FACTOR = 0.0001; // Factor for spin effect on lift
 
 // Ball type specific coefficients
 const BALL_TYPE_COEFFICIENTS = {
-  'RPT Ball': { drag: 1.0, lift: 1.0 },
-  'Range Ball': { drag: 1.2, lift: 0.8 }, // Higher drag, lower lift
-  'Premium Ball': { drag: 1.1, lift: 0.9 }, // Slightly higher drag, slightly lower lift
-};
+  'RPT Ball': { drag: 1.0, lift: 1.0, rollFactor: 1.0 },
+  'Range Ball': { drag: 1.2, lift: 0.8, rollFactor: 0.8 }, // Higher drag, lower lift, less roll
+  'Premium Ball': { drag: 1.1, lift: 0.9, rollFactor: 0.9 }, // Slightly higher drag, slightly lower lift, moderate roll
+} as const;
 
-function calculateDragCoefficient(velocity: number, spinRate: number, ballType: string): number {
+// Ground roll coefficients
+const ROLL_FRICTION = 0.15; // Rolling friction coefficient
+const BOUNCE_COEFFICIENT = 0.5; // Coefficient of restitution for bounce
+
+function calculateDragCoefficient(velocity: number, spinRate: number, ballType: keyof typeof BALL_TYPE_COEFFICIENTS): number {
   // Reynolds number-based drag coefficient
   const reynolds = (velocity * 2 * BALL_RADIUS * AIR_DENSITY) / (1.81e-5);
   let cd = CD_ZERO * BALL_TYPE_COEFFICIENTS[ballType].drag;
@@ -39,7 +43,7 @@ function calculateDragCoefficient(velocity: number, spinRate: number, ballType: 
   return cd;
 }
 
-function calculateLiftCoefficient(spinRate: number, velocity: number, ballType: string): number {
+function calculateLiftCoefficient(spinRate: number, velocity: number, ballType: keyof typeof BALL_TYPE_COEFFICIENTS): number {
   if (ballType !== 'RPT Ball') {
     // Non-RPT balls have reduced lift and no spin effects
     return CL_ZERO * BALL_TYPE_COEFFICIENTS[ballType].lift;
@@ -48,6 +52,30 @@ function calculateLiftCoefficient(spinRate: number, velocity: number, ballType: 
   // Calculate lift coefficient based on spin rate and velocity for RPT balls
   const spinFactor = (2 * Math.PI * BALL_RADIUS * spinRate) / (60 * velocity);
   return (CL_ZERO + SPIN_FACTOR * spinFactor) * BALL_TYPE_COEFFICIENTS[ballType].lift;
+}
+
+function calculateRoll(landingVelocity: number, landingAngle: number, ballType: keyof typeof BALL_TYPE_COEFFICIENTS): number {
+  // Convert landing angle to radians if it's in degrees
+  const landingAngleRad = landingAngle;
+
+  // Initial bounce
+  const normalVelocity = landingVelocity * Math.sin(landingAngleRad);
+  const tangentialVelocity = landingVelocity * Math.cos(landingAngleRad);
+
+  // After bounce velocity
+  const bounceNormalVelocity = normalVelocity * BOUNCE_COEFFICIENT;
+
+  // Initial roll velocity (combination of bounce and forward momentum)
+  let rollVelocity = tangentialVelocity * 0.8 + bounceNormalVelocity * 0.3;
+
+  // Apply ball-specific roll factor
+  rollVelocity *= BALL_TYPE_COEFFICIENTS[ballType].rollFactor;
+
+  // Calculate roll distance using a simplified deceleration model
+  // Distance = (v²)/(2*μg) where μ is the rolling friction coefficient
+  const rollDistance = (rollVelocity * rollVelocity) / (2 * ROLL_FRICTION * GRAVITY);
+
+  return rollDistance;
 }
 
 export function calculateTrajectory(params: ShotParameters): TrajectoryPoint[] {
@@ -72,8 +100,11 @@ export function calculateTrajectory(params: ShotParameters): TrajectoryPoint[] {
   let vz = ballSpeedMS * Math.cos(launchAngleRad) * Math.sin(launchDirectionRad);
 
   let t = 0;
+  let lastPoint = { x: 0, y: 0, z: 0, velocity: ballSpeedMS };
 
   while (y >= 0 && t < 15) { // Max 15 seconds flight time
+    lastPoint = { x, y, z, velocity: Math.sqrt(vx * vx + vy * vy + vz * vz) };
+
     const velocity = Math.sqrt(vx * vx + vy * vy + vz * vz);
 
     // Calculate aerodynamic coefficients
@@ -109,27 +140,32 @@ export function calculateTrajectory(params: ShotParameters): TrajectoryPoint[] {
     y += vy * dt;
     z += vz * dt;
 
-    // Store point data
-    points.push({
-      time: t,
-      x, y, z,
-      velocity,
-      spin: params.spin || 0,
-      altitude: y,
-      distance: Math.sqrt(x * x + z * z),
-      drag: dragMagnitude,
-      lift: liftMagnitude,
-      side: z,
-      total: Math.sqrt(x * x + y * y + z * z),
-      carry: x
-    });
-
     t += dt;
   }
 
-  // Reduce number of points for rendering efficiency
-  const stride = Math.max(1, Math.floor(points.length / 100));
-  return points.filter((_, i) => i % stride === 0);
+  // Calculate landing angle and roll
+  const landingVelocity = Math.sqrt(vx * vx + vy * vy + vz * vz);
+  const landingAngle = Math.atan2(vy, Math.sqrt(vx * vx + vz * vz));
+  const rollDistance = calculateRoll(landingVelocity, landingAngle, params.ballType);
+
+  // Final point with roll distance added
+  const finalPoint: TrajectoryPoint = {
+    time: t,
+    x: lastPoint.x + rollDistance * Math.cos(landingAngle),
+    y: 0,
+    z: lastPoint.z + rollDistance * Math.sin(landingAngle),
+    velocity: landingVelocity,
+    spin: params.spin || 0,
+    altitude: 0,
+    distance: Math.sqrt((lastPoint.x + rollDistance * Math.cos(landingAngle)) * (lastPoint.x + rollDistance * Math.cos(landingAngle)) + (lastPoint.z + rollDistance * Math.sin(landingAngle)) * (lastPoint.z + rollDistance * Math.sin(landingAngle))),
+    drag: 0,
+    lift: 0,
+    side: lastPoint.z + rollDistance * Math.sin(landingAngle),
+    total: Math.sqrt((lastPoint.x + rollDistance * Math.cos(landingAngle)) * (lastPoint.x + rollDistance * Math.cos(landingAngle)) + (lastPoint.z + rollDistance * Math.sin(landingAngle)) * (lastPoint.z + rollDistance * Math.sin(landingAngle))),
+    carry: lastPoint.x + rollDistance * Math.cos(landingAngle)
+  };
+
+  return [finalPoint];
 }
 
 export function validateShotParameters(params: ShotParameters): boolean {
