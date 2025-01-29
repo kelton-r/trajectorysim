@@ -29,8 +29,8 @@ export function OptimizationPage() {
       <Header />
       <div className="flex flex-1 overflow-hidden">
         <OptimizationParameters onShotCalculate={handleShotCalculate} />
-        <main className="flex-1 p-4 overflow-auto">
-          <div className="w-full max-w-[1600px] mx-auto space-y-6">
+        <main className="flex-1 p-2 overflow-auto">
+          <div className="w-full max-w-[1800px] mx-auto space-y-4">
             <Tabs defaultValue="visualization" className="space-y-6">
               <TabsList className="w-full rounded-lg border bg-card p-1">
                 <TabsTrigger value="data" className="custom-tab flex-1">

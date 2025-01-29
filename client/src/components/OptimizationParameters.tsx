@@ -46,7 +46,7 @@ export const OptimizationParameters = ({ onShotCalculate }: OptimizationParamete
   };
 
   return (
-    <Card className="w-[400px] bg-white h-full">
+    <Card className="w-[500px] bg-white h-full">
       <CardHeader>
         <CardTitle className="text-xl font-barlow font-bold">Shot Optimization</CardTitle>
       </CardHeader>
