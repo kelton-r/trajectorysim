@@ -17,28 +17,42 @@ const BALL_TYPES = ['Pro V1', 'Pro V1x', 'TP5', 'Chrome Soft'];
 
 export function ShotParameters({ onCalculate }: ShotParametersProps) {
   const { toast } = useToast();
-  const [params, setParams] = useState<ShotParamsType>({
-    ballSpeed: 150,
-    launchAngle: 15,
-    launchDirection: 0,
-    launchDirectionSide: 'right',
-    spin: 2500,
-    spinAxis: 0,
+  const [params, setParams] = useState<Partial<ShotParamsType>>({
+    ballType: BALL_TYPES[0],
     spinDirection: 'right',
-    ballType: BALL_TYPES[0]
+    launchDirectionSide: 'right',
   });
 
   const handleChange = (key: keyof ShotParamsType) => (
     e: React.ChangeEvent<HTMLInputElement> | { value: string }
   ) => {
     const value = 'target' in e ? 
-      (key === 'spinDirection' || key === 'launchDirectionSide' ? e.target.value : Number(e.target.value)) 
+      (key === 'spinDirection' || key === 'launchDirectionSide' ? e.target.value : e.target.value === '' ? undefined : Number(e.target.value)) 
       : e.value;
     setParams(prev => ({ ...prev, [key]: value }));
   };
 
   const handleCalculate = () => {
-    if (!validateShotParameters(params)) {
+    // Check for empty fields
+    const requiredFields: (keyof ShotParamsType)[] = [
+      'ballSpeed', 'launchAngle', 'launchDirection', 'spin', 'spinAxis'
+    ];
+
+    const missingFields = requiredFields.filter(field => params[field] === undefined);
+
+    if (missingFields.length > 0) {
+      toast({
+        title: "Missing Required Fields",
+        description: `Please fill in all required fields: ${missingFields.join(', ')}`,
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Now we know all fields are present, we can safely cast
+    const fullParams = params as ShotParamsType;
+
+    if (!validateShotParameters(fullParams)) {
       toast({
         title: "Invalid Parameters",
         description: "Please check the values are within valid ranges",
@@ -46,7 +60,8 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
       });
       return;
     }
-    onCalculate(params);
+
+    onCalculate(fullParams);
     toast({
       title: "Calculating Trajectory",
       description: "Your shot trajectory is being calculated"
@@ -69,7 +84,7 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
               <Input
                 id="launchDirection"
                 type="number"
-                value={params.launchDirection}
+                value={params.launchDirection ?? ''}
                 onChange={handleChange('launchDirection')}
                 min={-90}
                 max={90}
@@ -98,7 +113,7 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
             <Input
               id="launchAngle"
               type="number"
-              value={params.launchAngle}
+              value={params.launchAngle ?? ''}
               onChange={handleChange('launchAngle')}
               min={0}
               max={90}
@@ -114,7 +129,7 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
             <Input
               id="spin"
               type="number"
-              value={params.spin}
+              value={params.spin ?? ''}
               onChange={handleChange('spin')}
               min={0}
               max={10000}
@@ -131,7 +146,7 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
               <Input
                 id="spinAxis"
                 type="number"
-                value={params.spinAxis}
+                value={params.spinAxis ?? ''}
                 onChange={handleChange('spinAxis')}
                 min={-90}
                 max={90}
@@ -179,7 +194,7 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
             <Input
               id="ballSpeed"
               type="number"
-              value={params.ballSpeed}
+              value={params.ballSpeed ?? ''}
               onChange={handleChange('ballSpeed')}
               min={0}
               max={200}
