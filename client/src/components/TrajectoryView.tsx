@@ -46,12 +46,6 @@ const CAMERA_SETTINGS = {
     beta: Math.PI * 0.4,
     radius: RANGE_SIZE * 0.4,
     target: new Vector3(0, 2, MAT_OFFSET_Z)
-  },
-  top: {
-    alpha: Math.PI,
-    beta: 0.1,
-    radius: RANGE_SIZE * 0.8,
-    target: new Vector3(0, 0, MAT_OFFSET_Z)
   }
 };
 
@@ -277,7 +271,7 @@ const TrajectoryPath: FC<{
 };
 
 export const TrajectoryView: FC<TrajectoryViewProps> = ({ data, autoPlay = false }) => {
-  const [viewMode, setViewMode] = useState<'default' | 'side' | 'top'>('default');
+  const [viewMode, setViewMode] = useState<'default' | 'side'>('default');
   const [progress, setProgress] = useState(0);
   const [hasError, setHasError] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -461,11 +455,7 @@ export const TrajectoryView: FC<TrajectoryViewProps> = ({ data, autoPlay = false
         <Button
           variant="outline"
           size="icon"
-          onClick={() => setViewMode(prev => {
-            const modes: ('default' | 'side' | 'top')[] = ['default', 'side', 'top'];
-            const currentIndex = modes.indexOf(prev);
-            return modes[(currentIndex + 1) % modes.length];
-          })}
+          onClick={() => setViewMode(prev => prev === 'default' ? 'side' : 'default')}
           className="bg-white hover:bg-gray-100"
         >
           <Eye className="h-4 w-4" />
