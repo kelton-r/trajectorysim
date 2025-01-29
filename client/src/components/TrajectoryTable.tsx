@@ -38,36 +38,36 @@ export function TrajectoryTable({ data, onExport }: TrajectoryTableProps) {
       <div className="border rounded-lg overflow-hidden bg-white shadow-sm">
         <Table>
           <TableHeader>
-            <TableRow className="bg-gray-50 hover:bg-gray-50">
-              <TableHead className="py-6 text-sm font-bold text-gray-800">Carry (yd)</TableHead>
-              <TableHead className="py-6 text-sm font-bold text-gray-800">Total Carry (yd)</TableHead>
-              <TableHead className="py-6 text-sm font-bold text-gray-800">Ball Speed (mph)</TableHead>
-              <TableHead className="py-6 text-sm font-bold text-gray-800">Spin Rate (rpm)</TableHead>
-              <TableHead className="py-6 text-sm font-bold text-gray-800">Spin Axis (°)</TableHead>
-              <TableHead className="py-6 text-sm font-bold text-gray-800">Side Carry (yd)</TableHead>
-              <TableHead className="py-6 text-sm font-bold text-gray-800">Launch Angle (°)</TableHead>
-              <TableHead className="py-6 text-sm font-bold text-gray-800">Launch Direction (°)</TableHead>
-              <TableHead className="py-6 text-sm font-bold text-gray-800">Apex (ft)</TableHead>
+            <TableRow className="bg-black hover:bg-black">
+              <TableHead className="py-8 text-lg font-bold text-white">Carry (yd)</TableHead>
+              <TableHead className="py-8 text-lg font-bold text-white">Total Carry (yd)</TableHead>
+              <TableHead className="py-8 text-lg font-bold text-white">Ball Speed (mph)</TableHead>
+              <TableHead className="py-8 text-lg font-bold text-white">Spin Rate (rpm)</TableHead>
+              <TableHead className="py-8 text-lg font-bold text-white">Spin Axis (°)</TableHead>
+              <TableHead className="py-8 text-lg font-bold text-white">Side Carry (yd)</TableHead>
+              <TableHead className="py-8 text-lg font-bold text-white">Launch Angle (°)</TableHead>
+              <TableHead className="py-8 text-lg font-bold text-white">Launch Direction (°)</TableHead>
+              <TableHead className="py-8 text-lg font-bold text-white">Apex (ft)</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {!finalPoint ? (
               <TableRow>
-                <TableCell colSpan={9} className="text-center py-12 text-gray-500 text-lg">
+                <TableCell colSpan={9} className="text-center py-14 text-gray-500 text-xl">
                   No data available
                 </TableCell>
               </TableRow>
             ) : (
               <TableRow className="hover:bg-gray-50">
-                <TableCell className="py-6 text-base font-barlow font-semibold">{metersToYards(finalPoint.carry).toFixed(1)}</TableCell>
-                <TableCell className="py-6 text-base font-barlow font-semibold">{metersToYards(finalPoint.total).toFixed(1)}</TableCell>
-                <TableCell className="py-6 text-base font-barlow font-semibold">{finalPoint.ballSpeed.toFixed(1)}</TableCell>
-                <TableCell className="py-6 text-base font-barlow font-semibold">{finalPoint.spin}</TableCell>
-                <TableCell className="py-6 text-base font-barlow font-semibold">{finalPoint.spinAxis}</TableCell>
-                <TableCell className="py-6 text-base font-barlow font-semibold">{metersToYards(finalPoint.side).toFixed(1)}</TableCell>
-                <TableCell className="py-6 text-base font-barlow font-semibold">{finalPoint.launchAngle.toFixed(1)}</TableCell>
-                <TableCell className="py-6 text-base font-barlow font-semibold">{finalPoint.launchDirection.toFixed(1)}</TableCell>
-                <TableCell className="py-6 text-base font-barlow font-semibold">{metersToFeet(finalPoint.altitude).toFixed(1)}</TableCell>
+                <TableCell className="py-8 text-xl font-barlow font-semibold">{metersToYards(finalPoint.carry).toFixed(1)}</TableCell>
+                <TableCell className="py-8 text-xl font-barlow font-semibold">{metersToYards(finalPoint.total).toFixed(1)}</TableCell>
+                <TableCell className="py-8 text-xl font-barlow font-semibold">{finalPoint.ballSpeed.toFixed(1)}</TableCell>
+                <TableCell className="py-8 text-xl font-barlow font-semibold">{finalPoint.spin}</TableCell>
+                <TableCell className="py-8 text-xl font-barlow font-semibold">{finalPoint.spinAxis}</TableCell>
+                <TableCell className="py-8 text-xl font-barlow font-semibold">{metersToYards(finalPoint.side).toFixed(1)}</TableCell>
+                <TableCell className="py-8 text-xl font-barlow font-semibold">{finalPoint.launchAngle.toFixed(1)}</TableCell>
+                <TableCell className="py-8 text-xl font-barlow font-semibold">{finalPoint.launchDirection.toFixed(1)}</TableCell>
+                <TableCell className="py-8 text-xl font-barlow font-semibold">{metersToFeet(finalPoint.altitude).toFixed(1)}</TableCell>
               </TableRow>
             )}
           </TableBody>
