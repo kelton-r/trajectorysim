@@ -95,13 +95,13 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
                 min={-90}
                 max={90}
                 step={0.1}
-                className="w-[90px]"
+                className="w-[68px]"
               />
               <Select
                 value={params.launchDirectionSide}
                 onValueChange={handleDirectionChange('launchDirectionSide')}
               >
-                <SelectTrigger className="w-[160px]">
+                <SelectTrigger className="w-[182px]">
                   <SelectValue placeholder="Direction" />
                 </SelectTrigger>
                 <SelectContent>
@@ -158,13 +158,13 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
                 min={-90}
                 max={90}
                 step={1}
-                className="w-[90px]"
+                className="w-[68px]"
               />
               <Select
                 value={params.spinDirection}
                 onValueChange={handleDirectionChange('spinDirection')}
               >
-                <SelectTrigger className="w-[160px]">
+                <SelectTrigger className="w-[182px]">
                   <SelectValue placeholder="Direction" />
                 </SelectTrigger>
                 <SelectContent>
