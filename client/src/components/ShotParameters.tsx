@@ -80,7 +80,7 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
         <CardTitle className="text-lg font-semibold">Shot Parameters</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="launchDirection" className="flex items-center gap-2">
               <ArrowRight className="h-4 w-4" />
