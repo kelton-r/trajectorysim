@@ -28,7 +28,7 @@ export function TrajectoryTable({ data, onExport }: TrajectoryTableProps) {
         <h2 className="text-lg font-semibold">Shot Results</h2>
         <Button 
           onClick={onExport}
-          className="bg-[#4CD964] hover:bg-[#3CB371] text-white"
+          className="bg-[#D92429] hover:bg-[#B91C21] text-white"
         >
           <Download className="mr-2 h-4 w-4" />
           EXPORT TO CSV
