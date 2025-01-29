@@ -18,9 +18,9 @@ export function Header() {
           data-testid="rapsodo-logo"
         />
       </header>
-      <div className="h-[40px] border-b bg-white flex items-center px-6 justify-between">
-        <div className="flex items-center space-x-6">
-          <h2 className="text-lg font-barlow font-semibold text-gray-800">
+      <div className="h-[60px] border-b bg-white flex items-center px-6 justify-between">
+        <div className="flex-1 flex justify-center">
+          <h2 className="text-2xl font-barlow font-semibold text-gray-800">
             Trajectory Simulator
           </h2>
         </div>
