@@ -23,7 +23,7 @@ export function TrajectoryTable({ data, onExport }: TrajectoryTableProps) {
   const metersToFeet = (meters: number) => meters * 3.28084;
 
   return (
-    <div className="space-y-4 w-full">
+    <div className="w-full">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-barlow font-bold">Shot Results</h2>
         <Button 
@@ -39,15 +39,15 @@ export function TrajectoryTable({ data, onExport }: TrajectoryTableProps) {
         <Table>
           <TableHeader>
             <TableRow className="bg-gray-50 hover:bg-gray-50">
-              <TableHead className="py-4 text-xs font-semibold text-gray-600 whitespace-nowrap">Carry (yd)</TableHead>
-              <TableHead className="py-4 text-xs font-semibold text-gray-600 whitespace-nowrap">Total Carry (yd)</TableHead>
-              <TableHead className="py-4 text-xs font-semibold text-gray-600 whitespace-nowrap">Ball Speed (mph)</TableHead>
-              <TableHead className="py-4 text-xs font-semibold text-gray-600 whitespace-nowrap">Spin Rate (rpm)</TableHead>
-              <TableHead className="py-4 text-xs font-semibold text-gray-600 whitespace-nowrap">Spin Axis (°)</TableHead>
-              <TableHead className="py-4 text-xs font-semibold text-gray-600 whitespace-nowrap">Side Carry (yd)</TableHead>
-              <TableHead className="py-4 text-xs font-semibold text-gray-600 whitespace-nowrap">Launch Angle (°)</TableHead>
-              <TableHead className="py-4 text-xs font-semibold text-gray-600 whitespace-nowrap">Launch Direction (°)</TableHead>
-              <TableHead className="py-4 text-xs font-semibold text-gray-600 whitespace-nowrap">Apex (ft)</TableHead>
+              <TableHead className="py-4 text-xs font-semibold text-gray-600">Carry (yd)</TableHead>
+              <TableHead className="py-4 text-xs font-semibold text-gray-600">Total Carry (yd)</TableHead>
+              <TableHead className="py-4 text-xs font-semibold text-gray-600">Ball Speed (mph)</TableHead>
+              <TableHead className="py-4 text-xs font-semibold text-gray-600">Spin Rate (rpm)</TableHead>
+              <TableHead className="py-4 text-xs font-semibold text-gray-600">Spin Axis (°)</TableHead>
+              <TableHead className="py-4 text-xs font-semibold text-gray-600">Side Carry (yd)</TableHead>
+              <TableHead className="py-4 text-xs font-semibold text-gray-600">Launch Angle (°)</TableHead>
+              <TableHead className="py-4 text-xs font-semibold text-gray-600">Launch Direction (°)</TableHead>
+              <TableHead className="py-4 text-xs font-semibold text-gray-600">Apex (ft)</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -59,15 +59,15 @@ export function TrajectoryTable({ data, onExport }: TrajectoryTableProps) {
               </TableRow>
             ) : (
               <TableRow className="hover:bg-gray-50">
-                <TableCell className="py-4 text-sm font-barlow font-semibold whitespace-nowrap">{metersToYards(finalPoint.carry).toFixed(1)}</TableCell>
-                <TableCell className="py-4 text-sm font-barlow font-semibold whitespace-nowrap">{metersToYards(finalPoint.total).toFixed(1)}</TableCell>
-                <TableCell className="py-4 text-sm font-barlow font-semibold whitespace-nowrap">{finalPoint.ballSpeed.toFixed(1)}</TableCell>
-                <TableCell className="py-4 text-sm font-barlow font-semibold whitespace-nowrap">{finalPoint.spin}</TableCell>
-                <TableCell className="py-4 text-sm font-barlow font-semibold whitespace-nowrap">{finalPoint.spinAxis}</TableCell>
-                <TableCell className="py-4 text-sm font-barlow font-semibold whitespace-nowrap">{metersToYards(finalPoint.side).toFixed(1)}</TableCell>
-                <TableCell className="py-4 text-sm font-barlow font-semibold whitespace-nowrap">{finalPoint.launchAngle.toFixed(1)}</TableCell>
-                <TableCell className="py-4 text-sm font-barlow font-semibold whitespace-nowrap">{finalPoint.launchDirection.toFixed(1)}</TableCell>
-                <TableCell className="py-4 text-sm font-barlow font-semibold whitespace-nowrap">{metersToFeet(finalPoint.altitude).toFixed(1)}</TableCell>
+                <TableCell className="py-4 text-sm font-barlow font-semibold">{metersToYards(finalPoint.carry).toFixed(1)}</TableCell>
+                <TableCell className="py-4 text-sm font-barlow font-semibold">{metersToYards(finalPoint.total).toFixed(1)}</TableCell>
+                <TableCell className="py-4 text-sm font-barlow font-semibold">{finalPoint.ballSpeed.toFixed(1)}</TableCell>
+                <TableCell className="py-4 text-sm font-barlow font-semibold">{finalPoint.spin}</TableCell>
+                <TableCell className="py-4 text-sm font-barlow font-semibold">{finalPoint.spinAxis}</TableCell>
+                <TableCell className="py-4 text-sm font-barlow font-semibold">{metersToYards(finalPoint.side).toFixed(1)}</TableCell>
+                <TableCell className="py-4 text-sm font-barlow font-semibold">{finalPoint.launchAngle.toFixed(1)}</TableCell>
+                <TableCell className="py-4 text-sm font-barlow font-semibold">{finalPoint.launchDirection.toFixed(1)}</TableCell>
+                <TableCell className="py-4 text-sm font-barlow font-semibold">{metersToFeet(finalPoint.altitude).toFixed(1)}</TableCell>
               </TableRow>
             )}
           </TableBody>
