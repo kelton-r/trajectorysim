@@ -35,19 +35,37 @@ export function TrajectoryTable({ data, onExport }: TrajectoryTableProps) {
         </Button>
       </div>
 
-      <div className="border rounded-lg overflow-hidden bg-white shadow-sm">
+      <div className="border rounded-lg overflow-x-auto bg-white shadow-sm">
         <Table>
           <TableHeader>
             <TableRow className="bg-black hover:bg-black">
-              <TableHead className="py-8 text-lg font-bold text-white">Carry (yd)</TableHead>
-              <TableHead className="py-8 text-lg font-bold text-white">Total Carry (yd)</TableHead>
-              <TableHead className="py-8 text-lg font-bold text-white">Ball Speed (mph)</TableHead>
-              <TableHead className="py-8 text-lg font-bold text-white">Spin Rate (rpm)</TableHead>
-              <TableHead className="py-8 text-lg font-bold text-white">Spin Axis (°)</TableHead>
-              <TableHead className="py-8 text-lg font-bold text-white">Side Carry (yd)</TableHead>
-              <TableHead className="py-8 text-lg font-bold text-white">Launch Angle (°)</TableHead>
-              <TableHead className="py-8 text-lg font-bold text-white">Launch Direction (°)</TableHead>
-              <TableHead className="py-8 text-lg font-bold text-white">Apex (ft)</TableHead>
+              <TableHead className="py-8 text-lg font-bold text-white whitespace-normal min-w-[120px]">
+                Carry<br/>(yd)
+              </TableHead>
+              <TableHead className="py-8 text-lg font-bold text-white whitespace-normal min-w-[120px]">
+                Total Carry<br/>(yd)
+              </TableHead>
+              <TableHead className="py-8 text-lg font-bold text-white whitespace-normal min-w-[120px]">
+                Ball Speed<br/>(mph)
+              </TableHead>
+              <TableHead className="py-8 text-lg font-bold text-white whitespace-normal min-w-[120px]">
+                Spin Rate<br/>(rpm)
+              </TableHead>
+              <TableHead className="py-8 text-lg font-bold text-white whitespace-normal min-w-[120px]">
+                Spin Axis<br/>(°)
+              </TableHead>
+              <TableHead className="py-8 text-lg font-bold text-white whitespace-normal min-w-[120px]">
+                Side Carry<br/>(yd)
+              </TableHead>
+              <TableHead className="py-8 text-lg font-bold text-white whitespace-normal min-w-[120px]">
+                Launch Angle<br/>(°)
+              </TableHead>
+              <TableHead className="py-8 text-lg font-bold text-white whitespace-normal min-w-[120px]">
+                Launch Dir.<br/>(°)
+              </TableHead>
+              <TableHead className="py-8 text-lg font-bold text-white whitespace-normal min-w-[120px]">
+                Apex<br/>(ft)
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
