@@ -85,13 +85,13 @@ export function TrajectoryView3D({ data, autoPlay = false }: TrajectoryView3DPro
   const cameraSettings = useMemo(() => {
     if (data.length === 0) {
       return {
-        side: {
-          position: [-20, 10, 0],
+        default: {
+          position: [-2, 1.8, -2.4],
           rotation: [0, Math.PI / 2, 0]
         },
-        top: {
-          position: [20, 50, 0],
-          rotation: [-Math.PI / 2, 0, 0]
+        side: {
+          position: [0, 3, -8],
+          rotation: [0, Math.PI / 2, 0]
         }
       };
     }
