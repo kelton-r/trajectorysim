@@ -36,10 +36,10 @@ const START_OFFSET = new Vector3(0, TEE_HEIGHT, MAT_OFFSET_Z);
 // Update camera constants for optimal view
 const CAMERA_SETTINGS = {
   default: {
-    alpha: Math.PI, // Behind the ball
-    beta: Math.PI * 0.32, // Optimal angle for trajectory view
-    radius: 20, // Fixed distance
-    target: new Vector3(0, 3, MAT_OFFSET_Z + 10) // Look ahead of the ball
+    alpha: Math.PI, // Behind the ball (no horizontal rotation)
+    beta: Math.PI * 0.35, // Optimal angle for trajectory view
+    radius: RANGE_SIZE * 0.05, // Very close to back wall
+    target: new Vector3(0, TEE_HEIGHT + 1, MAT_OFFSET_Z + RANGE_SIZE * 0.3) // Look forward down range
   },
   side: {
     alpha: Math.PI * 1.5,
@@ -353,6 +353,10 @@ export const TrajectoryView: FC<TrajectoryViewProps> = ({ data, autoPlay = false
         camera.pinchPrecision = 0;
         camera.wheelPrecision = 0;
         camera.panningSensibility = 0;
+
+        // Ensure camera is perfectly aligned
+        camera.rotation.y = 0;
+        camera.rotation.z = 0;
       }
     }
   };
