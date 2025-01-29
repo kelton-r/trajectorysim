@@ -14,14 +14,14 @@ const SPIN_FACTOR = 0.0001; // Factor for spin effect on lift
 
 // Ball type specific coefficients
 const BALL_TYPE_COEFFICIENTS = {
-  'RPT Ball': { drag: 1.0, lift: 1.0, rollFactor: 1.0 },
-  'Range Ball': { drag: 1.2, lift: 0.8, rollFactor: 0.8 }, // Higher drag, lower lift, less roll
-  'Premium Ball': { drag: 1.1, lift: 0.9, rollFactor: 0.9 }, // Slightly higher drag, slightly lower lift, moderate roll
+  'RPT Ball': { drag: 1.0, lift: 1.0 },
+  'Range Ball': { drag: 1.2, lift: 0.8 }, // Higher drag, lower lift
+  'Premium Ball': { drag: 1.1, lift: 0.9 } // Slightly higher drag, slightly lower lift
 } as const;
 
 // Ground roll coefficients
-const ROLL_FRICTION = 0.3; // Increased rolling friction coefficient
-const BOUNCE_COEFFICIENT = 0.4; // Reduced bounce coefficient for more realistic behavior
+const ROLL_FRICTION = 0.3; // Rolling friction coefficient
+const BOUNCE_COEFFICIENT = 0.4; // Bounce coefficient for realistic behavior
 
 function calculateDragCoefficient(velocity: number, spinRate: number, ballType: keyof typeof BALL_TYPE_COEFFICIENTS): number {
   // Reynolds number-based drag coefficient
@@ -54,7 +54,7 @@ function calculateLiftCoefficient(spinRate: number, velocity: number, ballType: 
   return (CL_ZERO + SPIN_FACTOR * spinFactor) * BALL_TYPE_COEFFICIENTS[ballType].lift;
 }
 
-function calculateRoll(landingVelocity: number, landingAngle: number, ballType: keyof typeof BALL_TYPE_COEFFICIENTS): number {
+function calculateRoll(landingVelocity: number, landingAngle: number): number {
   // Convert landing angle to radians if it's in degrees
   const landingAngleRad = landingAngle;
 
@@ -66,10 +66,7 @@ function calculateRoll(landingVelocity: number, landingAngle: number, ballType: 
   const bounceNormalVelocity = normalVelocity * BOUNCE_COEFFICIENT;
 
   // Initial roll velocity (reduced momentum conversion factors)
-  let rollVelocity = tangentialVelocity * 0.6 + bounceNormalVelocity * 0.2;
-
-  // Apply ball-specific roll factor
-  rollVelocity *= BALL_TYPE_COEFFICIENTS[ballType].rollFactor;
+  const rollVelocity = tangentialVelocity * 0.6 + bounceNormalVelocity * 0.2;
 
   // Calculate roll distance using a simplified deceleration model
   // Distance = (v²)/(2*μg) where μ is the rolling friction coefficient
@@ -146,7 +143,7 @@ export function calculateTrajectory(params: ShotParameters): TrajectoryPoint[] {
   // Calculate landing angle and roll
   const landingVelocity = Math.sqrt(vx * vx + vy * vy + vz * vz);
   const landingAngle = Math.atan2(vy, Math.sqrt(vx * vx + vz * vz));
-  const rollDistance = calculateRoll(landingVelocity, landingAngle, params.ballType);
+  const rollDistance = calculateRoll(landingVelocity, landingAngle);
 
   // Final point with roll distance added
   const finalPoint: TrajectoryPoint = {
