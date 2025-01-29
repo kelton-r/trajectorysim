@@ -18,10 +18,10 @@ export function Header() {
           data-testid="rapsodo-logo"
         />
       </header>
-      <div className="h-[60px] border-b bg-white flex items-center px-12 justify-between">
+      <div className="h-[60px] border-b bg-black flex items-center px-12 justify-between">
         <div className="flex-1">
-          <h2 className="text-2xl font-barlow font-semibold text-gray-800">
-            Trajectory Simulator
+          <h2 className="text-2xl font-barlow font-semibold text-white uppercase">
+            TRAJECTORY SIMULATOR
           </h2>
         </div>
         <DropdownMenu>
