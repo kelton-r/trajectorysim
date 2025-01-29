@@ -20,7 +20,7 @@ export function Header() {
       </header>
       <div className="h-[60px] border-b bg-black flex items-center px-12 justify-between">
         <div className="flex-1">
-          <h2 className="text-2xl font-condensed uppercase">
+          <h2 className="text-2xl font-condensed uppercase text-white tracking-wider">
             TRAJECTORY SIMULATOR
           </h2>
         </div>
