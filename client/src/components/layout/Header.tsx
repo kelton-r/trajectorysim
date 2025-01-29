@@ -26,7 +26,7 @@ export function Header() {
           <img
             src="/mlm2-logo.png"
             alt="MLM2 Pro"
-            className="h-8 w-auto"
+            className="h-8 w-auto object-contain"
           />
         </div>
         <DropdownMenu>
