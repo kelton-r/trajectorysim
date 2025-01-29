@@ -1,3 +1,4 @@
+
 import { 
   Table,
   TableBody,
@@ -35,61 +36,78 @@ export function TrajectoryTable({ data, onExport }: TrajectoryTableProps) {
         </Button>
       </div>
 
-      <div className="border rounded-lg overflow-x-auto bg-white shadow-sm">
-        <Table>
-          <TableHeader>
-            <TableRow className="bg-black hover:bg-black">
-              <TableHead className="py-8 text-lg font-bold text-white whitespace-normal min-w-[120px]">
-                Carry
-              </TableHead>
-              <TableHead className="py-8 text-lg font-bold text-white whitespace-normal min-w-[120px]">
-                Total Carry
-              </TableHead>
-              <TableHead className="py-8 text-lg font-bold text-white whitespace-normal min-w-[120px]">
-                Ball Speed
-              </TableHead>
-              <TableHead className="py-8 text-lg font-bold text-white whitespace-normal min-w-[120px]">
-                Spin Rate
-              </TableHead>
-              <TableHead className="py-8 text-lg font-bold text-white whitespace-normal min-w-[120px]">
-                Spin Axis
-              </TableHead>
-              <TableHead className="py-8 text-lg font-bold text-white whitespace-normal min-w-[120px]">
-                Side Carry
-              </TableHead>
-              <TableHead className="py-8 text-lg font-bold text-white whitespace-normal min-w-[120px]">
-                Launch Angle
-              </TableHead>
-              <TableHead className="py-8 text-lg font-bold text-white whitespace-normal min-w-[120px]">
-                Launch Dir.
-              </TableHead>
-              <TableHead className="py-8 text-lg font-bold text-white whitespace-normal min-w-[120px]">
-                Apex
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {!finalPoint ? (
-              <TableRow>
-                <TableCell colSpan={9} className="text-center py-14 text-gray-500 text-xl">
-                  No data available
-                </TableCell>
-              </TableRow>
-            ) : (
-              <TableRow className="hover:bg-gray-50">
-                <TableCell className="py-8 text-xl font-barlow font-semibold">{metersToYards(finalPoint.carry).toFixed(1)} yd</TableCell>
-                <TableCell className="py-8 text-xl font-barlow font-semibold">{metersToYards(finalPoint.total).toFixed(1)} yd</TableCell>
-                <TableCell className="py-8 text-xl font-barlow font-semibold">{finalPoint.ballSpeed.toFixed(1)} mph</TableCell>
-                <TableCell className="py-8 text-xl font-barlow font-semibold">{finalPoint.spin} rpm</TableCell>
-                <TableCell className="py-8 text-xl font-barlow font-semibold">{finalPoint.spinAxis}°</TableCell>
-                <TableCell className="py-8 text-xl font-barlow font-semibold">{metersToYards(finalPoint.side).toFixed(1)} yd</TableCell>
-                <TableCell className="py-8 text-xl font-barlow font-semibold">{finalPoint.launchAngle.toFixed(1)}°</TableCell>
-                <TableCell className="py-8 text-xl font-barlow font-semibold">{finalPoint.launchDirection.toFixed(1)}°</TableCell>
-                <TableCell className="py-8 text-xl font-barlow font-semibold">{metersToFeet(finalPoint.altitude).toFixed(1)} ft</TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+      <div className="grid grid-cols-3 gap-6">
+        <div className="relative overflow-hidden">
+          <div className="absolute inset-0 bg-black transform -skew-x-12"></div>
+          <div className="relative p-6 text-white">
+            <div className="text-4xl font-bold">{metersToYards(finalPoint?.carry || 0).toFixed(1)}</div>
+            <div className="text-lg">Carry Distance (yd)</div>
+          </div>
+        </div>
+
+        <div className="relative overflow-hidden">
+          <div className="absolute inset-0 bg-black transform -skew-x-12"></div>
+          <div className="relative p-6 text-white">
+            <div className="text-4xl font-bold">{finalPoint?.ballSpeed.toFixed(1) || 0}</div>
+            <div className="text-lg">Ball Speed (mph)</div>
+          </div>
+        </div>
+
+        <div className="relative overflow-hidden">
+          <div className="absolute inset-0 bg-black transform -skew-x-12"></div>
+          <div className="relative p-6 text-white">
+            <div className="text-4xl font-bold">{finalPoint?.spin || 0}</div>
+            <div className="text-lg">Spin Rate (rpm)</div>
+          </div>
+        </div>
+
+        <div className="relative overflow-hidden">
+          <div className="absolute inset-0 bg-black transform -skew-x-12"></div>
+          <div className="relative p-6 text-white">
+            <div className="text-4xl font-bold">{metersToYards(finalPoint?.total || 0).toFixed(1)}</div>
+            <div className="text-lg">Total Distance (yd)</div>
+          </div>
+        </div>
+
+        <div className="relative overflow-hidden">
+          <div className="absolute inset-0 bg-black transform -skew-x-12"></div>
+          <div className="relative p-6 text-white">
+            <div className="text-4xl font-bold">{finalPoint?.launchAngle.toFixed(1) || 0}</div>
+            <div className="text-lg">Launch Angle (°)</div>
+          </div>
+        </div>
+
+        <div className="relative overflow-hidden">
+          <div className="absolute inset-0 bg-black transform -skew-x-12"></div>
+          <div className="relative p-6 text-white">
+            <div className="text-4xl font-bold">{metersToFeet(finalPoint?.altitude || 0).toFixed(1)}</div>
+            <div className="text-lg">Apex (ft)</div>
+          </div>
+        </div>
+
+        <div className="relative overflow-hidden">
+          <div className="absolute inset-0 bg-black transform -skew-x-12"></div>
+          <div className="relative p-6 text-white">
+            <div className="text-4xl font-bold">{metersToYards(finalPoint?.side || 0).toFixed(1)}</div>
+            <div className="text-lg">Side Carry (yd)</div>
+          </div>
+        </div>
+
+        <div className="relative overflow-hidden">
+          <div className="absolute inset-0 bg-black transform -skew-x-12"></div>
+          <div className="relative p-6 text-white">
+            <div className="text-4xl font-bold">{finalPoint?.spinAxis || 0}</div>
+            <div className="text-lg">Spin Axis (°)</div>
+          </div>
+        </div>
+
+        <div className="relative overflow-hidden">
+          <div className="absolute inset-0 bg-black transform -skew-x-12"></div>
+          <div className="relative p-6 text-white">
+            <div className="text-4xl font-bold">{finalPoint?.launchDirection.toFixed(1) || 0}</div>
+            <div className="text-lg">Launch Direction (°)</div>
+          </div>
+        </div>
       </div>
     </div>
   );
