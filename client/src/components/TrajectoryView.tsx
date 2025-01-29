@@ -11,14 +11,9 @@ import {
   Scene as BabylonScene,
   Engine as BabylonEngine,
   BackgroundMaterial,
-  GradientMaterial,
   HemisphericLight,
-  DirectionalLight,
-  ShadowGenerator,
-  ArcRotateCamera,
-  Sphere,
-  Ground,
-  Box
+  Space,
+  ArcRotateCamera as BabylonArcRotateCamera
 } from '@babylonjs/core';
 import { TrajectoryPoint } from '@/types';
 import { Button } from '@/components/ui/button';
@@ -35,8 +30,10 @@ const START_OFFSET = new Vector3(0, TEE_HEIGHT, 0);
 const MAT_SIZE = { width: 1.5, length: 1.5 }; // Standard golf mat size in meters
 
 // Scene constants
-const RANGE_SIZE = 100; // 100 meters range length
+const RANGE_SIZE = 125; // Increased by 25% from 100 meters
 const GRASS_TILE_SIZE = 2; // 2 meters per grass tile
+const WALL_HEIGHT = 15; // 15 meters high walls
+const WALL_THICKNESS = 1; // 1 meter thick walls
 
 function LoadingFallback() {
   return (
@@ -68,8 +65,6 @@ const DrivingRange: FC<{ size: number }> = ({ size }) => {
           name="grassMaterial"
           diffuseColor={new Color3(0.23, 0.37, 0.04)}
           specularColor={new Color3(0.1, 0.1, 0.1)}
-          roughness={1}
-          metallic={0}
         />
       </ground>
 
@@ -85,6 +80,62 @@ const DrivingRange: FC<{ size: number }> = ({ size }) => {
           name="matMaterial"
           diffuseColor={new Color3(0.2, 0.2, 0.2)}
           specularColor={new Color3(0.1, 0.1, 0.1)}
+        />
+      </box>
+
+      {/* Back wall */}
+      <box
+        name="backWall"
+        width={size}
+        height={WALL_HEIGHT}
+        depth={WALL_THICKNESS}
+        position={new Vector3(0, WALL_HEIGHT/2, size/2)}
+      >
+        <standardMaterial
+          name="wallMaterial"
+          diffuseColor={new Color3(0.8, 0.8, 0.8)}
+        />
+      </box>
+
+      {/* Front wall */}
+      <box
+        name="frontWall"
+        width={size}
+        height={WALL_HEIGHT}
+        depth={WALL_THICKNESS}
+        position={new Vector3(0, WALL_HEIGHT/2, -size/2)}
+      >
+        <standardMaterial
+          name="wallMaterial"
+          diffuseColor={new Color3(0.8, 0.8, 0.8)}
+        />
+      </box>
+
+      {/* Left wall */}
+      <box
+        name="leftWall"
+        width={WALL_THICKNESS}
+        height={WALL_HEIGHT}
+        depth={size}
+        position={new Vector3(-size/2, WALL_HEIGHT/2, 0)}
+      >
+        <standardMaterial
+          name="wallMaterial"
+          diffuseColor={new Color3(0.8, 0.8, 0.8)}
+        />
+      </box>
+
+      {/* Right wall */}
+      <box
+        name="rightWall"
+        width={WALL_THICKNESS}
+        height={WALL_HEIGHT}
+        depth={size}
+        position={new Vector3(size/2, WALL_HEIGHT/2, 0)}
+      >
+        <standardMaterial
+          name="wallMaterial"
+          diffuseColor={new Color3(0.8, 0.8, 0.8)}
         />
       </box>
 
@@ -208,6 +259,7 @@ export const TrajectoryView: FC<TrajectoryViewProps> = ({ data, autoPlay = false
   const containerRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<BabylonScene>();
   const engineRef = useRef<BabylonEngine>();
+  const cameraRef = useRef<BabylonArcRotateCamera>();
 
   const points = data.map(point => new Vector3(point.x, point.y, point.z));
   const maxDistance = data.length > 0 ? 
@@ -252,9 +304,26 @@ export const TrajectoryView: FC<TrajectoryViewProps> = ({ data, autoPlay = false
   };
 
   const handleSceneMount = (sceneEventArgs: SceneEventArgs) => {
-    const { scene, engine } = sceneEventArgs;
+    const { scene } = sceneEventArgs;
     sceneRef.current = scene;
-    engineRef.current = engine;
+
+    // Get reference to the camera
+    const camera = scene.cameras[0] as BabylonArcRotateCamera;
+    if (camera) {
+      cameraRef.current = camera;
+
+      // Set camera constraints for behind-ball view
+      if (viewMode === 'default') {
+        camera.lowerBetaLimit = Math.PI * 0.3; // Minimum vertical angle
+        camera.upperBetaLimit = Math.PI * 0.5; // Maximum vertical angle
+        camera.lowerRadiusLimit = RANGE_SIZE * 0.1; // Minimum zoom
+        camera.upperRadiusLimit = RANGE_SIZE * 0.3; // Maximum zoom
+        camera.panningSensibility = 0; // Disable panning
+        camera.pinchPrecision = 50; // Reduce pinch-to-zoom sensitivity
+        camera.wheelPrecision = 50; // Reduce wheel zoom sensitivity
+        camera.useBouncingBehavior = true; // Enable bouncing at limits
+      }
+    }
   };
 
   useEffect(() => {
@@ -274,10 +343,28 @@ export const TrajectoryView: FC<TrajectoryViewProps> = ({ data, autoPlay = false
   }
 
   const cameraPositions = {
-    default: { alpha: Math.PI, beta: Math.PI * 0.4 },
-    side: { alpha: Math.PI * 1.5, beta: Math.PI * 0.4 },
-    top: { alpha: Math.PI, beta: 0.1 }
+    default: { alpha: Math.PI, beta: Math.PI * 0.4, radius: RANGE_SIZE * 0.2 },
+    side: { alpha: Math.PI * 1.5, beta: Math.PI * 0.4, radius: RANGE_SIZE * 0.4 },
+    top: { alpha: Math.PI, beta: 0.1, radius: RANGE_SIZE * 0.8 }
   };
+
+  useEffect(() => {
+    if (cameraRef.current && viewMode === 'default') {
+      // Update camera constraints when switching to behind-ball view
+      cameraRef.current.lowerBetaLimit = Math.PI * 0.3;
+      cameraRef.current.upperBetaLimit = Math.PI * 0.5;
+      cameraRef.current.lowerRadiusLimit = RANGE_SIZE * 0.1;
+      cameraRef.current.upperRadiusLimit = RANGE_SIZE * 0.3;
+      cameraRef.current.panningSensibility = 0;
+    } else if (cameraRef.current) {
+      // Reset constraints for other views
+      cameraRef.current.lowerBetaLimit = 0.1;
+      cameraRef.current.upperBetaLimit = Math.PI - 0.1;
+      cameraRef.current.lowerRadiusLimit = RANGE_SIZE * 0.2;
+      cameraRef.current.upperRadiusLimit = RANGE_SIZE * 1.5;
+      cameraRef.current.panningSensibility = 1000;
+    }
+  }, [viewMode]);
 
   return (
     <div 
@@ -307,15 +394,10 @@ export const TrajectoryView: FC<TrajectoryViewProps> = ({ data, autoPlay = false
             target={Vector3.Zero()}
             alpha={cameraPositions[viewMode].alpha}
             beta={cameraPositions[viewMode].beta}
-            radius={gridSize * 0.8}
-            lowerRadiusLimit={gridSize * 0.3}
-            upperRadiusLimit={gridSize * 2}
-            wheelDeltaPercentage={0.01}
-            minZ={0.1}
-            maxZ={gridSize * 4}
+            radius={cameraPositions[viewMode].radius}
           />
 
-          <DrivingRange size={gridSize} />
+          <DrivingRange size={RANGE_SIZE} />
 
           {points.length > 0 && sceneRef.current && (
             <TrajectoryPath 
@@ -327,6 +409,7 @@ export const TrajectoryView: FC<TrajectoryViewProps> = ({ data, autoPlay = false
         </Scene>
       </Engine>
 
+      {/* Controls */}
       <div className="absolute bottom-4 right-4 flex gap-2">
         <Button
           variant="outline"
