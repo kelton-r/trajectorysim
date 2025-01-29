@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -6,7 +6,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@
 import { Button } from '@/components/ui/button';
 import { ShotParameters as ShotParamsType } from '@/types';
 import { validateShotParameters } from '@/lib/calculations';
-import { Gauge, RotateCw, ArrowRight } from 'lucide-react';
+import { Gauge, RotateCw, ArrowRight, Save, BookOpen } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface ShotParametersProps {
@@ -14,6 +14,7 @@ interface ShotParametersProps {
 }
 
 const BALL_TYPES = ['Pro V1', 'Pro V1x', 'TP5', 'Chrome Soft'];
+const STORAGE_KEY = 'saved_shot_params';
 
 export function ShotParameters({ onCalculate }: ShotParametersProps) {
   const { toast } = useToast();
@@ -22,6 +23,15 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
     spinDirection: 'right',
     launchDirectionSide: 'right',
   });
+  const [savedParams, setSavedParams] = useState<Record<string, ShotParamsType>>({});
+
+  // Load saved parameters on mount
+  useEffect(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      setSavedParams(JSON.parse(saved));
+    }
+  }, []);
 
   const handleNumericInput = (key: keyof ShotParamsType) => (
     e: React.ChangeEvent<HTMLInputElement>
@@ -38,6 +48,48 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
     value: string
   ) => {
     setParams(prev => ({ ...prev, [key]: value }));
+  };
+
+  const handleSave = () => {
+    const requiredFields: (keyof ShotParamsType)[] = [
+      'ballSpeed', 'launchAngle', 'launchDirection', 'spin', 'spinAxis'
+    ];
+
+    const missingFields = requiredFields.filter(field => params[field] === undefined);
+
+    if (missingFields.length > 0) {
+      toast({
+        title: "Missing Required Fields",
+        description: `Please fill in all required fields: ${missingFields.join(', ')}`,
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const timestamp = new Date().toISOString();
+    const newSavedParams = {
+      ...savedParams,
+      [timestamp]: params as ShotParamsType
+    };
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(newSavedParams));
+    setSavedParams(newSavedParams);
+
+    toast({
+      title: "Parameters Saved",
+      description: "Shot parameters have been saved for later use"
+    });
+  };
+
+  const handleLoad = (timestamp: string) => {
+    const loadedParams = savedParams[timestamp];
+    if (loadedParams) {
+      setParams(loadedParams);
+      toast({
+        title: "Parameters Loaded",
+        description: "Shot parameters have been loaded successfully"
+      });
+    }
   };
 
   const handleCalculate = () => {
@@ -76,8 +128,33 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
 
   return (
     <Card className="bg-white">
-      <CardHeader>
+      <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="text-lg font-semibold">Shot Parameters</CardTitle>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleSave}
+            className="flex items-center gap-1"
+          >
+            <Save className="h-4 w-4" />
+            Save
+          </Button>
+          {Object.keys(savedParams).length > 0 && (
+            <Select onValueChange={handleLoad}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Load saved..." />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.entries(savedParams).map(([timestamp, _]) => (
+                  <SelectItem key={timestamp} value={timestamp}>
+                    {new Date(timestamp).toLocaleTimeString()}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        </div>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-2 gap-4">
