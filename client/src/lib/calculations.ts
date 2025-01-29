@@ -1,12 +1,11 @@
-import { WeatherConditions, ShotParameters, TrajectoryPoint } from '@/types';
+import { ShotParameters, TrajectoryPoint } from '@/types';
 
 const GRAVITY = 9.81; // m/s^2
-const AIR_DENSITY = 1.225; // kg/m^3
+const AIR_DENSITY = 1.204; // kg/m^3 at 21.1°C (70°F)
 const BALL_MASS = 0.0459; // kg (standard golf ball)
 
 export function calculateTrajectory(
-  params: ShotParameters,
-  weather: WeatherConditions
+  params: ShotParameters
 ): TrajectoryPoint[] {
   const points: TrajectoryPoint[] = [];
   const dt = 0.01; // Time step in seconds
@@ -28,7 +27,7 @@ export function calculateTrajectory(
     spin: params.spin,
     altitude: y,
     distance: 0,
-    drag: calculateDrag(params.launchVelocity, weather.airPressure),
+    drag: calculateDrag(params.launchVelocity),
     lift: calculateLift(params.spin, params.launchVelocity),
     side: z,
     total: 0,
@@ -37,7 +36,7 @@ export function calculateTrajectory(
 
   while (y >= 0 && t < 10) { // Max 10 seconds flight time
     const v = Math.sqrt(vx * vx + vy * vy + vz * vz);
-    const drag = calculateDrag(v, weather.airPressure);
+    const drag = calculateDrag(v);
     const lift = calculateLift(params.spin, v);
 
     // Update velocities
@@ -72,7 +71,7 @@ export function calculateTrajectory(
   return points;
 }
 
-function calculateDrag(velocity: number, pressure: number): number {
+function calculateDrag(velocity: number): number {
   const cd = 0.47; // Drag coefficient for a golf ball
   return 0.5 * AIR_DENSITY * (velocity * velocity) * cd * Math.PI * 0.0214; // 0.0214 m^2 is approx. cross-section
 }
