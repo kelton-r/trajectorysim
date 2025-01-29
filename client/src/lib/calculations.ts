@@ -1,4 +1,4 @@
-import { ShotParameters, TrajectoryPoint, WeatherConditions } from '@/types';
+import { ShotParameters, TrajectoryPoint } from '@/types';
 
 // Constants for golf ball physics
 const GRAVITY = 9.81; // m/s^2
@@ -12,28 +12,42 @@ const CD_ZERO = 0.171; // Base drag coefficient for a golf ball
 const CL_ZERO = 0.171; // Base lift coefficient
 const SPIN_FACTOR = 0.0001; // Factor for spin effect on lift
 
-function calculateDragCoefficient(velocity: number, spinRate: number): number {
+// Ball type specific coefficients
+const BALL_TYPE_COEFFICIENTS = {
+  'RPT Ball': { drag: 1.0, lift: 1.0 },
+  'Range Ball': { drag: 1.2, lift: 0.8 }, // Higher drag, lower lift
+  'Premium Ball': { drag: 1.1, lift: 0.9 }, // Slightly higher drag, slightly lower lift
+};
+
+function calculateDragCoefficient(velocity: number, spinRate: number, ballType: string): number {
   // Reynolds number-based drag coefficient
   const reynolds = (velocity * 2 * BALL_RADIUS * AIR_DENSITY) / (1.81e-5);
-  let cd = CD_ZERO;
+  let cd = CD_ZERO * BALL_TYPE_COEFFICIENTS[ballType].drag;
 
-  // Adjust drag based on Reynolds number and spin
+  // Adjust drag based on Reynolds number
   if (reynolds < 7.5e4) {
     cd += 0.1; // Increased drag in laminar flow
   } else if (reynolds > 2e5) {
     cd -= 0.05; // Decreased drag in turbulent flow
   }
 
-  // Spin effect on drag
-  cd += (spinRate / 10000) * 0.05;
+  // Only apply spin effect for RPT balls
+  if (ballType === 'RPT Ball') {
+    cd += (spinRate / 10000) * 0.05;
+  }
 
   return cd;
 }
 
-function calculateLiftCoefficient(spinRate: number, velocity: number): number {
-  // Calculate lift coefficient based on spin rate and velocity
+function calculateLiftCoefficient(spinRate: number, velocity: number, ballType: string): number {
+  if (ballType !== 'RPT Ball') {
+    // Non-RPT balls have reduced lift and no spin effects
+    return CL_ZERO * BALL_TYPE_COEFFICIENTS[ballType].lift;
+  }
+
+  // Calculate lift coefficient based on spin rate and velocity for RPT balls
   const spinFactor = (2 * Math.PI * BALL_RADIUS * spinRate) / (60 * velocity);
-  return CL_ZERO + SPIN_FACTOR * spinFactor;
+  return (CL_ZERO + SPIN_FACTOR * spinFactor) * BALL_TYPE_COEFFICIENTS[ballType].lift;
 }
 
 export function calculateTrajectory(params: ShotParameters): TrajectoryPoint[] {
@@ -42,14 +56,14 @@ export function calculateTrajectory(params: ShotParameters): TrajectoryPoint[] {
 
   // Convert inputs to SI units
   const ballSpeedMS = params.ballSpeed * 0.44704; // mph to m/s
-  const spinRateRad = params.spin * (2 * Math.PI) / 60; // rpm to rad/s
+  const spinRateRad = params.ballType === 'RPT Ball' ? params.spin * (2 * Math.PI) / 60 : 0; // rpm to rad/s
 
   // Convert angles to radians
   const launchAngleRad = params.launchAngle * Math.PI / 180;
-  const launchDirectionRad = params.launchDirection * Math.PI / 180 * 
+  const launchDirectionRad = params.launchDirection * Math.PI / 180 *
     (params.launchDirectionSide === 'right' ? 1 : -1);
-  const spinAxisRad = params.spinAxis * Math.PI / 180 * 
-    (params.spinDirection === 'right' ? 1 : -1);
+  const spinAxisRad = params.ballType === 'RPT Ball' ?
+    params.spinAxis * Math.PI / 180 * (params.spinDirection === 'right' ? 1 : -1) : 0;
 
   // Initial position and velocity components
   let x = 0, y = 0, z = 0;
@@ -63,8 +77,8 @@ export function calculateTrajectory(params: ShotParameters): TrajectoryPoint[] {
     const velocity = Math.sqrt(vx * vx + vy * vy + vz * vz);
 
     // Calculate aerodynamic coefficients
-    const cd = calculateDragCoefficient(velocity, params.spin);
-    const cl = calculateLiftCoefficient(params.spin, velocity);
+    const cd = calculateDragCoefficient(velocity, params.spin || 0, params.ballType);
+    const cl = calculateLiftCoefficient(params.spin || 0, velocity, params.ballType);
 
     // Calculate forces
     const dragMagnitude = 0.5 * AIR_DENSITY * velocity * velocity * BALL_AREA * cd;
@@ -100,7 +114,7 @@ export function calculateTrajectory(params: ShotParameters): TrajectoryPoint[] {
       time: t,
       x, y, z,
       velocity,
-      spin: params.spin,
+      spin: params.spin || 0,
       altitude: y,
       distance: Math.sqrt(x * x + z * z),
       drag: dragMagnitude,
@@ -119,20 +133,30 @@ export function calculateTrajectory(params: ShotParameters): TrajectoryPoint[] {
 }
 
 export function validateShotParameters(params: ShotParameters): boolean {
-  return (
+  const baseValidation = (
     params.ballSpeed > 0 &&
     params.ballSpeed <= 200 &&
     params.launchAngle >= 0 &&
     params.launchAngle <= 90 &&
     params.launchDirection >= -90 &&
     params.launchDirection <= 90 &&
-    params.spin >= 0 &&
-    params.spin <= 10000 &&
-    params.spinAxis >= -90 &&
-    params.spinAxis <= 90 &&
-    (params.spinDirection === 'right' || params.spinDirection === 'left') &&
     (params.launchDirectionSide === 'right' || params.launchDirectionSide === 'left')
   );
+
+  // Only validate spin parameters for RPT Ball
+  if (params.ballType === 'RPT Ball') {
+    return baseValidation && (
+      params.spin !== undefined &&
+      params.spin >= 0 &&
+      params.spin <= 10000 &&
+      params.spinAxis !== undefined &&
+      params.spinAxis >= -90 &&
+      params.spinAxis <= 90 &&
+      (params.spinDirection === 'right' || params.spinDirection === 'left')
+    );
+  }
+
+  return baseValidation;
 }
 
 export function validateWeatherConditions(weather: WeatherConditions): boolean {

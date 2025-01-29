@@ -6,14 +6,14 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@
 import { Button } from '@/components/ui/button';
 import { ShotParameters as ShotParamsType } from '@/types';
 import { validateShotParameters } from '@/lib/calculations';
-import { Gauge, RotateCw, ArrowRight, Save, BookOpen } from 'lucide-react';
+import { Gauge, RotateCw, ArrowRight, Save } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface ShotParametersProps {
   onCalculate: (params: ShotParamsType) => void;
 }
 
-const BALL_TYPES = ['Pro V1', 'Pro V1x', 'TP5', 'Chrome Soft'];
+const BALL_TYPES = ['RPT Ball', 'Range Ball', 'Premium Ball'];
 const STORAGE_KEY = 'saved_shot_params';
 
 export function ShotParameters({ onCalculate }: ShotParametersProps) {
@@ -47,13 +47,30 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
   const handleDirectionChange = (key: 'launchDirectionSide' | 'spinDirection' | 'ballType') => (
     value: string
   ) => {
-    setParams(prev => ({ ...prev, [key]: value }));
+    setParams(prev => {
+      // If changing from RPT Ball to another type, reset spin-related fields
+      if (key === 'ballType' && prev.ballType === 'RPT Ball' && value !== 'RPT Ball') {
+        return {
+          ...prev,
+          [key]: value,
+          spin: undefined,
+          spinAxis: undefined,
+          spinDirection: 'right'
+        };
+      }
+      return { ...prev, [key]: value };
+    });
   };
 
   const handleSave = () => {
     const requiredFields: (keyof ShotParamsType)[] = [
-      'ballSpeed', 'launchAngle', 'launchDirection', 'spin', 'spinAxis'
+      'ballSpeed', 'launchAngle', 'launchDirection'
     ];
+
+    // Only validate spin fields for RPT Ball
+    if (params.ballType === 'RPT Ball') {
+      requiredFields.push('spin', 'spinAxis');
+    }
 
     const missingFields = requiredFields.filter(field => params[field] === undefined);
 
@@ -94,8 +111,13 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
 
   const handleCalculate = () => {
     const requiredFields: (keyof ShotParamsType)[] = [
-      'ballSpeed', 'launchAngle', 'launchDirection', 'spin', 'spinAxis'
+      'ballSpeed', 'launchAngle', 'launchDirection'
     ];
+
+    // Only validate spin fields for RPT Ball
+    if (params.ballType === 'RPT Ball') {
+      requiredFields.push('spin', 'spinAxis');
+    }
 
     const missingFields = requiredFields.filter(field => params[field] === undefined);
 
@@ -125,6 +147,8 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
       description: "Your shot trajectory is being calculated"
     });
   };
+
+  const isSpinDisabled = params.ballType !== 'RPT Ball';
 
   return (
     <Card className="bg-white">
@@ -178,12 +202,12 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
                 value={params.launchDirectionSide}
                 onValueChange={handleDirectionChange('launchDirectionSide')}
               >
-                <SelectTrigger className="w-[200px] text-sm px-1">
+                <SelectTrigger className="w-[200px]">
                   <SelectValue placeholder="Direction" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="right" className="text-sm py-1 px-1">Right (+)</SelectItem>
-                  <SelectItem value="left" className="text-sm py-1 px-1">Left (-)</SelectItem>
+                  <SelectItem value="right">Right (+)</SelectItem>
+                  <SelectItem value="left">Left (-)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -220,6 +244,7 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
               max={10000}
               step={100}
               className="w-[100px]"
+              disabled={isSpinDisabled}
             />
           </div>
 
@@ -238,17 +263,19 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
                 max={90}
                 step={1}
                 className="w-[60px]"
+                disabled={isSpinDisabled}
               />
               <Select
                 value={params.spinDirection}
                 onValueChange={handleDirectionChange('spinDirection')}
+                disabled={isSpinDisabled}
               >
-                <SelectTrigger className="w-[200px] text-sm px-1">
+                <SelectTrigger className="w-[200px]">
                   <SelectValue placeholder="Direction" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="right" className="text-sm py-1 px-1">Right (+)</SelectItem>
-                  <SelectItem value="left" className="text-sm py-1 px-1">Left (-)</SelectItem>
+                  <SelectItem value="right">Right (+)</SelectItem>
+                  <SelectItem value="left">Left (-)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
