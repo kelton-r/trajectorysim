@@ -185,7 +185,7 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
           )}
         </div>
         <div className="space-y-3">
-          <Label htmlFor="ballType" className="text-sm font-medium text-white">Ball Type</Label>
+          <Label htmlFor="ballType" className="text-lg font-condensed uppercase text-white">BALL TYPE</Label>
           <Select
             value={params.ballType}
             onValueChange={handleDirectionChange('ballType')}
@@ -204,9 +204,9 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
         </div>
 
         <div className="space-y-3">
-          <Label htmlFor="ballSpeed" className="flex items-center gap-2 text-sm font-medium text-white">
+          <Label htmlFor="ballSpeed" className="flex items-center gap-2 text-lg font-condensed uppercase text-white">
             <Gauge className="h-4 w-4" />
-            Ball Speed (mph)
+            BALL SPEED (MPH)
           </Label>
           <Input
             id="ballSpeed"
@@ -221,9 +221,9 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
         </div>
 
         <div className="space-y-3">
-          <Label htmlFor="launchAngle" className="flex items-center gap-2 text-sm font-medium text-white">
+          <Label htmlFor="launchAngle" className="flex items-center gap-2 text-lg font-condensed uppercase text-white">
             <ArrowRight className="h-4 w-4 rotate-90" />
-            Launch Angle (°)
+            LAUNCH ANGLE (°)
           </Label>
           <Input
             id="launchAngle"
@@ -238,9 +238,9 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
         </div>
 
         <div className="space-y-3">
-          <Label htmlFor="launchDirection" className="flex items-center gap-2 text-sm font-medium text-white">
+          <Label htmlFor="launchDirection" className="flex items-center gap-2 text-lg font-condensed uppercase text-white">
             <ArrowRight className="h-4 w-4" />
-            Launch Direction (°)
+            LAUNCH DIRECTION (°)
           </Label>
           <div className="flex gap-2">
             <Input
@@ -269,9 +269,9 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
         </div>
 
         <div className="space-y-3">
-          <Label htmlFor="spin" className="flex items-center gap-2 text-sm font-medium text-white">
+          <Label htmlFor="spin" className="flex items-center gap-2 text-lg font-condensed uppercase text-white">
             <RotateCw className="h-4 w-4" />
-            Spin Rate (rpm)
+            SPIN RATE (RPM)
           </Label>
           <Input
             id="spin"
@@ -287,9 +287,9 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
         </div>
 
         <div className="space-y-3">
-          <Label htmlFor="spinAxis" className="flex items-center gap-2 text-sm font-medium text-white">
+          <Label htmlFor="spinAxis" className="flex items-center gap-2 text-lg font-condensed uppercase text-white">
             <RotateCw className="h-4 w-4 rotate-90" />
-            Spin Axis (°)
+            SPIN AXIS (°)
           </Label>
           <div className="flex gap-2">
             <Input
