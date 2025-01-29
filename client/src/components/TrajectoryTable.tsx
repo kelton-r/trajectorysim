@@ -36,15 +36,15 @@ export function TrajectoryTable({ data, onExport }: TrajectoryTableProps) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Total Distance (m)</TableHead>
-              <TableHead>Max Height (m)</TableHead>
-              <TableHead>Final Side (m)</TableHead>
-              <TableHead>Final Velocity (m/s)</TableHead>
+              <TableHead>Carry (yd)</TableHead>
+              <TableHead>Total Carry (yd)</TableHead>
+              <TableHead>Ball Speed (mph)</TableHead>
               <TableHead>Spin Rate (rpm)</TableHead>
-              <TableHead>Peak Drag (N)</TableHead>
-              <TableHead>Peak Lift (N)</TableHead>
-              <TableHead>Total Path (m)</TableHead>
-              <TableHead>Carry Distance (m)</TableHead>
+              <TableHead>Spin Axis (°)</TableHead>
+              <TableHead>Side Carry (yd)</TableHead>
+              <TableHead>Launch Angle (°)</TableHead>
+              <TableHead>Launch Direction (°)</TableHead>
+              <TableHead>Apex (ft)</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -56,15 +56,15 @@ export function TrajectoryTable({ data, onExport }: TrajectoryTableProps) {
               </TableRow>
             ) : (
               <TableRow>
-                <TableCell>{finalPoint.distance.toFixed(2)}</TableCell>
-                <TableCell>{Math.max(...data.map(p => p.altitude)).toFixed(2)}</TableCell>
-                <TableCell>{finalPoint.side.toFixed(2)}</TableCell>
-                <TableCell>{finalPoint.velocity.toFixed(2)}</TableCell>
+                <TableCell>{finalPoint.carry.toFixed(1)}</TableCell>
+                <TableCell>{finalPoint.total.toFixed(1)}</TableCell>
+                <TableCell>{finalPoint.velocity.toFixed(1)}</TableCell>
                 <TableCell>{finalPoint.spin}</TableCell>
-                <TableCell>{Math.max(...data.map(p => p.drag)).toFixed(2)}</TableCell>
-                <TableCell>{Math.max(...data.map(p => p.lift)).toFixed(2)}</TableCell>
-                <TableCell>{finalPoint.total.toFixed(2)}</TableCell>
-                <TableCell>{finalPoint.carry.toFixed(2)}</TableCell>
+                <TableCell>{finalPoint.spinAxis || 'N/A'}</TableCell>
+                <TableCell>{finalPoint.side.toFixed(1)}</TableCell>
+                <TableCell>{finalPoint.launchAngle?.toFixed(1) || 'N/A'}</TableCell>
+                <TableCell>{finalPoint.launchDirection?.toFixed(1) || 'N/A'}</TableCell>
+                <TableCell>{Math.max(...data.map(p => p.altitude)).toFixed(1)}</TableCell>
               </TableRow>
             )}
           </TableBody>
