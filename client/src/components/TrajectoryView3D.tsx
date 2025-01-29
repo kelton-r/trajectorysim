@@ -41,7 +41,7 @@ function Ground({ size }: { size: number }) {
 
 export function TrajectoryView3D({ data, autoPlay = false }: TrajectoryView3DProps) {
   const [progress, setProgress] = useState(0);
-  const [viewMode, setViewMode] = useState<'side' | 'top'>('side');
+  const [viewMode, setViewMode] = useState<'default' | 'side'>('default');
 
   const points = useMemo(() => {
     return data.map(point => [point.x, point.y, point.z]);
@@ -118,8 +118,8 @@ export function TrajectoryView3D({ data, autoPlay = false }: TrajectoryView3DPro
       <Canvas shadows>
         <PerspectiveCamera
           makeDefault
-          position={viewMode === 'side' ? cameraSettings.side.position : cameraSettings.top.position}
-          rotation={viewMode === 'side' ? cameraSettings.side.rotation : cameraSettings.top.rotation}
+          position={cameraSettings[viewMode].position}
+          rotation={cameraSettings[viewMode].rotation}
           fov={60}
           near={0.1}
           far={1000}
@@ -135,14 +135,14 @@ export function TrajectoryView3D({ data, autoPlay = false }: TrajectoryView3DPro
       <Button
         variant="outline"
         size="icon"
-        onClick={() => setViewMode(prev => prev === 'side' ? 'top' : 'side')}
+        onClick={() => setViewMode(prev => prev === 'default' ? 'side' : 'default')}
         className="absolute bottom-4 right-4 bg-white hover:bg-gray-100"
       >
         <Eye className="h-4 w-4" />
       </Button>
 
       <div className="absolute top-4 right-4 bg-black/80 text-white px-3 py-1 rounded-full text-sm">
-        {viewMode === 'side' ? 'Side View' : 'Top View'}
+        {viewMode === 'default' ? 'Behind Ball View' : 'Side View'}
       </div>
     </div>
   );
