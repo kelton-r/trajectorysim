@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
@@ -50,7 +50,7 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
   };
 
   return (
-    <Card className="bg-white mt-4">
+    <Card className="bg-white">
       <CardHeader>
         <CardTitle className="text-lg font-semibold">Shot Parameters</CardTitle>
       </CardHeader>
@@ -145,15 +145,16 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
             </Select>
           </div>
         </div>
-
+      </CardContent>
+      <CardFooter>
         <Button 
-          className="w-full mt-6 bg-[#D92429] hover:bg-[#B91C21] text-white font-bold"
+          className="w-full bg-[#D92429] hover:bg-[#B91C21] text-white font-bold"
           onClick={handleCalculate}
           size="lg"
         >
           CALCULATE AND DISPLAY SHOT
         </Button>
-      </CardContent>
+      </CardFooter>
     </Card>
   );
 }

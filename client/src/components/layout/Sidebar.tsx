@@ -9,9 +9,11 @@ interface SidebarProps {
 
 export function Sidebar({ onWeatherChange, onShotCalculate }: SidebarProps) {
   return (
-    <aside className="w-[380px] border-r bg-[#F5F5F5] p-4 flex flex-col gap-4">
-      <WeatherConditions onWeatherChange={onWeatherChange} />
-      <ShotParameters onCalculate={onShotCalculate} />
+    <aside className="w-[380px] border-r bg-[#F5F5F5] h-full overflow-y-auto">
+      <div className="p-4 space-y-4">
+        <WeatherConditions onWeatherChange={onWeatherChange} />
+        <ShotParameters onCalculate={onShotCalculate} />
+      </div>
     </aside>
   );
 }
