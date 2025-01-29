@@ -27,6 +27,7 @@ export interface TrajectoryPoint {
   launchAngle: number;
   launchDirection: number;
   spinAxis: number;
+  ballSpeed: number;  // Original ball speed in mph
 }
 
 export type Unit = 'imperial' | 'metric';

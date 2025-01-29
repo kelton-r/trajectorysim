@@ -179,7 +179,8 @@ export function calculateTrajectory(params: ShotParameters): TrajectoryPoint[] {
     carry: lastPoint.x,
     launchAngle: params.launchAngle,
     launchDirection: params.launchDirection * (params.launchDirectionSide === 'right' ? 1 : -1),
-    spinAxis: params.spinAxis * (params.spinDirection === 'right' ? 1 : -1)
+    spinAxis: params.spinAxis * (params.spinDirection === 'right' ? 1 : -1),
+    ballSpeed: params.ballSpeed  // Store the original ball speed in mph
   };
 
   return [finalPoint];
