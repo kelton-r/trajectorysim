@@ -3,14 +3,29 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { TrajectoryView3D } from '../TrajectoryView3D';
 import { TrajectoryPoint } from '@/types';
 
-// Mock Three.js components since we're not doing actual WebGL rendering in tests
+// Mock Three.js components and WebGL context
 jest.mock('@react-three/fiber', () => ({
-  Canvas: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  Canvas: ({ children }: { children: React.ReactNode }) => <div data-testid="three-canvas">{children}</div>,
+  useFrame: jest.fn(),
+  useThree: () => ({
+    gl: {
+      domElement: document.createElement('canvas'),
+      setSize: jest.fn(),
+      render: jest.fn(),
+    },
+    camera: {},
+    scene: {},
+  }),
 }));
 
 jest.mock('@react-three/drei', () => ({
   PerspectiveCamera: () => null,
+  OrbitControls: () => null,
 }));
+
+// Mock requestAnimationFrame
+global.requestAnimationFrame = (cb) => setTimeout(cb, 0);
+global.cancelAnimationFrame = jest.fn();
 
 describe('TrajectoryView3D', () => {
   const sampleData: TrajectoryPoint[] = [{
