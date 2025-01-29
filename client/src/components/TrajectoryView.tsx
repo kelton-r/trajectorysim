@@ -33,12 +33,12 @@ const WALL_THICKNESS = 1; // 1 meter thick walls
 const MAT_OFFSET_Z = -(RANGE_SIZE * 0.45); // 45% from the back wall
 const START_OFFSET = new Vector3(0, TEE_HEIGHT, MAT_OFFSET_Z);
 
-// Simplified fixed camera settings
+// Eye-level camera settings
 const CAMERA_SETTINGS = {
   alpha: Math.PI, // Fixed behind-ball view
-  beta: Math.PI * 0.25, // Higher elevation for better view
-  radius: RANGE_SIZE * 0.3, // Increased distance for wider view
-  target: new Vector3(0, 2, MAT_OFFSET_Z + RANGE_SIZE * 0.2) // Adjusted target to see more of trajectory
+  beta: Math.PI * 0.5, // Eye-level angle (90 degrees)
+  radius: RANGE_SIZE * 0.15, // Closer to the action
+  target: new Vector3(0, 2, MAT_OFFSET_Z + 10) // Look at ball height
 };
 
 interface TrajectoryViewProps {
@@ -322,28 +322,7 @@ export const TrajectoryView: FC<TrajectoryViewProps> = ({ data, autoPlay = false
     if (camera) {
       cameraRef.current = camera;
 
-      if (viewMode === 'default') {
-        // Completely lock the camera
-        camera.inputs.clear();
-        camera.lowerBetaLimit = CAMERA_SETTINGS.default.beta;
-        camera.upperBetaLimit = CAMERA_SETTINGS.default.beta;
-        camera.lowerAlphaLimit = CAMERA_SETTINGS.default.alpha;
-        camera.upperAlphaLimit = CAMERA_SETTINGS.default.alpha;
-        camera.radius = CAMERA_SETTINGS.default.radius;
-        camera.setTarget(CAMERA_SETTINGS.default.target);
-
-        // Additional restrictions
-        camera.allowUpsideDown = false;
-        camera.useAutoRotationBehavior = false;
-        camera.useBouncingBehavior = false;
-        camera.pinchPrecision = 0;
-        camera.wheelPrecision = 0;
-        camera.panningSensibility = 0;
-
-        // Ensure camera is perfectly aligned
-        camera.rotation.y = 0;
-        camera.rotation.z = 0;
-      }
+      
     }
   };
 
@@ -371,10 +350,10 @@ export const TrajectoryView: FC<TrajectoryViewProps> = ({ data, autoPlay = false
 
     // Fixed behind-ball camera settings
     camera.inputs.clear();
-    camera.alpha = Math.PI; // Camera directly behind ball
-    camera.beta = Math.PI * 0.35; // Camera angle from horizontal
-    camera.radius = RANGE_SIZE * 0.15; // Distance from ball
-    camera.setTarget(new Vector3(0, TEE_HEIGHT + 1, MAT_OFFSET_Z + RANGE_SIZE * 0.1));
+    camera.alpha = CAMERA_SETTINGS.alpha; 
+    camera.beta = CAMERA_SETTINGS.beta; 
+    camera.radius = CAMERA_SETTINGS.radius; 
+    camera.setTarget(CAMERA_SETTINGS.target);
 
     // Lock camera
     camera.lowerBetaLimit = camera.beta;
@@ -451,7 +430,7 @@ export const TrajectoryView: FC<TrajectoryViewProps> = ({ data, autoPlay = false
       </div>
 
       <div className="absolute top-4 right-4 bg-black/80 text-white px-3 py-1 rounded-full text-sm">
-        Behind Ball View
+        Eye Level View
       </div>
     </div>
   );
