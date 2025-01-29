@@ -320,7 +320,7 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
       </CardContent>
       <CardFooter>
         <Button
-          className="w-full bg-[#D92429] hover:bg-[#B91C21] text-white font-bold"
+          className="w-full bg-black hover:bg-gray-800 text-white font-bold"
           onClick={handleCalculate}
           size="lg"
         >

@@ -71,13 +71,13 @@ export function HomePage() {
             <TabsList className="bg-white border-b w-full rounded-none p-0 h-12">
               <TabsTrigger 
                 value="data" 
-                className="flex-1 h-12 rounded-none data-[state=active]:bg-[#D92429] data-[state=active]:text-white"
+                className="flex-1 h-12 rounded-none data-[state=active]:bg-black data-[state=active]:text-white"
               >
                 Data
               </TabsTrigger>
               <TabsTrigger 
                 value="visualization" 
-                className="flex-1 h-12 rounded-none data-[state=active]:bg-[#D92429] data-[state=active]:text-white"
+                className="flex-1 h-12 rounded-none data-[state=active]:bg-black data-[state=active]:text-white"
               >
                 Shot Trajectory Visualization
               </TabsTrigger>
