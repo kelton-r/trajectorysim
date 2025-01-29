@@ -95,18 +95,18 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
                 min={-90}
                 max={90}
                 step={0.1}
-                className="w-[68px]"
+                className="w-[60px]"
               />
               <Select
                 value={params.launchDirectionSide}
                 onValueChange={handleDirectionChange('launchDirectionSide')}
               >
-                <SelectTrigger className="w-[190px] text-sm px-2">
+                <SelectTrigger className="w-[200px] text-sm px-1">
                   <SelectValue placeholder="Direction" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="right" className="text-sm py-1 px-2">Right (+)</SelectItem>
-                  <SelectItem value="left" className="text-sm py-1 px-2">Left (-)</SelectItem>
+                  <SelectItem value="right" className="text-sm py-1 px-1">Right (+)</SelectItem>
+                  <SelectItem value="left" className="text-sm py-1 px-1">Left (-)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
