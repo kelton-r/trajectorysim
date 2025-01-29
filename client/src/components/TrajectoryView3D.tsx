@@ -31,15 +31,6 @@ function TrajectoryPath({ points }: { points: number[][] }) {
   );
 }
 
-function BallMarker({ position }: { position: [number, number, number] }) {
-  return (
-    <mesh position={position}>
-      <sphereGeometry args={[0.5, 32, 32]} />
-      <meshStandardMaterial color="#D92429" />
-    </mesh>
-  );
-}
-
 export function TrajectoryView3D({ data }: TrajectoryView3DProps) {
   const points = useMemo(() => {
     return data.map(point => [point.x, point.y, point.z]);
@@ -76,13 +67,7 @@ export function TrajectoryView3D({ data }: TrajectoryView3DProps) {
         />
 
         {/* Trajectory path */}
-        {points.length > 0 && (
-          <>
-            <TrajectoryPath points={points} />
-            <BallMarker position={[0, 0, 0]} /> {/* Starting position */}
-            <BallMarker position={[points[points.length - 1][0], 0, points[points.length - 1][2]]} /> {/* Landing position */}
-          </>
-        )}
+        {points.length > 0 && <TrajectoryPath points={points} />}
 
         <OrbitControls
           enablePan={true}
