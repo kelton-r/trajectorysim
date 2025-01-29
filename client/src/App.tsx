@@ -3,11 +3,13 @@ import { queryClient } from "./lib/queryClient";
 import { Switch, Route } from "wouter";
 import { Toaster } from "@/components/ui/toaster";
 import { HomePage } from "@/pages/home";
+import { ComparisonPage } from "@/pages/comparison";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={HomePage} />
+      <Route path="/comparison" component={ComparisonPage} />
     </Switch>
   );
 }

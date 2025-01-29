@@ -2,17 +2,27 @@ import '@testing-library/jest-dom';
 import { vi } from 'vitest';
 import React from 'react';
 
-// Mock WebGL context with proper shader precision format support
+// Enhanced WebGL context mock with proper shader precision format support
 const mockWebGLContext = {
   getParameter: vi.fn(() => 'high'),
-  getExtension: vi.fn(() => ({
-    loseContext: vi.fn(),
-    restoreContext: vi.fn()
+  getShaderPrecisionFormat: vi.fn(() => ({
+    precision: 23,
+    rangeMin: 126,
+    rangeMax: 127
   })),
-  createShader: vi.fn(),
-  createProgram: vi.fn(),
-  createBuffer: vi.fn(),
-  createTexture: vi.fn(),
+  getExtension: vi.fn((name) => {
+    if (name === 'WEBGL_lose_context') {
+      return {
+        loseContext: vi.fn(),
+        restoreContext: vi.fn()
+      };
+    }
+    return null;
+  }),
+  createShader: vi.fn(() => ({ /* mock shader object */ })),
+  createProgram: vi.fn(() => ({ /* mock program object */ })),
+  createBuffer: vi.fn(() => ({ /* mock buffer object */ })),
+  createTexture: vi.fn(() => ({ /* mock texture object */ })),
   viewport: vi.fn(),
   bindBuffer: vi.fn(),
   bufferData: vi.fn(),
@@ -20,14 +30,9 @@ const mockWebGLContext = {
   enable: vi.fn(),
   disable: vi.fn(),
   clear: vi.fn(),
-  getShaderPrecisionFormat: vi.fn(() => ({
-    precision: 'high',
-    rangeMin: 1,
-    rangeMax: 1
-  })),
 };
 
-// Mock HTMLCanvasElement methods
+// Mock canvas getContext to return our enhanced WebGL context
 HTMLCanvasElement.prototype.getContext = vi.fn((contextType) => {
   if (contextType === 'webgl2' || contextType === 'webgl') {
     return mockWebGLContext;
@@ -35,7 +40,7 @@ HTMLCanvasElement.prototype.getContext = vi.fn((contextType) => {
   return null;
 });
 
-// Mock Three.js components
+// Enhanced Three.js components mocking
 vi.mock('@react-three/fiber', () => ({
   Canvas: ({ children }: { children: React.ReactNode }) => 
     React.createElement('div', { 'data-testid': 'three-canvas' }, children),
@@ -50,9 +55,10 @@ vi.mock('@react-three/fiber', () => ({
       domElement: document.createElement('canvas'),
       setSize: vi.fn(),
       render: vi.fn(),
-      capabilities: { 
+      capabilities: {
         isWebGL2: true,
-        precision: 'high',
+        precision: 'highp',
+        maxPrecision: 'highp',
       },
       getContext: () => mockWebGLContext,
       dispose: vi.fn(),
@@ -61,33 +67,51 @@ vi.mock('@react-three/fiber', () => ({
         reset: vi.fn(),
       },
     },
-    scene: {},
+    scene: {
+      add: vi.fn(),
+      remove: vi.fn(),
+      children: [],
+    },
   })),
 }));
 
 vi.mock('@react-three/drei', () => ({
   PerspectiveCamera: () => null,
   OrbitControls: () => null,
+  Loader: () => null,
 }));
 
 // Mock requestAnimationFrame and cancelAnimationFrame
-global.requestAnimationFrame = vi.fn((cb) => setTimeout(() => cb(performance.now()), 0));
-global.cancelAnimationFrame = vi.fn();
+window.requestAnimationFrame = vi.fn((cb) => setTimeout(() => cb(performance.now()), 0));
+window.cancelAnimationFrame = vi.fn((id) => clearTimeout(id));
 
 // Mock ResizeObserver
-global.ResizeObserver = vi.fn().mockImplementation(() => ({
+window.ResizeObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
   disconnect: vi.fn(),
 }));
 
-// Set up WebGL context constructors
+// Mock WebGL context constructors with enhanced precision support
+const WebGLMock = vi.fn(() => ({
+  ...mockWebGLContext,
+  canvas: document.createElement('canvas'),
+}));
+
 Object.defineProperty(window, 'WebGLRenderingContext', {
-  value: vi.fn(() => mockWebGLContext),
+  value: WebGLMock,
   writable: true,
 });
 
 Object.defineProperty(window, 'WebGL2RenderingContext', {
-  value: vi.fn(() => mockWebGLContext),
+  value: WebGLMock,
   writable: true,
 });
+
+// Mock console methods to catch WebGL warnings
+const originalConsoleError = console.error;
+console.error = (...args) => {
+  if (!args[0]?.includes?.('WebGL')) {
+    originalConsoleError(...args);
+  }
+};
