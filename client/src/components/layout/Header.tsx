@@ -11,24 +11,24 @@ import { Button } from '@/components/ui/button';
 export function Header() {
   return (
     <div>
-      <header className="h-[90px] bg-black flex items-center px-16">
+      <header className="h-[80px] bg-black flex items-center px-12">
         <img
           src="/rapsodo-logo.png"
           alt="Rapsodo Logo"
-          className="h-14 w-auto"
+          className="h-12 w-auto"
           data-testid="rapsodo-logo"
         />
       </header>
-      <div className="h-[70px] border-b bg-black flex items-center px-16 justify-between">
-        <div className="flex-1 flex items-center gap-6">
+      <div className="h-[60px] border-b bg-black flex items-center px-12 justify-between">
+        <div className="flex-1 flex items-center gap-3">
+          <h2 className="text-2xl font-condensed uppercase text-white tracking-wider">
+            TRAJECTORY SIMULATOR
+          </h2>
           <img
             src="/mlm2pro-logo.png"
             alt="MLM2 Pro"
-            className="h-10 w-auto"
+            className="h-8 w-auto"
           />
-          <h2 className="text-3xl font-condensed uppercase text-white tracking-wider">
-            TRAJECTORY SIMULATOR
-          </h2>
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
