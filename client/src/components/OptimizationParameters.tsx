@@ -1,14 +1,13 @@
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { ShotParameters } from '@/types';
-import { validateShotParameters } from '@/lib/calculations';
-import { Gauge, RotateCw } from 'lucide-react';
+import { Gauge } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { getOptimalParameters } from '@/lib/optimizationData';
 
 interface OptimizationParametersProps {
   onShotCalculate: (params: ShotParameters) => void;
@@ -16,30 +15,34 @@ interface OptimizationParametersProps {
 
 export const OptimizationParameters = ({ onShotCalculate }: OptimizationParametersProps) => {
   const { toast } = useToast();
-  const [params, setParams] = useState<Partial<ShotParameters>>({
-    ballType: 'RPT Ball',
-    spinDirection: 'right',
-    launchDirectionSide: 'right',
-  });
-
-  const handleNumericInput = (key: keyof ShotParameters) => (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const value = e.target.value;
-    setParams(prev => ({ ...prev, [key]: value === '' ? undefined : Number(value) }));
-  };
+  const [clubSpeed, setClubSpeed] = useState<number>();
+  const [optimizedParams, setOptimizedParams] = useState<any>(null);
 
   const handleCalculate = () => {
-    if (!validateShotParameters(params as ShotParameters)) {
+    if (!clubSpeed || clubSpeed < 60 || clubSpeed > 130) {
       toast({
-        title: "Invalid Parameters",
-        description: "Please check the values are within valid ranges",
+        title: "Invalid Club Speed",
+        description: "Please enter a club speed between 60 and 130 mph",
         variant: "destructive"
       });
       return;
     }
 
-    onShotCalculate(params as ShotParameters);
+    const optimal = getOptimalParameters(clubSpeed);
+    setOptimizedParams(optimal);
+
+    const params: ShotParameters = {
+      ballSpeed: optimal.ballSpeed,
+      launchAngle: optimal.launchAngle,
+      launchDirection: 0,
+      launchDirectionSide: 'right',
+      spin: optimal.spinRate,
+      spinAxis: 0,
+      spinDirection: 'right',
+      ballType: 'RPT Ball'
+    };
+
+    onShotCalculate(params);
   };
 
   return (
@@ -56,24 +59,23 @@ export const OptimizationParameters = ({ onShotCalculate }: OptimizationParamete
           <Input
             id="clubSpeed"
             type="number"
-            value={params.clubSpeed ?? ''}
-            onChange={handleNumericInput('clubSpeed')}
+            value={clubSpeed ?? ''}
+            onChange={(e) => setClubSpeed(Number(e.target.value))}
             className="h-9"
+            min={60}
+            max={130}
           />
         </div>
 
-        <div className="space-y-3">
-          <Label htmlFor="attackAngle">Attack Angle (°)</Label>
-          <Input
-            id="attackAngle"
-            type="number"
-            value={params.attackAngle ?? ''}
-            onChange={handleNumericInput('attackAngle')}
-            className="h-9"
-          />
-        </div>
-
-        {/* Add other optimization-specific inputs */}
+        {optimizedParams && (
+          <div className="mt-4 space-y-2 p-4 bg-gray-50 rounded-lg">
+            <p className="text-sm font-medium">Optimal Parameters:</p>
+            <p className="text-sm">Launch Angle: {optimizedParams.launchAngle.toFixed(1)}°</p>
+            <p className="text-sm">Ball Speed: {optimizedParams.ballSpeed.toFixed(1)} mph</p>
+            <p className="text-sm">Spin Rate: {optimizedParams.spinRate.toFixed(0)} rpm</p>
+            <p className="text-sm">Expected Carry: {optimizedParams.expectedCarry.toFixed(0)} yards</p>
+          </div>
+        )}
       </CardContent>
       <CardFooter>
         <Button 
