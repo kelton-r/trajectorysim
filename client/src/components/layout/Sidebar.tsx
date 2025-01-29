@@ -7,7 +7,7 @@ interface SidebarProps {
 
 export function Sidebar({ onShotCalculate }: SidebarProps) {
   return (
-    <aside className="w-[420px] border-r bg-[#F5F5F5] h-full overflow-y-auto">
+    <aside className="w-[440px] border-r bg-[#F5F5F5] h-full overflow-y-auto">
       <div className="p-6">
         <ShotParameters onCalculate={onShotCalculate} />
       </div>
