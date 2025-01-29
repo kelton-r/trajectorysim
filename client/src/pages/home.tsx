@@ -9,10 +9,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export function HomePage() {
   const [trajectoryData, setTrajectoryData] = useState<TrajectoryPoint[]>([]);
+  const [animationKey, setAnimationKey] = useState(0); // Add key to force animation restart
 
   const handleShotCalculate = (params: ShotParameters) => {
     const data = calculateTrajectory(params);
     setTrajectoryData(data);
+    setAnimationKey(prev => prev + 1); // Increment key to trigger animation
   };
 
   const handleExport = () => {
@@ -67,7 +69,7 @@ export function HomePage() {
       <div className="flex flex-1 overflow-hidden">
         <Sidebar onShotCalculate={handleShotCalculate} />
         <main className="flex-1 p-6 bg-[#F5F5F5] overflow-auto">
-          <Tabs defaultValue="data" className="space-y-6">
+          <Tabs defaultValue="visualization" className="space-y-6">
             <TabsList className="bg-white border-b w-full rounded-none p-0 h-12">
               <TabsTrigger 
                 value="data" 
@@ -91,7 +93,11 @@ export function HomePage() {
             </TabsContent>
 
             <TabsContent value="visualization" className="mt-6">
-              <TrajectoryView3D data={trajectoryData} />
+              <TrajectoryView3D 
+                data={trajectoryData} 
+                key={animationKey} // Force remount on new calculation
+                autoPlay={true} // Add autoPlay prop
+              />
             </TabsContent>
           </Tabs>
         </main>

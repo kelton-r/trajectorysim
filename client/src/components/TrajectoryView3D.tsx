@@ -1,50 +1,47 @@
 import { Canvas } from '@react-three/fiber';
 import { PerspectiveCamera } from '@react-three/drei';
 import { TrajectoryPoint } from '@/types';
-import { useMemo, useState, useCallback } from 'react';
+import { useMemo, useState, useEffect, useCallback } from 'react';
 import * as THREE from 'three';
 import { Button } from '@/components/ui/button';
-import { Play, Pause, Eye } from 'lucide-react';
+import { Eye } from 'lucide-react';
 
 interface TrajectoryView3DProps {
   data: TrajectoryPoint[];
+  autoPlay?: boolean;
 }
 
 function TrajectoryPath({ points, progress = 1 }: { points: number[][], progress?: number }) {
   const lineGeometry = useMemo(() => {
-    const geometry = new THREE.BufferGeometry();
     const visiblePoints = points.slice(0, Math.floor(points.length * progress));
     const vertices = new Float32Array(visiblePoints.flat());
+    const geometry = new THREE.BufferGeometry();
     geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
     return geometry;
   }, [points, progress]);
 
   return (
     <line>
-      <bufferGeometry>
+      <bufferGeometry attach="geometry" {...lineGeometry}>
         <bufferAttribute
           attach="attributes-position"
           count={Math.floor(points.length * progress)}
-          array={new Float32Array(points.slice(0, Math.floor(points.length * progress)).flat())}
+          array={lineGeometry.attributes.position.array}
           itemSize={3}
         />
       </bufferGeometry>
-      <lineBasicMaterial color="#D92429" linewidth={4} />
+      <lineBasicMaterial attach="material" color="#D92429" linewidth={6} />
     </line>
   );
 }
 
-// Ground grid component with darker color
 function Ground({ size }: { size: number }) {
   return (
     <group position={[size / 2, 0, 0]}>
-      {/* Main ground plane */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
         <planeGeometry args={[size * 2, size * 2]} />
         <meshStandardMaterial color="#1a1a1a" />
       </mesh>
-
-      {/* Grid lines */}
       <gridHelper 
         args={[size * 2, 20, '#333333', '#2a2a2a']}
         position={[0, 0.01, 0]}
@@ -53,44 +50,36 @@ function Ground({ size }: { size: number }) {
   );
 }
 
-export function TrajectoryView3D({ data }: TrajectoryView3DProps) {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [progress, setProgress] = useState(1);
+export function TrajectoryView3D({ data, autoPlay = false }: TrajectoryView3DProps) {
+  const [progress, setProgress] = useState(0);
   const [viewMode, setViewMode] = useState<'side' | 'top'>('side');
 
   const points = useMemo(() => {
     return data.map(point => [point.x, point.y, point.z]);
   }, [data]);
 
-  // Convert distances to yards for display
   const metersToYards = (meters: number) => meters * 1.09361;
   const maxDistance = data.length > 0 ? metersToYards(Math.max(...data.map(p => p.carry))) : 0;
   const gridSize = Math.ceil(maxDistance / 10) * 10;
 
-  // Animation handling
   const animate = useCallback(() => {
-    if (!isPlaying) return;
-
     setProgress(prev => {
-      if (prev >= 1) {
-        setIsPlaying(false);
-        return 1;
-      }
+      if (prev >= 1) return 1;
       return prev + 0.02;
     });
+  }, []);
 
-    requestAnimationFrame(animate);
-  }, [isPlaying]);
-
-  const handlePlayPause = () => {
-    if (!isPlaying) {
+  // Auto-start animation when data changes or autoPlay is true
+  useEffect(() => {
+    if (data.length > 0 && autoPlay) {
       setProgress(0);
-      setIsPlaying(true);
-      requestAnimationFrame(animate);
-    } else {
-      setIsPlaying(false);
+      const interval = setInterval(() => {
+        animate();
+      }, 16); // ~60fps
+
+      return () => clearInterval(interval);
     }
-  };
+  }, [data, autoPlay, animate]);
 
   // Calculate camera positions based on trajectory
   const cameraPositions = useMemo(() => {
@@ -107,8 +96,8 @@ export function TrajectoryView3D({ data }: TrajectoryView3DProps) {
   }, [data]);
 
   return (
-    <div className="relative w-full h-[600px] bg-white rounded-lg shadow-sm">
-      <Canvas>
+    <div className="relative w-full h-[600px] bg-white rounded-lg shadow-sm overflow-hidden">
+      <Canvas shadows>
         <PerspectiveCamera
           makeDefault
           position={viewMode === 'side' ? cameraPositions.side : cameraPositions.top}
@@ -117,37 +106,21 @@ export function TrajectoryView3D({ data }: TrajectoryView3DProps) {
         />
         <ambientLight intensity={0.5} />
         <directionalLight position={[10, 10, 5]} intensity={1} />
-
-        {/* Ground with darker color */}
         <Ground size={gridSize} />
-
-        {/* Trajectory path */}
-        {points.length > 0 && <TrajectoryPath points={points} progress={progress} />}
+        {points.length > 0 && (
+          <TrajectoryPath points={points} progress={progress} />
+        )}
       </Canvas>
 
-      {/* Controls */}
-      <div className="absolute bottom-4 right-4 flex gap-2">
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => setViewMode(prev => prev === 'side' ? 'top' : 'side')}
-          className="bg-white hover:bg-gray-100"
-        >
-          <Eye className="h-4 w-4" />
-        </Button>
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={handlePlayPause}
-          className="bg-white hover:bg-gray-100"
-        >
-          {isPlaying ? (
-            <Pause className="h-4 w-4" />
-          ) : (
-            <Play className="h-4 w-4" />
-          )}
-        </Button>
-      </div>
+      {/* View mode toggle */}
+      <Button
+        variant="outline"
+        size="icon"
+        onClick={() => setViewMode(prev => prev === 'side' ? 'top' : 'side')}
+        className="absolute bottom-4 right-4 bg-white hover:bg-gray-100"
+      >
+        <Eye className="h-4 w-4" />
+      </Button>
 
       {/* View mode indicator */}
       <div className="absolute top-4 right-4 bg-black/80 text-white px-3 py-1 rounded-full text-sm">
