@@ -1,4 +1,4 @@
-import { ShotParameters, TrajectoryPoint } from '@/types';
+import { ShotParameters, TrajectoryPoint, WeatherConditions } from '@/types';
 
 const GRAVITY = 9.81; // m/s^2
 const AIR_DENSITY = 1.204; // kg/m^3 at 21.1°C (70°F)
@@ -10,25 +10,31 @@ export function calculateTrajectory(
   const points: TrajectoryPoint[] = [];
   const dt = 0.01; // Time step in seconds
 
+  // Convert ball speed from mph to m/s
+  const ballSpeedMS = params.ballSpeed * 0.44704;
+
   let x = 0, y = 0, z = 0;
-  let vx = params.launchVelocity * Math.cos(params.launchAngle * Math.PI / 180);
-  let vy = params.launchVelocity * Math.sin(params.launchAngle * Math.PI / 180);
+  let vx = ballSpeedMS * Math.cos(params.launchAngle * Math.PI / 180);
+  let vy = ballSpeedMS * Math.sin(params.launchAngle * Math.PI / 180);
   let vz = 0;
+
+  // Apply spin axis effect to initial velocity
+  const spinAxisRad = params.spinAxis * (Math.PI / 180) * (params.spinDirection === 'right' ? 1 : -1);
+  vz = ballSpeedMS * Math.sin(spinAxisRad);
 
   let t = 0;
 
-  // Record initial point first
   points.push({
     time: t,
     x: x,
     y: y,
     z: z,
-    velocity: params.launchVelocity,
+    velocity: ballSpeedMS,
     spin: params.spin,
     altitude: y,
     distance: 0,
-    drag: calculateDrag(params.launchVelocity),
-    lift: calculateLift(params.spin, params.launchVelocity),
+    drag: calculateDrag(ballSpeedMS),
+    lift: calculateLift(params.spin, ballSpeedMS),
     side: z,
     total: 0,
     carry: x
@@ -50,7 +56,6 @@ export function calculateTrajectory(
     y += vy * dt;
     z += vz * dt;
 
-    // Record point
     points.push({
       time: t,
       x, y, z,
@@ -73,22 +78,25 @@ export function calculateTrajectory(
 
 function calculateDrag(velocity: number): number {
   const cd = 0.47; // Drag coefficient for a golf ball
-  return 0.5 * AIR_DENSITY * (velocity * velocity) * cd * Math.PI * 0.0214; // 0.0214 m^2 is approx. cross-section
+  return 0.5 * AIR_DENSITY * (velocity * velocity) * cd * Math.PI * 0.0214;
 }
 
 function calculateLift(spin: number, velocity: number): number {
-  const cl = 0.1 + (spin / 10000); // Simplified lift coefficient based on spin
+  const cl = 0.1 + (spin / 10000);
   return 0.5 * AIR_DENSITY * (velocity * velocity) * cl * Math.PI * 0.0214;
 }
 
 export function validateShotParameters(params: ShotParameters): boolean {
   return (
-    params.launchVelocity > 0 &&
-    params.launchVelocity < 100 &&
+    params.ballSpeed > 0 &&
+    params.ballSpeed <= 200 &&
     params.launchAngle >= 0 &&
     params.launchAngle <= 90 &&
     params.spin >= 0 &&
-    params.spin <= 10000
+    params.spin <= 10000 &&
+    params.spinAxis >= -90 &&
+    params.spinAxis <= 90 &&
+    (params.spinDirection === 'right' || params.spinDirection === 'left')
   );
 }
 

@@ -6,7 +6,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@
 import { Button } from '@/components/ui/button';
 import { ShotParameters as ShotParamsType } from '@/types';
 import { validateShotParameters } from '@/lib/calculations';
-import { Gauge, RotateCw, ArrowRight, WindIcon } from 'lucide-react';
+import { Gauge, RotateCw, ArrowRight } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface ShotParametersProps {
@@ -14,22 +14,24 @@ interface ShotParametersProps {
 }
 
 const BALL_TYPES = ['Pro V1', 'Pro V1x', 'TP5', 'Chrome Soft'];
-const WIND_DIRECTIONS = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
 
 export function ShotParameters({ onCalculate }: ShotParametersProps) {
   const { toast } = useToast();
   const [params, setParams] = useState<ShotParamsType>({
-    launchVelocity: 50,
+    ballSpeed: 150,
     launchAngle: 15,
     spin: 2500,
-    ballType: BALL_TYPES[0],
-    windDirection: WIND_DIRECTIONS[0]
+    spinAxis: 0,
+    spinDirection: 'right',
+    ballType: BALL_TYPES[0]
   });
 
   const handleChange = (key: keyof ShotParamsType) => (
     e: React.ChangeEvent<HTMLInputElement> | { value: string }
   ) => {
-    const value = 'target' in e ? Number(e.target.value) : e.value;
+    const value = 'target' in e ? 
+      (key === 'spinDirection' ? e.target.value : Number(e.target.value)) 
+      : e.value;
     setParams(prev => ({ ...prev, [key]: value }));
   };
 
@@ -57,18 +59,18 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
       <CardContent>
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="launchVelocity" className="flex items-center gap-2">
+            <Label htmlFor="ballSpeed" className="flex items-center gap-2">
               <Gauge className="h-4 w-4" />
-              Launch Velocity (m/s)
+              Ball Speed (mph)
             </Label>
             <Input
-              id="launchVelocity"
+              id="ballSpeed"
               type="number"
-              value={params.launchVelocity}
-              onChange={handleChange('launchVelocity')}
+              value={params.ballSpeed}
+              onChange={handleChange('ballSpeed')}
               min={0}
-              max={100}
-              step={0.1}
+              max={200}
+              step={1}
             />
           </div>
 
@@ -105,25 +107,33 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="windDirection" className="flex items-center gap-2">
-              <WindIcon className="h-4 w-4" />
-              Wind Direction
+            <Label htmlFor="spinAxis" className="flex items-center gap-2">
+              <RotateCw className="h-4 w-4 rotate-90" />
+              Spin Axis (°)
             </Label>
-            <Select
-              value={params.windDirection}
-              onValueChange={value => handleChange('windDirection')({ value })}
-            >
-              <SelectTrigger id="windDirection">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {WIND_DIRECTIONS.map(dir => (
-                  <SelectItem key={dir} value={dir}>
-                    {dir}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="flex gap-2">
+              <Input
+                id="spinAxis"
+                type="number"
+                value={params.spinAxis}
+                onChange={handleChange('spinAxis')}
+                min={-90}
+                max={90}
+                step={1}
+              />
+              <Select
+                value={params.spinDirection}
+                onValueChange={value => handleChange('spinDirection')({ value })}
+              >
+                <SelectTrigger className="w-[100px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="right">Right</SelectItem>
+                  <SelectItem value="left">Left</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           <div className="space-y-2">

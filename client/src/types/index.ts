@@ -6,11 +6,12 @@ export interface WeatherConditions {
 }
 
 export interface ShotParameters {
-  launchVelocity: number;
+  ballSpeed: number;
   launchAngle: number;
   spin: number;
+  spinAxis: number;
+  spinDirection: 'right' | 'left';
   ballType: string;
-  windDirection: string;
 }
 
 export interface TrajectoryPoint {
