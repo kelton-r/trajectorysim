@@ -6,11 +6,11 @@
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border font-barlow;
   }
 
   body {
-    @apply font-sans antialiased bg-background text-foreground leading-relaxed;
+    @apply font-barlow antialiased bg-background text-foreground leading-relaxed;
   }
 
   h1 {
@@ -29,6 +29,10 @@
     @apply font-barlow font-semibold text-xl tracking-tight mb-2;
   }
 
+  p, span, div {
+    @apply font-barlow font-normal;
+  }
+
   /* Numerical values styling */
   .numeric-value {
     @apply font-barlow font-bold text-lg tracking-wide;
@@ -41,7 +45,7 @@
 
   /* Enhanced tab styling */
   .custom-tab {
-    @apply px-6 py-3 text-base font-semibold transition-colors duration-200;
+    @apply font-barlow px-6 py-3 text-base font-semibold transition-colors duration-200;
   }
 
   /* Enhanced table styling */
@@ -49,8 +53,26 @@
     @apply bg-white rounded-lg shadow-sm;
   }
 
+  .data-table th {
+    @apply font-barlow font-semibold;
+  }
+
+  .data-table td {
+    @apply font-barlow font-normal;
+  }
+
   /* Enhanced card styling */
   .content-card {
     @apply bg-white rounded-lg shadow-sm p-6;
+  }
+
+  /* Button text styling */
+  button {
+    @apply font-barlow font-medium;
+  }
+
+  /* Label styling */
+  label {
+    @apply font-barlow font-medium;
   }
 }
