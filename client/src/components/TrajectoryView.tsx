@@ -24,10 +24,10 @@ const TEE_HEIGHT = 0.05; // 5cm off the ground for mat height
 const MAT_SIZE = { width: 1.5, length: 1.5 }; // Standard golf mat size in meters
 
 // Scene constants
-const RANGE_SIZE = 125; // Increased by 25% from 100 meters
-const GRASS_TILE_SIZE = 2; // 2 meters per grass tile
-const WALL_HEIGHT = 15; // 15 meters high walls
+const RANGE_SIZE = { length: 366, width: 45.72 }; // 400 yards length, 50 yards width in meters
+const CEILING_HEIGHT = 12; // 12 meters high ceiling (about 40 feet)
 const WALL_THICKNESS = 1; // 1 meter thick walls
+const FLOOR_TILE_SIZE = 3; // 3 meters per floor tile
 
 // Position the mat and starting point closer to the back
 const MAT_OFFSET_Z = -(RANGE_SIZE * 0.45); // 45% from the back wall
@@ -57,11 +57,16 @@ function LoadingFallback() {
 const DrivingRange: FC<{ size: number }> = ({ size }) => {
   return (
     <>
-      {/* Sky dome */}
+      {/* Indoor lighting */}
       <hemisphericLight 
-        name="sunLight" 
-        intensity={1.2}
-        direction={new Vector3(0.45, 1.0, 0.45)}
+        name="ambientLight" 
+        intensity={0.7}
+        direction={new Vector3(0, -1, 0)}
+      />
+      <pointLight
+        name="mainLight"
+        position={new Vector3(0, CEILING_HEIGHT - 1, 0)}
+        intensity={0.8}
       />
 
       {/* Ground plane with grass texture */}
@@ -73,9 +78,10 @@ const DrivingRange: FC<{ size: number }> = ({ size }) => {
         receiveShadows={true}
       >
         <standardMaterial
-          name="grassMaterial"
-          diffuseColor={new Color3(0.23, 0.37, 0.04)}
+          name="indoorFloorMaterial"
+          diffuseColor={new Color3(0.2, 0.2, 0.2)}
           specularColor={new Color3(0.1, 0.1, 0.1)}
+          roughness={0.8}
         />
       </ground>
 
@@ -150,20 +156,35 @@ const DrivingRange: FC<{ size: number }> = ({ size }) => {
         />
       </box>
 
-      {/* Sky dome */}
-      <sphere
-        name="skyDome"
-        diameter={size * 2}
-        segments={32}
-        position={new Vector3(0, 0, 0)}
+      {/* Ceiling */}
+      <box
+        name="ceiling"
+        width={size.width}
+        height={WALL_THICKNESS}
+        depth={size.length}
+        position={new Vector3(0, CEILING_HEIGHT, 0)}
       >
         <standardMaterial
-          name="skyMaterial"
-          disableLighting={true}
-          emissiveColor={new Color3(0.6, 0.8, 1.0)}
-          backFaceCulling={false}
+          name="ceilingMaterial"
+          diffuseColor={new Color3(0.9, 0.9, 0.9)}
+          specularColor={new Color3(0.1, 0.1, 0.1)}
         />
-      </sphere>
+      </box>
+
+      {/* Add LED strips along ceiling */}
+      <box
+        name="ledStrips"
+        width={size.width * 0.8}
+        height={0.2}
+        depth={size.length * 0.8}
+        position={new Vector3(0, CEILING_HEIGHT - 0.2, 0)}
+      >
+        <standardMaterial
+          name="ledMaterial"
+          emissiveColor={new Color3(0.9, 0.9, 0.9)}
+          specularColor={new Color3(0, 0, 0)}
+        />
+      </box>
     </>
   );
 };
