@@ -29,10 +29,6 @@ const CEILING_HEIGHT = 12; // 12 meters high ceiling (about 40 feet)
 const WALL_HEIGHT = 10; // 10 meters wall height
 const WALL_THICKNESS = 1; // 1 meter thick walls
 const FLOOR_TILE_SIZE = 3; // 3 meters per floor tile
-const CEILING_HEIGHT = 12; // 12 meters high ceiling (about 40 feet)
-const WALL_HEIGHT = 10; // 10 meters wall height
-const WALL_THICKNESS = 1; // 1 meter thick walls
-const FLOOR_TILE_SIZE = 3; // 3 meters per floor tile
 
 interface DrivingRangeProps {
   size: {
