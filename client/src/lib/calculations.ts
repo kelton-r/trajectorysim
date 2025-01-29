@@ -1,4 +1,4 @@
-import { ShotParameters, TrajectoryPoint, WeatherConditions } from '@/types';
+import { ShotParameters, TrajectoryPoint } from '@/types';
 
 // Constants for golf ball physics
 const GRAVITY = 9.81; // m/s^2
@@ -19,9 +19,11 @@ const BALL_TYPE_COEFFICIENTS = {
   'Premium Ball': { drag: 1.1, lift: 0.9 } // Slightly higher drag, slightly lower lift
 } as const;
 
-// Ground roll coefficients
-const ROLL_FRICTION = 0.3; // Rolling friction coefficient
-const BOUNCE_COEFFICIENT = 0.4; // Bounce coefficient for realistic behavior
+// Ground interaction coefficients
+const BOUNCE_FRICTION = 0.35; // Friction coefficient during bounce
+const ROLL_FRICTION = 0.25; // Rolling friction coefficient
+const BOUNCE_COEFFICIENT = 0.4; // Base bounce coefficient
+const SPIN_ROLL_FACTOR = 0.0002; // How much spin affects roll distance
 
 function calculateDragCoefficient(velocity: number, spinRate: number, ballType: keyof typeof BALL_TYPE_COEFFICIENTS): number {
   // Reynolds number-based drag coefficient
@@ -54,7 +56,7 @@ function calculateLiftCoefficient(spinRate: number, velocity: number, ballType: 
   return (CL_ZERO + SPIN_FACTOR * spinFactor) * BALL_TYPE_COEFFICIENTS[ballType].lift;
 }
 
-function calculateRoll(landingVelocity: number, landingAngle: number): number {
+function calculateRoll(landingVelocity: number, landingAngle: number, spinRate: number | undefined): number {
   // Convert landing angle to radians if it's in degrees
   const landingAngleRad = landingAngle;
 
@@ -62,15 +64,30 @@ function calculateRoll(landingVelocity: number, landingAngle: number): number {
   const normalVelocity = landingVelocity * Math.sin(landingAngleRad);
   const tangentialVelocity = landingVelocity * Math.cos(landingAngleRad);
 
+  // Adjust bounce based on landing angle
+  let effectiveBounceCoeff = BOUNCE_COEFFICIENT;
+  if (landingAngleRad < Math.PI / 6) { // Less than 30 degrees
+    effectiveBounceCoeff *= (1 - Math.cos(landingAngleRad)); // Reduce bounce for shallow angles
+  }
+
   // After bounce velocity
-  const bounceNormalVelocity = normalVelocity * BOUNCE_COEFFICIENT;
+  const bounceNormalVelocity = normalVelocity * effectiveBounceCoeff;
 
-  // Initial roll velocity (reduced momentum conversion factors)
-  const rollVelocity = tangentialVelocity * 0.6 + bounceNormalVelocity * 0.2;
+  // Initial roll velocity considering landing angle and bounce
+  let rollVelocity = tangentialVelocity * (1 - BOUNCE_FRICTION) + bounceNormalVelocity * Math.sin(landingAngleRad / 2);
 
-  // Calculate roll distance using a simplified deceleration model
+  // Apply spin effects if available (for RPT balls)
+  if (spinRate !== undefined) {
+    // Negative spin (backspin) reduces roll, positive spin increases it
+    const spinEffect = -spinRate * SPIN_ROLL_FACTOR;
+    rollVelocity *= (1 + spinEffect);
+  }
+
+  // Calculate roll distance using a dynamic friction model
   // Distance = (v²)/(2*μg) where μ is the rolling friction coefficient
-  const rollDistance = (rollVelocity * rollVelocity) / (2 * ROLL_FRICTION * GRAVITY);
+  // For steeper landing angles, increase effective friction
+  const effectiveFriction = ROLL_FRICTION * (1 + Math.abs(Math.sin(landingAngleRad)));
+  const rollDistance = Math.max(0, (rollVelocity * rollVelocity) / (2 * effectiveFriction * GRAVITY));
 
   return rollDistance;
 }
@@ -143,7 +160,7 @@ export function calculateTrajectory(params: ShotParameters): TrajectoryPoint[] {
   // Calculate landing angle and roll
   const landingVelocity = Math.sqrt(vx * vx + vy * vy + vz * vz);
   const landingAngle = Math.atan2(vy, Math.sqrt(vx * vx + vz * vz));
-  const rollDistance = calculateRoll(landingVelocity, landingAngle);
+  const rollDistance = calculateRoll(landingVelocity, landingAngle, params.ballType === 'RPT Ball' ? params.spin : undefined);
 
   // Final point with roll distance added
   const finalPoint: TrajectoryPoint = {
@@ -159,7 +176,7 @@ export function calculateTrajectory(params: ShotParameters): TrajectoryPoint[] {
     lift: 0,
     side: lastPoint.z + rollDistance * Math.sin(landingAngle),
     total: Math.sqrt((lastPoint.x + rollDistance * Math.cos(landingAngle)) * (lastPoint.x + rollDistance * Math.cos(landingAngle)) + (lastPoint.z + rollDistance * Math.sin(landingAngle)) * (lastPoint.z + rollDistance * Math.sin(landingAngle))),
-    carry: lastPoint.x + rollDistance * Math.cos(landingAngle)
+    carry: lastPoint.x
   };
 
   return [finalPoint];
