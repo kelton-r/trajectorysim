@@ -16,20 +16,13 @@ function TrajectoryPath({ points, progress = 1 }: { points: number[][], progress
     const visiblePoints = points.slice(0, Math.floor(points.length * progress));
     const vertices = new Float32Array(visiblePoints.flat());
     const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
     return geometry;
   }, [points, progress]);
 
   return (
     <line>
-      <bufferGeometry attach="geometry" {...lineGeometry}>
-        <bufferAttribute
-          attach="attributes-position"
-          count={Math.floor(points.length * progress)}
-          array={lineGeometry.attributes.position.array}
-          itemSize={3}
-        />
-      </bufferGeometry>
+      <primitive object={lineGeometry} />
       <lineBasicMaterial attach="material" color="#D92429" linewidth={6} />
     </line>
   );
@@ -62,24 +55,35 @@ export function TrajectoryView3D({ data, autoPlay = false }: TrajectoryView3DPro
   const maxDistance = data.length > 0 ? metersToYards(Math.max(...data.map(p => p.carry))) : 0;
   const gridSize = Math.ceil(maxDistance / 10) * 10;
 
-  const animate = useCallback(() => {
-    setProgress(prev => {
-      if (prev >= 1) return 1;
-      return prev + 0.02;
-    });
-  }, []);
-
-  // Auto-start animation when data changes or autoPlay is true
   useEffect(() => {
-    if (data.length > 0 && autoPlay) {
+    if (data.length > 0) {
+      // Reset progress when new data arrives
       setProgress(0);
-      const interval = setInterval(() => {
-        animate();
-      }, 16); // ~60fps
 
-      return () => clearInterval(interval);
+      let animationFrame: number;
+      let startTime = performance.now();
+
+      const animate = (currentTime: number) => {
+        const elapsed = currentTime - startTime;
+        const duration = 2000; // 2 seconds for full animation
+
+        const newProgress = Math.min(elapsed / duration, 1);
+        setProgress(newProgress);
+
+        if (newProgress < 1) {
+          animationFrame = requestAnimationFrame(animate);
+        }
+      };
+
+      animationFrame = requestAnimationFrame(animate);
+
+      return () => {
+        if (animationFrame) {
+          cancelAnimationFrame(animationFrame);
+        }
+      };
     }
-  }, [data, autoPlay, animate]);
+  }, [data]); // Only re-run when data changes
 
   // Calculate camera positions based on trajectory
   const cameraPositions = useMemo(() => {
@@ -95,24 +99,27 @@ export function TrajectoryView3D({ data, autoPlay = false }: TrajectoryView3DPro
     };
   }, [data]);
 
+  const cameraRotation = useMemo(() => {
+    return viewMode === 'top' ? [-Math.PI / 2, 0, 0] : undefined;
+  }, [viewMode]);
+
   return (
     <div className="relative w-full h-[600px] bg-white rounded-lg shadow-sm overflow-hidden">
       <Canvas shadows>
         <PerspectiveCamera
           makeDefault
           position={viewMode === 'side' ? cameraPositions.side : cameraPositions.top}
+          rotation={cameraRotation}
           fov={60}
-          rotation={viewMode === 'top' ? [-Math.PI / 2, 0, 0] : [0, 0, 0]}
         />
         <ambientLight intensity={0.5} />
-        <directionalLight position={[10, 10, 5]} intensity={1} />
+        <directionalLight position={[10, 10, 5]} intensity={1} castShadow />
         <Ground size={gridSize} />
         {points.length > 0 && (
           <TrajectoryPath points={points} progress={progress} />
         )}
       </Canvas>
 
-      {/* View mode toggle */}
       <Button
         variant="outline"
         size="icon"
@@ -122,7 +129,6 @@ export function TrajectoryView3D({ data, autoPlay = false }: TrajectoryView3DPro
         <Eye className="h-4 w-4" />
       </Button>
 
-      {/* View mode indicator */}
       <div className="absolute top-4 right-4 bg-black/80 text-white px-3 py-1 rounded-full text-sm">
         {viewMode === 'side' ? 'Side View' : 'Top View'}
       </div>
