@@ -39,7 +39,7 @@ const CAMERA_SETTINGS = {
     alpha: Math.PI, // Behind the ball (no horizontal rotation)
     beta: Math.PI * 0.35, // Optimal angle for trajectory view
     radius: RANGE_SIZE * 0.05, // Very close to back wall
-    target: new Vector3(0, TEE_HEIGHT + 1, MAT_OFFSET_Z + RANGE_SIZE * 0.3) // Look forward down range
+    target: new Vector3(0, TEE_HEIGHT + 0.5, MAT_OFFSET_Z) // Focus directly on ball position
   },
   side: {
     alpha: Math.PI * 1.5,
