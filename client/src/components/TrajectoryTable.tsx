@@ -1,4 +1,3 @@
-
 import { 
   Table,
   TableBody,
@@ -26,7 +25,7 @@ export function TrajectoryTable({ data, onExport }: TrajectoryTableProps) {
   return (
     <div className="w-full max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-barlow font-bold">Shot Results</h2>
+        <h2 className="text-xl font-acumin uppercase">SHOT RESULTS</h2>
         <Button 
           onClick={onExport}
           className="bg-[#D92429] hover:bg-[#B91C21] text-white h-12 px-8 text-lg"
