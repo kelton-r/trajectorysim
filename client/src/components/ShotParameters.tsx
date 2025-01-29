@@ -178,14 +178,14 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-1 gap-y-6">
+        <div className="grid grid-cols-2 gap-x-5 gap-y-6">
           <div className="space-y-3">
             <Label htmlFor="ballType" className="text-lg font-barlow font-medium">Ball Type</Label>
             <Select
               value={params.ballType}
               onValueChange={handleDirectionChange('ballType')}
             >
-              <SelectTrigger id="ballType" className="text-base h-12 w-full">
+              <SelectTrigger id="ballType" className="text-base h-12">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -211,7 +211,7 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
               min={0}
               max={200}
               step={1}
-              className="w-full text-lg font-barlow font-bold h-12"
+              className="w-[120px] text-lg font-barlow font-bold h-12"
             />
           </div>
 
@@ -228,7 +228,7 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
               min={0}
               max={90}
               step={0.1}
-              className="w-full text-lg font-barlow font-bold h-12"
+              className="w-[120px] text-lg font-barlow font-bold h-12"
             />
           </div>
 
@@ -237,7 +237,7 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
               <ArrowRight className="h-5 w-5" />
               Launch Direction (°)
             </Label>
-            <div className="flex gap-3">
+            <div className="flex gap-2">
               <Input
                 id="launchDirection"
                 type="number"
@@ -246,7 +246,7 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
                 min={-90}
                 max={90}
                 step={0.1}
-                className="flex-1 text-lg font-barlow font-bold h-12"
+                className="w-[100px] text-lg font-barlow font-bold h-12"
               />
               <Select
                 value={params.launchDirectionSide}
@@ -276,7 +276,7 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
               min={0}
               max={10000}
               step={100}
-              className="w-full text-lg font-barlow font-bold h-12"
+              className="w-[120px] text-lg font-barlow font-bold h-12"
               disabled={isSpinDisabled}
             />
           </div>
@@ -286,7 +286,7 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
               <RotateCw className="h-5 w-5 rotate-90" />
               Spin Axis (°)
             </Label>
-            <div className="flex gap-3">
+            <div className="flex gap-2">
               <Input
                 id="spinAxis"
                 type="number"
@@ -295,7 +295,7 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
                 min={-90}
                 max={90}
                 step={1}
-                className="flex-1 text-lg font-barlow font-bold h-12"
+                className="w-[100px] text-lg font-barlow font-bold h-12"
                 disabled={isSpinDisabled}
               />
               <Select

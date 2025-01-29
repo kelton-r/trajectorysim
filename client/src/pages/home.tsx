@@ -69,7 +69,7 @@ export function HomePage() {
       <div className="flex flex-1 overflow-hidden">
         <Sidebar onShotCalculate={handleShotCalculate} />
         <main className="flex-1 p-4 bg-[#F5F5F5] overflow-auto">
-          <div className="max-w-[640px] mx-auto">
+          <div className="max-w-[520px] mx-auto">
             <Tabs defaultValue="visualization" className="space-y-4">
               <TabsList className="bg-white border-b w-full rounded-none p-0 h-12">
                 <TabsTrigger 
