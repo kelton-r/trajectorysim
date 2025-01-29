@@ -41,10 +41,6 @@ const CAMERA_SETTINGS = {
   target: new Vector3(0, 1, -RANGE_SIZE * 0.1) // Look down range
 };
 
-// Adjust mat position for better visibility
-const MAT_OFFSET_Z = -5; // Fixed distance from camera
-const TEE_HEIGHT = 0.1; // Slightly raised for better visibility
-
 interface TrajectoryViewProps {
   data: TrajectoryPoint[];
   autoPlay?: boolean;
