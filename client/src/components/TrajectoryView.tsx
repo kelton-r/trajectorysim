@@ -376,20 +376,20 @@ export const TrajectoryView: FC<TrajectoryViewProps> = ({ data, autoPlay = false
     if (!cameraRef.current) return;
 
     const camera = cameraRef.current;
-    
+
     // Fixed behind-ball camera settings
     camera.inputs.clear();
     camera.alpha = Math.PI; // Camera directly behind ball
     camera.beta = Math.PI * 0.35; // Camera angle from horizontal
     camera.radius = RANGE_SIZE * 0.15; // Distance from ball
     camera.setTarget(new Vector3(0, TEE_HEIGHT + 1, MAT_OFFSET_Z + RANGE_SIZE * 0.1));
-    
+
     // Lock camera
     camera.lowerBetaLimit = camera.beta;
     camera.upperBetaLimit = camera.beta;
     camera.lowerAlphaLimit = camera.alpha;
     camera.upperAlphaLimit = camera.alpha;
-    
+
     // Disable all camera controls
     camera.allowUpsideDown = false;
     camera.useAutoRotationBehavior = false;
@@ -430,7 +430,7 @@ export const TrajectoryView: FC<TrajectoryViewProps> = ({ data, autoPlay = false
             radius={CAMERA_SETTINGS[viewMode].radius}
           />
 
-          <DrivingRange size={RANGE_SIZE} />
+          <DrivingRange size={gridSize} />
 
           {points.length > 0 && sceneRef.current && (
             <TrajectoryPath 
