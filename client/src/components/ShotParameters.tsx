@@ -322,7 +322,7 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
       </CardContent>
       <CardFooter className="px-4 pb-4">
         <Button
-          className="w-full bg-red-600 hover:bg-red-700 text-white font-condensed font-bold h-10 text-lg"
+          className="w-full bg-red-600 hover:bg-red-700 text-white font-condensed font-bold h-12 text-2xl"
           onClick={handleCalculate}
         >
           VISUALIZE
