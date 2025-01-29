@@ -95,7 +95,7 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
                 min={-90}
                 max={90}
                 step={0.1}
-                className="flex-1"
+                className="w-[90px]"
               />
               <Select
                 value={params.launchDirectionSide}
@@ -158,7 +158,7 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
                 min={-90}
                 max={90}
                 step={1}
-                className="flex-1"
+                className="w-[90px]"
               />
               <Select
                 value={params.spinDirection}
