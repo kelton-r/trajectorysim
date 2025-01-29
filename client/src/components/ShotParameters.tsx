@@ -80,7 +80,7 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
         <CardTitle className="text-lg font-semibold">Shot Parameters</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-6">
           <div className="space-y-2">
             <Label htmlFor="launchDirection" className="flex items-center gap-2">
               <ArrowRight className="h-4 w-4" />
@@ -95,13 +95,14 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
                 min={-90}
                 max={90}
                 step={0.1}
+                className="flex-1"
               />
               <Select
                 value={params.launchDirectionSide}
                 onValueChange={handleDirectionChange('launchDirectionSide')}
               >
-                <SelectTrigger className="w-[140px]">
-                  <SelectValue placeholder="Select direction" />
+                <SelectTrigger className="w-[160px]">
+                  <SelectValue placeholder="Direction" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="right">Right (+)</SelectItem>
@@ -157,13 +158,14 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
                 min={-90}
                 max={90}
                 step={1}
+                className="flex-1"
               />
               <Select
                 value={params.spinDirection}
                 onValueChange={handleDirectionChange('spinDirection')}
               >
-                <SelectTrigger className="w-[140px]">
-                  <SelectValue placeholder="Select direction" />
+                <SelectTrigger className="w-[160px]">
+                  <SelectValue placeholder="Direction" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="right">Right (+)</SelectItem>
