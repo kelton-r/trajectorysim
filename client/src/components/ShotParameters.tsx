@@ -102,7 +102,7 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
                 value={params.launchDirectionSide}
                 onValueChange={handleDirectionChange('launchDirectionSide')}
               >
-                <SelectTrigger className="w-[100px]">
+                <SelectTrigger className="w-[120px]">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -164,7 +164,7 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
                 value={params.spinDirection}
                 onValueChange={handleDirectionChange('spinDirection')}
               >
-                <SelectTrigger className="w-[100px]">
+                <SelectTrigger className="w-[120px]">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -212,7 +212,7 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
         </div>
       </CardContent>
       <CardFooter>
-        <Button 
+        <Button
           className="w-full bg-[#D92429] hover:bg-[#B91C21] text-white font-bold"
           onClick={handleCalculate}
           size="lg"
