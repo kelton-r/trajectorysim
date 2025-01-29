@@ -149,7 +149,7 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
   return (
     <Card className="bg-white h-full">
       <CardHeader className="text-center pb-6">
-        <CardTitle className="text-3xl font-barlow font-bold">Shot Parameters</CardTitle>
+        <CardTitle className="text-3xl font-condensed font-bold">Shot Parameters</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6 px-4">
         <div className="flex gap-2 justify-center">
@@ -314,7 +314,7 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
       </CardContent>
       <CardFooter className="px-4 pb-4">
         <Button
-          className="w-full bg-black hover:bg-gray-800 text-white font-barlow font-bold h-10 text-base"
+          className="w-full bg-black hover:bg-gray-800 text-white font-condensed font-bold h-10 text-base"
           onClick={handleCalculate}
         >
           VISUALIZE
