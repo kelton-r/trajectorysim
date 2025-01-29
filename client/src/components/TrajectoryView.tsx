@@ -24,7 +24,7 @@ const TEE_HEIGHT = 0.05; // 5cm off the ground for mat height
 const MAT_SIZE = { width: 1.5, length: 1.5 }; // Standard golf mat size in meters
 
 // Scene constants
-const RANGE_SIZE = { length: 320, width: 91.44 }; // 350 yards length, 100 yards width in meters
+const RANGE_SIZE = 125; // Increased by 25% from 100 meters
 const GRASS_TILE_SIZE = 2; // 2 meters per grass tile
 const WALL_HEIGHT = 15; // 15 meters high walls
 const WALL_THICKNESS = 1; // 1 meter thick walls
@@ -67,9 +67,9 @@ const DrivingRange: FC<{ size: number }> = ({ size }) => {
       {/* Ground plane with grass texture */}
       <ground
         name="rangeGround"
-        width={size.width}
-        height={size.length}
-        subdivisions={Math.max(size.width, size.length) / GRASS_TILE_SIZE}
+        width={size}
+        height={size}
+        subdivisions={size / GRASS_TILE_SIZE}
         receiveShadows={true}
       >
         <standardMaterial
@@ -97,10 +97,10 @@ const DrivingRange: FC<{ size: number }> = ({ size }) => {
       {/* Back wall */}
       <box
         name="backWall"
-        width={size.width}
+        width={size}
         height={WALL_HEIGHT}
         depth={WALL_THICKNESS}
-        position={new Vector3(0, WALL_HEIGHT/2, size.length/2)}
+        position={new Vector3(0, WALL_HEIGHT/2, size/2)}
       >
         <standardMaterial
           name="wallMaterial"
@@ -111,10 +111,10 @@ const DrivingRange: FC<{ size: number }> = ({ size }) => {
       {/* Front wall */}
       <box
         name="frontWall"
-        width={size.width}
+        width={size}
         height={WALL_HEIGHT}
         depth={WALL_THICKNESS}
-        position={new Vector3(0, WALL_HEIGHT/2, -size.length/2)}
+        position={new Vector3(0, WALL_HEIGHT/2, -size/2)}
       >
         <standardMaterial
           name="wallMaterial"
@@ -127,8 +127,8 @@ const DrivingRange: FC<{ size: number }> = ({ size }) => {
         name="leftWall"
         width={WALL_THICKNESS}
         height={WALL_HEIGHT}
-        depth={size.length}
-        position={new Vector3(-size.width/2, WALL_HEIGHT/2, 0)}
+        depth={size}
+        position={new Vector3(-size/2, WALL_HEIGHT/2, 0)}
       >
         <standardMaterial
           name="wallMaterial"
@@ -141,8 +141,8 @@ const DrivingRange: FC<{ size: number }> = ({ size }) => {
         name="rightWall"
         width={WALL_THICKNESS}
         height={WALL_HEIGHT}
-        depth={size.length}
-        position={new Vector3(size.width/2, WALL_HEIGHT/2, 0)}
+        depth={size}
+        position={new Vector3(size/2, WALL_HEIGHT/2, 0)}
       >
         <standardMaterial
           name="wallMaterial"
