@@ -149,22 +149,22 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
 
   return (
     <Card className="bg-white">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-7">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6">
         <CardTitle className="text-2xl font-barlow font-bold">Shot Parameters</CardTitle>
-        <div className="flex gap-3">
+        <div className="flex gap-2">
           <Button
             variant="outline"
             size="sm"
             onClick={handleSave}
-            className="flex items-center gap-2 text-base h-10"
+            className="flex items-center gap-1 text-base h-10"
           >
             <Save className="h-5 w-5" />
             Save
           </Button>
           {Object.keys(savedParams).length > 0 && (
             <Select onValueChange={handleLoad}>
-              <SelectTrigger className="w-[200px] text-base h-10">
-                <SelectValue placeholder="Load saved..." />
+              <SelectTrigger className="w-[140px] text-base h-10">
+                <SelectValue placeholder="Load..." />
               </SelectTrigger>
               <SelectContent>
                 {Object.entries(savedParams).map(([timestamp, _]) => (
@@ -178,13 +178,13 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 gap-x-8 gap-y-7">
-          <div className="space-y-4">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-6">
+          <div className="space-y-3">
             <Label htmlFor="launchDirection" className="flex items-center gap-2 text-lg font-barlow font-medium">
               <ArrowRight className="h-5 w-5" />
               Launch Direction (°)
             </Label>
-            <div className="flex gap-3">
+            <div className="flex gap-2">
               <Input
                 id="launchDirection"
                 type="number"
@@ -193,13 +193,13 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
                 min={-90}
                 max={90}
                 step={0.1}
-                className="w-[100px] text-lg font-barlow font-bold h-12"
+                className="w-[80px] text-lg font-barlow font-bold h-12"
               />
               <Select
                 value={params.launchDirectionSide}
                 onValueChange={handleDirectionChange('launchDirectionSide')}
               >
-                <SelectTrigger className="w-[200px] text-base h-12">
+                <SelectTrigger className="w-[120px] text-base h-12">
                   <SelectValue placeholder="Direction" />
                 </SelectTrigger>
                 <SelectContent>
@@ -210,7 +210,7 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
             </div>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             <Label htmlFor="launchAngle" className="flex items-center gap-2 text-lg font-barlow font-medium">
               <ArrowRight className="h-5 w-5 rotate-90" />
               Launch Angle (°)
@@ -223,11 +223,11 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
               min={0}
               max={90}
               step={0.1}
-              className="w-[140px] text-lg font-barlow font-bold h-12"
+              className="w-[100px] text-lg font-barlow font-bold h-12"
             />
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             <Label htmlFor="spin" className="flex items-center gap-2 text-lg font-barlow font-medium">
               <RotateCw className="h-5 w-5" />
               Spin Rate (rpm)
@@ -240,17 +240,17 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
               min={0}
               max={10000}
               step={100}
-              className="w-[140px] text-lg font-barlow font-bold h-12"
+              className="w-[100px] text-lg font-barlow font-bold h-12"
               disabled={isSpinDisabled}
             />
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             <Label htmlFor="spinAxis" className="flex items-center gap-2 text-lg font-barlow font-medium">
               <RotateCw className="h-5 w-5 rotate-90" />
               Spin Axis (°)
             </Label>
-            <div className="flex gap-3">
+            <div className="flex gap-2">
               <Input
                 id="spinAxis"
                 type="number"
@@ -259,7 +259,7 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
                 min={-90}
                 max={90}
                 step={1}
-                className="w-[100px] text-lg font-barlow font-bold h-12"
+                className="w-[80px] text-lg font-barlow font-bold h-12"
                 disabled={isSpinDisabled}
               />
               <Select
@@ -267,7 +267,7 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
                 onValueChange={handleDirectionChange('spinDirection')}
                 disabled={isSpinDisabled}
               >
-                <SelectTrigger className="w-[200px] text-base h-12">
+                <SelectTrigger className="w-[120px] text-base h-12">
                   <SelectValue placeholder="Direction" />
                 </SelectTrigger>
                 <SelectContent>
@@ -278,7 +278,7 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
             </div>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             <Label htmlFor="ballType" className="text-lg font-barlow font-medium">Ball Type</Label>
             <Select
               value={params.ballType}
@@ -297,7 +297,7 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
             </Select>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             <Label htmlFor="ballSpeed" className="flex items-center gap-2 text-lg font-barlow font-medium">
               <Gauge className="h-5 w-5" />
               Ball Speed (mph)
@@ -310,12 +310,12 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
               min={0}
               max={200}
               step={1}
-              className="w-[140px] text-lg font-barlow font-bold h-12"
+              className="w-[100px] text-lg font-barlow font-bold h-12"
             />
           </div>
         </div>
       </CardContent>
-      <CardFooter className="pt-7">
+      <CardFooter className="pt-6">
         <Button
           className="w-full bg-black hover:bg-gray-800 text-white font-barlow font-bold text-lg h-14"
           onClick={handleCalculate}

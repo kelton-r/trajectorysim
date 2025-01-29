@@ -68,38 +68,40 @@ export function HomePage() {
       <Header />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar onShotCalculate={handleShotCalculate} />
-        <main className="flex-1 p-6 bg-[#F5F5F5] overflow-auto">
-          <Tabs defaultValue="visualization" className="space-y-6">
-            <TabsList className="bg-white border-b w-full rounded-none p-0 h-12">
-              <TabsTrigger 
-                value="data" 
-                className="flex-1 h-12 rounded-none data-[state=active]:bg-black data-[state=active]:text-white"
-              >
-                Data
-              </TabsTrigger>
-              <TabsTrigger 
-                value="visualization" 
-                className="flex-1 h-12 rounded-none data-[state=active]:bg-black data-[state=active]:text-white"
-              >
-                Shot Trajectory Visualization
-              </TabsTrigger>
-            </TabsList>
+        <main className="flex-1 p-4 bg-[#F5F5F5] overflow-auto">
+          <div className="max-w-[640px] mx-auto">
+            <Tabs defaultValue="visualization" className="space-y-4">
+              <TabsList className="bg-white border-b w-full rounded-none p-0 h-12">
+                <TabsTrigger 
+                  value="data" 
+                  className="flex-1 h-12 rounded-none data-[state=active]:bg-black data-[state=active]:text-white"
+                >
+                  Data
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="visualization" 
+                  className="flex-1 h-12 rounded-none data-[state=active]:bg-black data-[state=active]:text-white"
+                >
+                  Shot Trajectory Visualization
+                </TabsTrigger>
+              </TabsList>
 
-            <TabsContent value="data" className="mt-6 bg-white rounded-lg p-6">
-              <TrajectoryTable
-                data={trajectoryData}
-                onExport={handleExport}
-              />
-            </TabsContent>
+              <TabsContent value="data" className="mt-4 bg-white rounded-lg p-4">
+                <TrajectoryTable
+                  data={trajectoryData}
+                  onExport={handleExport}
+                />
+              </TabsContent>
 
-            <TabsContent value="visualization" className="mt-6">
-              <TrajectoryView
-                data={trajectoryData}
-                key={animationKey}
-                autoPlay={true}
-              />
-            </TabsContent>
-          </Tabs>
+              <TabsContent value="visualization" className="mt-4">
+                <TrajectoryView
+                  data={trajectoryData}
+                  key={animationKey}
+                  autoPlay={true}
+                />
+              </TabsContent>
+            </Tabs>
+          </div>
         </main>
       </div>
     </div>
