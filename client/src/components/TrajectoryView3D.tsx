@@ -1,7 +1,7 @@
 import { Canvas } from '@react-three/fiber';
 import { PerspectiveCamera } from '@react-three/drei';
 import { TrajectoryPoint } from '@/types';
-import { useMemo, useState, useEffect, useCallback } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import * as THREE from 'three';
 import { Button } from '@/components/ui/button';
 import { Eye } from 'lucide-react';
@@ -85,32 +85,48 @@ export function TrajectoryView3D({ data, autoPlay = false }: TrajectoryView3DPro
     }
   }, [data]); // Only re-run when data changes
 
-  // Calculate camera positions based on trajectory
-  const cameraPositions = useMemo(() => {
-    if (data.length === 0) return { side: [20, 20, 20], top: [20, 50, 0] };
+  // Calculate camera positions and rotations based on trajectory
+  const cameraSettings = useMemo(() => {
+    if (data.length === 0) {
+      return {
+        side: {
+          position: [-20, 10, 0],
+          rotation: [0, Math.PI / 2, 0]
+        },
+        top: {
+          position: [20, 50, 0],
+          rotation: [-Math.PI / 2, 0, 0]
+        }
+      };
+    }
 
     const maxX = Math.max(...data.map(p => p.x));
     const maxY = Math.max(...data.map(p => p.y));
     const maxZ = Math.max(...data.map(p => Math.abs(p.z)));
+    const distance = Math.sqrt(maxX * maxX + maxZ * maxZ);
 
     return {
-      side: [maxX * 0.7, maxY * 1.5, maxZ * 2],
-      top: [maxX * 0.5, maxX * 0.8, 0]
+      side: {
+        position: [-distance * 0.2, maxY * 1.2, 0], // Position behind start point
+        rotation: [0, Math.PI / 2, 0] // Look along the X axis
+      },
+      top: {
+        position: [maxX * 0.5, distance * 0.8, 0], // Position above, centered on path
+        rotation: [-Math.PI / 2, 0, 0] // Look straight down
+      }
     };
   }, [data]);
-
-  const cameraRotation = useMemo(() => {
-    return viewMode === 'top' ? [-Math.PI / 2, 0, 0] : undefined;
-  }, [viewMode]);
 
   return (
     <div className="relative w-full h-[600px] bg-white rounded-lg shadow-sm overflow-hidden">
       <Canvas shadows>
         <PerspectiveCamera
           makeDefault
-          position={viewMode === 'side' ? cameraPositions.side : cameraPositions.top}
-          rotation={cameraRotation}
+          position={viewMode === 'side' ? cameraSettings.side.position : cameraSettings.top.position}
+          rotation={viewMode === 'side' ? cameraSettings.side.rotation : cameraSettings.top.rotation}
           fov={60}
+          near={0.1}
+          far={1000}
         />
         <ambientLight intensity={0.5} />
         <directionalLight position={[10, 10, 5]} intensity={1} castShadow />
