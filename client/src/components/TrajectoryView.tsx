@@ -33,21 +33,17 @@ const WALL_THICKNESS = 1; // 1 meter thick walls
 const MAT_OFFSET_Z = -(RANGE_SIZE * 0.45); // 45% from the back wall
 const START_OFFSET = new Vector3(0, TEE_HEIGHT, MAT_OFFSET_Z);
 
-// Update camera constants for optimal view
+// Simplified fixed camera settings
 const CAMERA_SETTINGS = {
-  default: {
-    alpha: Math.PI, // Behind the ball (no horizontal rotation)
-    beta: Math.PI * 0.35, // Optimal angle for trajectory view
-    radius: RANGE_SIZE * 0.15, // Distance from target
-    target: new Vector3(0, TEE_HEIGHT + 1, MAT_OFFSET_Z + RANGE_SIZE * 0.1) // Look straight down range
-  },
-  side: {
-    alpha: Math.PI * 1.5,
-    beta: Math.PI * 0.4,
-    radius: RANGE_SIZE * 0.4,
-    target: new Vector3(0, 2, MAT_OFFSET_Z) // Focus on ball position for side view
-  }
+  alpha: Math.PI, // Fixed behind-ball view
+  beta: Math.PI * 0.3, // Slightly elevated angle
+  radius: RANGE_SIZE * 0.2, // Consistent distance
+  target: new Vector3(0, 1, -RANGE_SIZE * 0.1) // Look down range
 };
+
+// Adjust mat position for better visibility
+const MAT_OFFSET_Z = -5; // Fixed distance from camera
+const TEE_HEIGHT = 0.1; // Slightly raised for better visibility
 
 interface TrajectoryViewProps {
   data: TrajectoryPoint[];
@@ -271,7 +267,7 @@ const TrajectoryPath: FC<{
 };
 
 export const TrajectoryView: FC<TrajectoryViewProps> = ({ data, autoPlay = false }) => {
-  const [viewMode, setViewMode] = useState<'default' | 'side'>('default');
+  // Remove view mode state as we're using fixed camera
   const [progress, setProgress] = useState(0);
   const [hasError, setHasError] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -424,10 +420,14 @@ export const TrajectoryView: FC<TrajectoryViewProps> = ({ data, autoPlay = false
         <Scene onSceneMount={handleSceneMount}>
           <arcRotateCamera
             name="camera"
-            target={CAMERA_SETTINGS[viewMode].target}
-            alpha={CAMERA_SETTINGS[viewMode].alpha}
-            beta={CAMERA_SETTINGS[viewMode].beta}
-            radius={CAMERA_SETTINGS[viewMode].radius}
+            target={CAMERA_SETTINGS.target}
+            alpha={CAMERA_SETTINGS.alpha}
+            beta={CAMERA_SETTINGS.beta}
+            radius={CAMERA_SETTINGS.radius}
+            lowerBetaLimit={CAMERA_SETTINGS.beta}
+            upperBetaLimit={CAMERA_SETTINGS.beta}
+            lowerAlphaLimit={CAMERA_SETTINGS.alpha}
+            upperAlphaLimit={CAMERA_SETTINGS.alpha}
           />
 
           <DrivingRange size={gridSize} />
