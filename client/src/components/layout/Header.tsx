@@ -1,3 +1,4 @@
+
 import { Settings } from 'lucide-react';
 import {
   DropdownMenu,
@@ -24,7 +25,7 @@ export function Header() {
             TRAJECTORY SIMULATOR
           </h2>
           <img
-            src="/mlm2-logo.png"
+            src="/mlm2pro-logo.png"
             alt="MLM2 Pro"
             className="h-8 w-auto"
           />
