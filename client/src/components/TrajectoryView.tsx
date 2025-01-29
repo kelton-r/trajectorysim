@@ -1,5 +1,5 @@
 import { FC, useEffect, useRef, useState } from 'react';
-import { Engine, Scene } from 'react-babylonjs';
+import { Engine, Scene, SceneEventArgs } from 'react-babylonjs';
 import { 
   Vector3, 
   Color3, 
@@ -7,7 +7,9 @@ import {
   ParticleSystem,
   Texture,
   StandardMaterial,
-  MeshBuilder
+  MeshBuilder,
+  Scene as BabylonScene,
+  Engine as BabylonEngine
 } from '@babylonjs/core';
 import { TrajectoryPoint } from '@/types';
 import { Button } from '@/components/ui/button';
@@ -19,7 +21,7 @@ interface TrajectoryViewProps {
 }
 
 const GROUND_MATERIAL_OPTIONS = {
-  diffuseColor: new Color3(0.23, 0.37, 0.04), // Golf course green
+  diffuseColor: new Color3(0.23, 0.37, 0.04),
   specularColor: new Color3(0.1, 0.1, 0.1),
   roughness: 0.95,
   metallic: 0.05
@@ -52,61 +54,91 @@ const GolfGround: FC<{ size: number }> = ({ size }) => {
 
 const TrajectoryPath: FC<{ 
   points: Vector3[]; 
-  scene: any;
+  scene: BabylonScene;
   progress: number;
 }> = ({ points, scene, progress }) => {
   const particleSystemRef = useRef<ParticleSystem>();
+  const meshRef = useRef<any>();
+  const textureRef = useRef<Texture>();
+
+  // Cleanup function to properly dispose of resources
+  const cleanup = () => {
+    if (textureRef.current) {
+      textureRef.current.dispose();
+    }
+    if (particleSystemRef.current) {
+      particleSystemRef.current.dispose();
+    }
+    if (meshRef.current) {
+      meshRef.current.dispose();
+    }
+  };
 
   useEffect(() => {
     if (!scene || points.length === 0) return;
 
-    // Create particle system for trail effect
-    const particleSystem = new ParticleSystem("particles", 2000, scene);
-    particleSystemRef.current = particleSystem;
+    try {
+      // Create particle system for trail effect
+      const particleSystem = new ParticleSystem("particles", 2000, scene);
+      particleSystemRef.current = particleSystem;
 
-    particleSystem.particleTexture = new Texture("/ball-trail.png", scene);
-    particleSystem.emitter = points[0];
-    particleSystem.minEmitBox = new Vector3(-0.1, -0.1, -0.1);
-    particleSystem.maxEmitBox = new Vector3(0.1, 0.1, 0.1);
-    particleSystem.color1 = new Color4(1, 0.5, 0, 1);
-    particleSystem.color2 = new Color4(1, 0.5, 0, 1);
-    particleSystem.colorDead = new Color4(0, 0, 0, 0);
-    particleSystem.minSize = 0.1;
-    particleSystem.maxSize = 0.3;
-    particleSystem.minLifeTime = 0.3;
-    particleSystem.maxLifeTime = 0.7;
-    particleSystem.emitRate = 100;
-    particleSystem.start();
+      // Create a default texture for particles
+      const texture = new Texture("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=", scene);
+      textureRef.current = texture;
 
-    return () => {
-      particleSystem.dispose();
-    };
+      particleSystem.particleTexture = texture;
+      particleSystem.emitter = points[0];
+      particleSystem.minEmitBox = new Vector3(-0.1, -0.1, -0.1);
+      particleSystem.maxEmitBox = new Vector3(0.1, 0.1, 0.1);
+      particleSystem.color1 = new Color4(1, 0.5, 0, 1);
+      particleSystem.color2 = new Color4(1, 0.5, 0, 1);
+      particleSystem.colorDead = new Color4(0, 0, 0, 0);
+      particleSystem.minSize = 0.1;
+      particleSystem.maxSize = 0.3;
+      particleSystem.minLifeTime = 0.3;
+      particleSystem.maxLifeTime = 0.7;
+      particleSystem.emitRate = 100;
+      particleSystem.start();
+
+      return cleanup;
+    } catch (error) {
+      console.error('Error initializing particle system:', error);
+      cleanup();
+    }
   }, [scene, points]);
 
-  // Update particle system emitter position based on progress
   useEffect(() => {
-    if (!particleSystemRef.current || points.length === 0) return;
-    
-    const currentPointIndex = Math.floor((points.length - 1) * progress);
-    const currentPoint = points[currentPointIndex];
-    particleSystemRef.current.emitter = currentPoint;
-  }, [progress, points]);
+    if (!scene || points.length === 0 || !particleSystemRef.current) return;
 
-  return (
-    <mesh name="trajectory">
-      <linesBuilder
-        name="trajectoryLines"
-        points={points.slice(0, Math.floor(points.length * progress))}
-        updatable={true}
-      />
-      <standardMaterial
-        name="trajectoryMaterial"
-        diffuseColor={new Color3(1, 0.37, 0.12)}
-        emissiveColor={new Color3(1, 0.37, 0.12)}
-        specularColor={new Color3(0, 0, 0)}
-      />
-    </mesh>
-  );
+    try {
+      const currentPointIndex = Math.floor((points.length - 1) * progress);
+      const currentPoint = points[currentPointIndex];
+      particleSystemRef.current.emitter = currentPoint;
+
+      // Update trajectory line
+      const visiblePoints = points.slice(0, currentPointIndex + 1);
+      if (meshRef.current) {
+        meshRef.current.dispose();
+      }
+
+      const lines = MeshBuilder.CreateLines("lines", {
+        points: visiblePoints,
+        updatable: true
+      }, scene);
+
+      const material = new StandardMaterial("lineMaterial", scene);
+      material.emissiveColor = new Color3(1, 0.37, 0.12);
+      material.specularColor = new Color3(0, 0, 0);
+      lines.material = material;
+
+      meshRef.current = lines;
+    } catch (error) {
+      console.error('Error updating trajectory:', error);
+      cleanup();
+    }
+  }, [progress, points, scene]);
+
+  return null;
 };
 
 export const TrajectoryView: FC<TrajectoryViewProps> = ({ data, autoPlay = false }) => {
@@ -115,6 +147,8 @@ export const TrajectoryView: FC<TrajectoryViewProps> = ({ data, autoPlay = false
   const [hasError, setHasError] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const sceneRef = useRef<BabylonScene>();
+  const engineRef = useRef<BabylonEngine>();
 
   const points = data.map(point => new Vector3(point.x, point.y, point.z));
   const maxDistance = data.length > 0 ? 
@@ -157,6 +191,21 @@ export const TrajectoryView: FC<TrajectoryViewProps> = ({ data, autoPlay = false
     }
   };
 
+  const handleSceneMount = (sceneEventArgs: SceneEventArgs) => {
+    const { scene, engine } = sceneEventArgs;
+    sceneRef.current = scene;
+    engineRef.current = engine;
+  };
+
+  useEffect(() => {
+    return () => {
+      // Cleanup on unmount
+      if (engineRef.current) {
+        engineRef.current.dispose();
+      }
+    };
+  }, []);
+
   if (hasError) {
     return (
       <div className="relative w-full h-[600px] bg-white rounded-lg shadow-sm overflow-hidden flex items-center justify-center">
@@ -183,11 +232,17 @@ export const TrajectoryView: FC<TrajectoryViewProps> = ({ data, autoPlay = false
         engineOptions={{
           preserveDrawingBuffer: true,
           stencil: true,
-          failIfMajorPerformanceCaveat: true
+          failIfMajorPerformanceCaveat: false,
+          powerPreference: 'high-performance',
+          premultipliedAlpha: false,
+          alpha: true
         }}
-        onError={() => setHasError(true)}
+        onError={(error) => {
+          console.error('Babylon.js engine error:', error);
+          setHasError(true);
+        }}
       >
-        <Scene>
+        <Scene onSceneMount={handleSceneMount}>
           <arcRotateCamera
             name="camera"
             target={Vector3.Zero()}
@@ -197,6 +252,8 @@ export const TrajectoryView: FC<TrajectoryViewProps> = ({ data, autoPlay = false
             lowerRadiusLimit={gridSize * 0.3}
             upperRadiusLimit={gridSize * 2}
             wheelDeltaPercentage={0.01}
+            minZ={0.1}
+            maxZ={gridSize * 4}
           />
 
           <hemisphericLight
@@ -221,10 +278,10 @@ export const TrajectoryView: FC<TrajectoryViewProps> = ({ data, autoPlay = false
           </directionalLight>
 
           <GolfGround size={gridSize} />
-          {points.length > 0 && (
+          {points.length > 0 && sceneRef.current && (
             <TrajectoryPath 
               points={points} 
-              scene={scene} 
+              scene={sceneRef.current} 
               progress={progress}
             />
           )}
