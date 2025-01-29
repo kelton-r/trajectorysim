@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState, useMemo } from 'react';
 import { Engine, Scene, SceneEventArgs } from 'react-babylonjs';
 import { 
   Vector3, 
@@ -20,6 +20,10 @@ interface TrajectoryViewProps {
   autoPlay?: boolean;
 }
 
+// Constants for trajectory visualization
+const TEE_HEIGHT = 0.1; // 10cm off the ground
+const START_OFFSET = new Vector3(0, TEE_HEIGHT, 0); // Starting position offset
+
 const GROUND_MATERIAL_OPTIONS = {
   diffuseColor: new Color3(0.23, 0.37, 0.04),
   specularColor: new Color3(0.1, 0.1, 0.1),
@@ -37,18 +41,32 @@ function LoadingFallback() {
 
 const GolfGround: FC<{ size: number }> = ({ size }) => {
   return (
-    <ground
-      name="ground"
-      width={size * 2}
-      height={size * 2}
-      subdivisions={100}
-      receiveShadows={true}
-    >
-      <standardMaterial
-        name="groundMaterial"
-        {...GROUND_MATERIAL_OPTIONS}
-      />
-    </ground>
+    <>
+      <ground
+        name="ground"
+        width={size * 2}
+        height={size * 2}
+        subdivisions={100}
+        receiveShadows={true}
+      >
+        <standardMaterial
+          name="groundMaterial"
+          {...GROUND_MATERIAL_OPTIONS}
+        />
+      </ground>
+      <cylinder 
+        name="teeMarker"
+        height={TEE_HEIGHT * 2}
+        diameter={0.02}
+        position={START_OFFSET}
+      >
+        <standardMaterial
+          name="teeMaterial"
+          diffuseColor={Color3.White()}
+          specularColor={Color3.Black()}
+        />
+      </cylinder>
+    </>
   );
 };
 
@@ -60,6 +78,12 @@ const TrajectoryPath: FC<{
   const particleSystemRef = useRef<ParticleSystem>();
   const meshRef = useRef<any>();
   const textureRef = useRef<Texture>();
+
+  // Adjust points to start from tee height
+  const adjustedPoints = useMemo(() => {
+    if (points.length === 0) return [];
+    return points.map(point => point.add(START_OFFSET));
+  }, [points]);
 
   // Cleanup function to properly dispose of resources
   const cleanup = () => {
@@ -75,7 +99,7 @@ const TrajectoryPath: FC<{
   };
 
   useEffect(() => {
-    if (!scene || points.length === 0) return;
+    if (!scene || adjustedPoints.length === 0) return;
 
     try {
       // Create particle system for trail effect
@@ -87,7 +111,7 @@ const TrajectoryPath: FC<{
       textureRef.current = texture;
 
       particleSystem.particleTexture = texture;
-      particleSystem.emitter = points[0];
+      particleSystem.emitter = adjustedPoints[0];
       particleSystem.minEmitBox = new Vector3(-0.1, -0.1, -0.1);
       particleSystem.maxEmitBox = new Vector3(0.1, 0.1, 0.1);
       particleSystem.color1 = new Color4(1, 0.5, 0, 1);
@@ -105,18 +129,18 @@ const TrajectoryPath: FC<{
       console.error('Error initializing particle system:', error);
       cleanup();
     }
-  }, [scene, points]);
+  }, [scene, adjustedPoints]);
 
   useEffect(() => {
-    if (!scene || points.length === 0 || !particleSystemRef.current) return;
+    if (!scene || adjustedPoints.length === 0 || !particleSystemRef.current) return;
 
     try {
-      const currentPointIndex = Math.floor((points.length - 1) * progress);
-      const currentPoint = points[currentPointIndex];
+      const currentPointIndex = Math.floor((adjustedPoints.length - 1) * progress);
+      const currentPoint = adjustedPoints[currentPointIndex];
       particleSystemRef.current.emitter = currentPoint;
 
       // Update trajectory line
-      const visiblePoints = points.slice(0, currentPointIndex + 1);
+      const visiblePoints = adjustedPoints.slice(0, currentPointIndex + 1);
       if (meshRef.current) {
         meshRef.current.dispose();
       }
@@ -136,7 +160,7 @@ const TrajectoryPath: FC<{
       console.error('Error updating trajectory:', error);
       cleanup();
     }
-  }, [progress, points, scene]);
+  }, [progress, adjustedPoints, scene]);
 
   return null;
 };
