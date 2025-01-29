@@ -41,7 +41,6 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
   };
 
   const handleCalculate = () => {
-    // Check for empty fields
     const requiredFields: (keyof ShotParamsType)[] = [
       'ballSpeed', 'launchAngle', 'launchDirection', 'spin', 'spinAxis'
     ];
@@ -57,7 +56,6 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
       return;
     }
 
-    // Now we know all fields are present, we can safely cast
     const fullParams = params as ShotParamsType;
 
     if (!validateShotParameters(fullParams)) {
@@ -102,8 +100,8 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
                 value={params.launchDirectionSide}
                 onValueChange={handleDirectionChange('launchDirectionSide')}
               >
-                <SelectTrigger className="w-[120px]">
-                  <SelectValue />
+                <SelectTrigger className="w-[140px]">
+                  <SelectValue placeholder="Select direction" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="right">Right (+)</SelectItem>
@@ -164,8 +162,8 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
                 value={params.spinDirection}
                 onValueChange={handleDirectionChange('spinDirection')}
               >
-                <SelectTrigger className="w-[120px]">
-                  <SelectValue />
+                <SelectTrigger className="w-[140px]">
+                  <SelectValue placeholder="Select direction" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="right">Right (+)</SelectItem>
