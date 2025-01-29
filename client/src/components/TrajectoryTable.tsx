@@ -23,7 +23,7 @@ export function TrajectoryTable({ data, onExport }: TrajectoryTableProps) {
   const metersToFeet = (meters: number) => meters * 3.28084;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 w-full">
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-barlow font-bold">Shot Results</h2>
         <Button 
@@ -35,19 +35,19 @@ export function TrajectoryTable({ data, onExport }: TrajectoryTableProps) {
         </Button>
       </div>
 
-      <div className="border rounded-lg">
+      <div className="border rounded-lg overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="text-base font-medium">Carry (yd)</TableHead>
-              <TableHead className="text-base font-medium">Total Carry (yd)</TableHead>
-              <TableHead className="text-base font-medium">Ball Speed (mph)</TableHead>
-              <TableHead className="text-base font-medium">Spin Rate (rpm)</TableHead>
-              <TableHead className="text-base font-medium">Spin Axis (°)</TableHead>
-              <TableHead className="text-base font-medium">Side Carry (yd)</TableHead>
-              <TableHead className="text-base font-medium">Launch Angle (°)</TableHead>
-              <TableHead className="text-base font-medium">Launch Direction (°)</TableHead>
-              <TableHead className="text-base font-medium">Apex (ft)</TableHead>
+              <TableHead className="text-sm font-medium whitespace-nowrap">Carry (yd)</TableHead>
+              <TableHead className="text-sm font-medium whitespace-nowrap">Total Carry (yd)</TableHead>
+              <TableHead className="text-sm font-medium whitespace-nowrap">Ball Speed (mph)</TableHead>
+              <TableHead className="text-sm font-medium whitespace-nowrap">Spin Rate (rpm)</TableHead>
+              <TableHead className="text-sm font-medium whitespace-nowrap">Spin Axis (°)</TableHead>
+              <TableHead className="text-sm font-medium whitespace-nowrap">Side Carry (yd)</TableHead>
+              <TableHead className="text-sm font-medium whitespace-nowrap">Launch Angle (°)</TableHead>
+              <TableHead className="text-sm font-medium whitespace-nowrap">Launch Direction (°)</TableHead>
+              <TableHead className="text-sm font-medium whitespace-nowrap">Apex (ft)</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -59,15 +59,15 @@ export function TrajectoryTable({ data, onExport }: TrajectoryTableProps) {
               </TableRow>
             ) : (
               <TableRow>
-                <TableCell className="text-lg font-barlow font-bold">{metersToYards(finalPoint.carry).toFixed(1)}</TableCell>
-                <TableCell className="text-lg font-barlow font-bold">{metersToYards(finalPoint.total).toFixed(1)}</TableCell>
-                <TableCell className="text-lg font-barlow font-bold">{finalPoint.ballSpeed.toFixed(1)}</TableCell>
-                <TableCell className="text-lg font-barlow font-bold">{finalPoint.spin}</TableCell>
-                <TableCell className="text-lg font-barlow font-bold">{finalPoint.spinAxis}</TableCell>
-                <TableCell className="text-lg font-barlow font-bold">{metersToYards(finalPoint.side).toFixed(1)}</TableCell>
-                <TableCell className="text-lg font-barlow font-bold">{finalPoint.launchAngle.toFixed(1)}</TableCell>
-                <TableCell className="text-lg font-barlow font-bold">{finalPoint.launchDirection.toFixed(1)}</TableCell>
-                <TableCell className="text-lg font-barlow font-bold">{metersToFeet(finalPoint.altitude).toFixed(1)}</TableCell>
+                <TableCell className="text-base font-barlow font-bold whitespace-nowrap">{metersToYards(finalPoint.carry).toFixed(1)}</TableCell>
+                <TableCell className="text-base font-barlow font-bold whitespace-nowrap">{metersToYards(finalPoint.total).toFixed(1)}</TableCell>
+                <TableCell className="text-base font-barlow font-bold whitespace-nowrap">{finalPoint.ballSpeed.toFixed(1)}</TableCell>
+                <TableCell className="text-base font-barlow font-bold whitespace-nowrap">{finalPoint.spin}</TableCell>
+                <TableCell className="text-base font-barlow font-bold whitespace-nowrap">{finalPoint.spinAxis}</TableCell>
+                <TableCell className="text-base font-barlow font-bold whitespace-nowrap">{metersToYards(finalPoint.side).toFixed(1)}</TableCell>
+                <TableCell className="text-base font-barlow font-bold whitespace-nowrap">{finalPoint.launchAngle.toFixed(1)}</TableCell>
+                <TableCell className="text-base font-barlow font-bold whitespace-nowrap">{finalPoint.launchDirection.toFixed(1)}</TableCell>
+                <TableCell className="text-base font-barlow font-bold whitespace-nowrap">{metersToFeet(finalPoint.altitude).toFixed(1)}</TableCell>
               </TableRow>
             )}
           </TableBody>
