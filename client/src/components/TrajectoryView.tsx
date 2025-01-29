@@ -38,14 +38,14 @@ const CAMERA_SETTINGS = {
   default: {
     alpha: Math.PI, // Behind the ball (no horizontal rotation)
     beta: Math.PI * 0.35, // Optimal angle for trajectory view
-    radius: RANGE_SIZE * 0.05, // Very close to back wall
-    target: new Vector3(0, TEE_HEIGHT + 0.5, MAT_OFFSET_Z) // Focus directly on ball position
+    radius: RANGE_SIZE * 0.15, // Distance from target
+    target: new Vector3(0, TEE_HEIGHT + 1, MAT_OFFSET_Z + RANGE_SIZE * 0.1) // Look straight down range
   },
   side: {
     alpha: Math.PI * 1.5,
     beta: Math.PI * 0.4,
     radius: RANGE_SIZE * 0.4,
-    target: new Vector3(0, 2, MAT_OFFSET_Z)
+    target: new Vector3(0, 2, MAT_OFFSET_Z) // Focus on ball position for side view
   }
 };
 
