@@ -17,11 +17,17 @@ function TrajectoryPath({ points }: { points: number[][] }) {
   }, [points]);
 
   return (
-    <mesh>
-      <lineSegments geometry={lineGeometry}>
-        <lineBasicMaterial color="#D92429" linewidth={3} />
-      </lineSegments>
-    </mesh>
+    <line>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          count={points.length}
+          array={new Float32Array(points.flat())}
+          itemSize={3}
+        />
+      </bufferGeometry>
+      <lineBasicMaterial color="#D92429" linewidth={2} />
+    </line>
   );
 }
 
