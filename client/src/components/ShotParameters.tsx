@@ -25,7 +25,6 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
   });
   const [savedParams, setSavedParams] = useState<Record<string, ShotParamsType>>({});
 
-  // Load saved parameters on mount
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
@@ -148,7 +147,7 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
   const isSpinDisabled = params.ballType !== 'RPT Ball';
 
   return (
-    <Card className="bg-white">
+    <Card className="bg-white w-full max-w-[400px] overflow-hidden">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6">
         <CardTitle className="text-2xl font-barlow font-bold">Shot Parameters</CardTitle>
         <div className="flex gap-2">
@@ -178,7 +177,7 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 gap-x-5 gap-y-6">
+        <div className="grid grid-cols-1 gap-y-6">
           <div className="space-y-3">
             <Label htmlFor="ballType" className="text-lg font-barlow font-medium">Ball Type</Label>
             <Select
@@ -211,7 +210,7 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
               min={0}
               max={200}
               step={1}
-              className="w-[120px] text-lg font-barlow font-bold h-12"
+              className="text-lg font-barlow font-bold h-12"
             />
           </div>
 
@@ -228,7 +227,7 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
               min={0}
               max={90}
               step={0.1}
-              className="w-[120px] text-lg font-barlow font-bold h-12"
+              className="text-lg font-barlow font-bold h-12"
             />
           </div>
 
@@ -246,13 +245,13 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
                 min={-90}
                 max={90}
                 step={0.1}
-                className="w-[100px] text-lg font-barlow font-bold h-12"
+                className="flex-1 text-lg font-barlow font-bold h-12"
               />
               <Select
                 value={params.launchDirectionSide}
                 onValueChange={handleDirectionChange('launchDirectionSide')}
               >
-                <SelectTrigger className="w-[120px] text-base h-12">
+                <SelectTrigger className="w-[130px] text-base h-12">
                   <SelectValue placeholder="Direction" />
                 </SelectTrigger>
                 <SelectContent>
@@ -276,7 +275,7 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
               min={0}
               max={10000}
               step={100}
-              className="w-[120px] text-lg font-barlow font-bold h-12"
+              className="text-lg font-barlow font-bold h-12"
               disabled={isSpinDisabled}
             />
           </div>
@@ -295,7 +294,7 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
                 min={-90}
                 max={90}
                 step={1}
-                className="w-[100px] text-lg font-barlow font-bold h-12"
+                className="flex-1 text-lg font-barlow font-bold h-12"
                 disabled={isSpinDisabled}
               />
               <Select
@@ -303,7 +302,7 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
                 onValueChange={handleDirectionChange('spinDirection')}
                 disabled={isSpinDisabled}
               >
-                <SelectTrigger className="w-[120px] text-base h-12">
+                <SelectTrigger className="w-[130px] text-base h-12">
                   <SelectValue placeholder="Direction" />
                 </SelectTrigger>
                 <SelectContent>
