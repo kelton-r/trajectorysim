@@ -1,6 +1,7 @@
-import { ShotParameters, TrajectoryPoint, WeatherConditions } from '@/types';
+import { ShotParameters, TrajectoryPoint } from '@/types';
 
 const GRAVITY = 9.81; // m/s^2
+const TEMPERATURE = 21.1; // 70°F in Celsius
 const AIR_DENSITY = 1.204; // kg/m^3 at 21.1°C (70°F)
 const BALL_MASS = 0.0459; // kg (standard golf ball)
 

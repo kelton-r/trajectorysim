@@ -1,10 +1,3 @@
-export interface WeatherConditions {
-  windSpeed: number;
-  airPressure: number;
-  humidity: number;
-  temperature: number;
-}
-
 export interface ShotParameters {
   ballSpeed: number;
   launchAngle: number;

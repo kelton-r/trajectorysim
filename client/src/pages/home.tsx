@@ -3,25 +3,14 @@ import { Header } from '@/components/layout/Header';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { TrajectoryTable } from '@/components/TrajectoryTable';
 import { TrajectoryView3D } from '@/components/TrajectoryView3D';
-import { WeatherConditions, ShotParameters, TrajectoryPoint } from '@/types';
+import { ShotParameters, TrajectoryPoint } from '@/types';
 import { calculateTrajectory } from '@/lib/calculations';
 
 export function HomePage() {
-  const [weather, setWeather] = useState<WeatherConditions>({
-    windSpeed: 10,
-    airPressure: 1013,
-    humidity: 60,
-    temperature: 20
-  });
-
   const [trajectoryData, setTrajectoryData] = useState<TrajectoryPoint[]>([]);
 
-  const handleWeatherChange = (newWeather: WeatherConditions) => {
-    setWeather(newWeather);
-  };
-
   const handleShotCalculate = (params: ShotParameters) => {
-    const data = calculateTrajectory(params, weather);
+    const data = calculateTrajectory(params);
     setTrajectoryData(data);
   };
 
@@ -56,10 +45,7 @@ export function HomePage() {
     <div className="h-screen flex flex-col">
       <Header />
       <div className="flex flex-1 overflow-hidden">
-        <Sidebar
-          onWeatherChange={handleWeatherChange}
-          onShotCalculate={handleShotCalculate}
-        />
+        <Sidebar onShotCalculate={handleShotCalculate} />
         <main className="flex-1 p-6 bg-white overflow-auto">
           <div className="space-y-6">
             <TrajectoryView3D data={trajectoryData} />
