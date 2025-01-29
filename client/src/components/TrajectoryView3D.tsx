@@ -102,13 +102,13 @@ export function TrajectoryView3D({ data, autoPlay = false }: TrajectoryView3DPro
     const distance = Math.sqrt(maxX * maxX + maxZ * maxZ);
 
     return {
-      side: {
-        position: [-distance * 0.3, 1.8, -2.4], // Position at ~6ft height, 8ft behind
-        rotation: [0, Math.PI / 2, 0] // Look along the X axis
+      default: {
+        position: [-2, 1.8, -2.4],
+        rotation: [0, Math.PI / 2, 0]
       },
-      top: {
-        position: [maxX * 0.5, distance * 0.8, 0], // Position above, centered on path
-        rotation: [-Math.PI / 2, 0, 0] // Look straight down
+      side: {
+        position: [-distance * 0.3, 1.8, -2.4],
+        rotation: [0, Math.PI / 2, 0]
       }
     };
   }, [data]);
