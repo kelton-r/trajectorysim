@@ -148,9 +148,11 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
 
   return (
     <Card className="bg-white h-full">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-        <CardTitle className="text-xl font-barlow font-bold">Shot Parameters</CardTitle>
-        <div className="flex gap-2">
+      <CardHeader className="text-center pb-6">
+        <CardTitle className="text-3xl font-barlow font-bold">Shot Parameters</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-6 px-4">
+        <div className="flex gap-2 justify-center">
           <Button
             variant="outline"
             size="sm"
@@ -175,8 +177,6 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
             </Select>
           )}
         </div>
-      </CardHeader>
-      <CardContent className="space-y-4 px-4">
         <div className="space-y-3">
           <Label htmlFor="ballType" className="text-sm font-medium">Ball Type</Label>
           <Select
