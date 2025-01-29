@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 export function Header() {
   return (
     <div>
-      <header className="h-[60px] bg-[#D92429] flex items-center px-6 justify-center">
+      <header className="h-[60px] bg-black flex items-center px-6 justify-center">
         <img
           src="/rapsodo-logo.png"
           alt="Rapsodo Logo"
