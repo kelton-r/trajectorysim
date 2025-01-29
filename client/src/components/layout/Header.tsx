@@ -10,17 +10,12 @@ import { Button } from '@/components/ui/button';
 export function Header() {
   return (
     <div>
-      <header className="h-[80px] bg-black flex items-center px-12 gap-4">
+      <header className="h-[80px] bg-black flex items-center px-12">
         <img
           src="/rapsodo-logo.png"
           alt="Rapsodo Logo"
           className="h-12 w-auto"
           data-testid="rapsodo-logo"
-        />
-        <img
-          src="/mlm2pro-logo.png"
-          alt="MLM2 Pro"
-          className="h-12 w-auto"
         />
       </header>
       <div className="h-[60px] border-b bg-black flex items-center px-12 justify-between">
@@ -29,9 +24,9 @@ export function Header() {
             TRAJECTORY SIMULATOR
           </h2>
           <img
-            src="/mlm2pro-logo.png"
+            src="/mlm2-logo.png"
             alt="MLM2 Pro"
-            className="h-8 w-auto object-contain"
+            className="h-8 w-auto"
           />
         </div>
         <DropdownMenu>
