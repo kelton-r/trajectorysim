@@ -149,7 +149,7 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
   return (
     <Card className="bg-white h-full">
       <CardHeader className="text-center pb-6">
-        <CardTitle className="text-3xl font-acumin uppercase">SHOT PARAMETERS</CardTitle>
+        <CardTitle className="text-3xl font-barlow font-bold">Shot Parameters</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6 px-4">
         <div className="flex gap-2 justify-center">
