@@ -147,7 +147,7 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
   const isSpinDisabled = params.ballType !== 'RPT Ball';
 
   return (
-    <Card className="bg-white h-full">
+    <Card className="bg-black h-full">
       <CardHeader className="text-center pb-6">
         <div className="flex flex-col items-center gap-4">
           <img
@@ -155,7 +155,7 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
             alt="MLM2 Pro"
             className="h-10 w-auto"
           />
-          <CardTitle className="text-3xl font-condensed font-bold">SHOT PARAMETERS</CardTitle>
+          <CardTitle className="text-3xl font-condensed font-bold text-white">SHOT PARAMETERS</CardTitle>
         </div>
       </CardHeader>
       <CardContent className="space-y-6 px-4">
@@ -185,7 +185,7 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
           )}
         </div>
         <div className="space-y-3">
-          <Label htmlFor="ballType" className="text-sm font-medium">Ball Type</Label>
+          <Label htmlFor="ballType" className="text-sm font-medium text-white">Ball Type</Label>
           <Select
             value={params.ballType}
             onValueChange={handleDirectionChange('ballType')}
@@ -204,7 +204,7 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
         </div>
 
         <div className="space-y-3">
-          <Label htmlFor="ballSpeed" className="flex items-center gap-2 text-sm font-medium">
+          <Label htmlFor="ballSpeed" className="flex items-center gap-2 text-sm font-medium text-white">
             <Gauge className="h-4 w-4" />
             Ball Speed (mph)
           </Label>
@@ -221,7 +221,7 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
         </div>
 
         <div className="space-y-3">
-          <Label htmlFor="launchAngle" className="flex items-center gap-2 text-sm font-medium">
+          <Label htmlFor="launchAngle" className="flex items-center gap-2 text-sm font-medium text-white">
             <ArrowRight className="h-4 w-4 rotate-90" />
             Launch Angle (°)
           </Label>
@@ -238,7 +238,7 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
         </div>
 
         <div className="space-y-3">
-          <Label htmlFor="launchDirection" className="flex items-center gap-2 text-sm font-medium">
+          <Label htmlFor="launchDirection" className="flex items-center gap-2 text-sm font-medium text-white">
             <ArrowRight className="h-4 w-4" />
             Launch Direction (°)
           </Label>
@@ -269,7 +269,7 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
         </div>
 
         <div className="space-y-3">
-          <Label htmlFor="spin" className="flex items-center gap-2 text-sm font-medium">
+          <Label htmlFor="spin" className="flex items-center gap-2 text-sm font-medium text-white">
             <RotateCw className="h-4 w-4" />
             Spin Rate (rpm)
           </Label>
@@ -287,7 +287,7 @@ const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
         </div>
 
         <div className="space-y-3">
-          <Label htmlFor="spinAxis" className="flex items-center gap-2 text-sm font-medium">
+          <Label htmlFor="spinAxis" className="flex items-center gap-2 text-sm font-medium text-white">
             <RotateCw className="h-4 w-4 rotate-90" />
             Spin Axis (°)
           </Label>
