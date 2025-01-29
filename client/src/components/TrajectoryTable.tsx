@@ -16,10 +16,13 @@ interface TrajectoryTableProps {
 }
 
 export function TrajectoryTable({ data, onExport }: TrajectoryTableProps) {
+  // Get only the final point of trajectory
+  const finalPoint = data.length > 0 ? data[data.length - 1] : null;
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h2 className="text-lg font-semibold">Trajectory Data</h2>
+        <h2 className="text-lg font-semibold">Shot Results</h2>
         <Button 
           onClick={onExport}
           className="bg-[#4CD964] hover:bg-[#3CB371] text-white"
@@ -33,40 +36,36 @@ export function TrajectoryTable({ data, onExport }: TrajectoryTableProps) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Time (s)</TableHead>
-              <TableHead>Distance (m)</TableHead>
-              <TableHead>Height (m)</TableHead>
-              <TableHead>Side (m)</TableHead>
-              <TableHead>Velocity (m/s)</TableHead>
-              <TableHead>Spin (rpm)</TableHead>
-              <TableHead>Drag (N)</TableHead>
-              <TableHead>Lift (N)</TableHead>
-              <TableHead>Total (m)</TableHead>
-              <TableHead>Carry (m)</TableHead>
+              <TableHead>Total Distance (m)</TableHead>
+              <TableHead>Max Height (m)</TableHead>
+              <TableHead>Final Side (m)</TableHead>
+              <TableHead>Final Velocity (m/s)</TableHead>
+              <TableHead>Spin Rate (rpm)</TableHead>
+              <TableHead>Peak Drag (N)</TableHead>
+              <TableHead>Peak Lift (N)</TableHead>
+              <TableHead>Total Path (m)</TableHead>
+              <TableHead>Carry Distance (m)</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.length === 0 ? (
+            {!finalPoint ? (
               <TableRow>
-                <TableCell colSpan={10} className="text-center py-4">
+                <TableCell colSpan={9} className="text-center py-4">
                   No data available
                 </TableCell>
               </TableRow>
             ) : (
-              data.map((point, index) => (
-                <TableRow key={index}>
-                  <TableCell>{point.time.toFixed(2)}</TableCell>
-                  <TableCell>{point.distance.toFixed(2)}</TableCell>
-                  <TableCell>{point.altitude.toFixed(2)}</TableCell>
-                  <TableCell>{point.side.toFixed(2)}</TableCell>
-                  <TableCell>{point.velocity.toFixed(2)}</TableCell>
-                  <TableCell>{point.spin}</TableCell>
-                  <TableCell>{point.drag.toFixed(2)}</TableCell>
-                  <TableCell>{point.lift.toFixed(2)}</TableCell>
-                  <TableCell>{point.total.toFixed(2)}</TableCell>
-                  <TableCell>{point.carry.toFixed(2)}</TableCell>
-                </TableRow>
-              ))
+              <TableRow>
+                <TableCell>{finalPoint.distance.toFixed(2)}</TableCell>
+                <TableCell>{Math.max(...data.map(p => p.altitude)).toFixed(2)}</TableCell>
+                <TableCell>{finalPoint.side.toFixed(2)}</TableCell>
+                <TableCell>{finalPoint.velocity.toFixed(2)}</TableCell>
+                <TableCell>{finalPoint.spin}</TableCell>
+                <TableCell>{Math.max(...data.map(p => p.drag)).toFixed(2)}</TableCell>
+                <TableCell>{Math.max(...data.map(p => p.lift)).toFixed(2)}</TableCell>
+                <TableCell>{finalPoint.total.toFixed(2)}</TableCell>
+                <TableCell>{finalPoint.carry.toFixed(2)}</TableCell>
+              </TableRow>
             )}
           </TableBody>
         </Table>

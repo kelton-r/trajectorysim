@@ -16,28 +16,47 @@ export function HomePage() {
   };
 
   const handleExport = () => {
-    const headers = ['Time', 'Distance', 'Height', 'Side', 'Velocity', 'Spin', 'Drag', 'Lift', 'Total', 'Carry'];
+    if (trajectoryData.length === 0) return;
+
+    const finalPoint = trajectoryData[trajectoryData.length - 1];
+    const maxHeight = Math.max(...trajectoryData.map(p => p.altitude));
+    const maxDrag = Math.max(...trajectoryData.map(p => p.drag));
+    const maxLift = Math.max(...trajectoryData.map(p => p.lift));
+
+    const headers = [
+      'Total Distance (m)',
+      'Max Height (m)',
+      'Final Side (m)',
+      'Final Velocity (m/s)',
+      'Spin Rate (rpm)',
+      'Peak Drag (N)',
+      'Peak Lift (N)',
+      'Total Path (m)',
+      'Carry Distance (m)'
+    ];
+
+    const values = [
+      finalPoint.distance,
+      maxHeight,
+      finalPoint.side,
+      finalPoint.velocity,
+      finalPoint.spin,
+      maxDrag,
+      maxLift,
+      finalPoint.total,
+      finalPoint.carry
+    ];
+
     const csvContent = [
       headers.join(','),
-      ...trajectoryData.map(point => [
-        point.time,
-        point.distance,
-        point.altitude,
-        point.side,
-        point.velocity,
-        point.spin,
-        point.drag,
-        point.lift,
-        point.total,
-        point.carry
-      ].join(','))
+      values.map(v => typeof v === 'number' ? v.toFixed(2) : v).join(',')
     ].join('\n');
 
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'trajectory-data.csv';
+    a.download = 'shot-results.csv';
     a.click();
     window.URL.revokeObjectURL(url);
   };
