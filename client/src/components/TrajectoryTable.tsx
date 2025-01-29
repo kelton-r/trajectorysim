@@ -25,12 +25,12 @@ export function TrajectoryTable({ data, onExport }: TrajectoryTableProps) {
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h2 className="text-lg font-semibold">Shot Results</h2>
+        <h2 className="text-xl font-barlow font-bold">Shot Results</h2>
         <Button 
           onClick={onExport}
-          className="bg-[#D92429] hover:bg-[#B91C21] text-white"
+          className="bg-[#D92429] hover:bg-[#B91C21] text-white text-base h-12"
         >
-          <Download className="mr-2 h-4 w-4" />
+          <Download className="mr-2 h-5 w-5" />
           EXPORT TO CSV
         </Button>
       </div>
@@ -39,35 +39,35 @@ export function TrajectoryTable({ data, onExport }: TrajectoryTableProps) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Carry (yd)</TableHead>
-              <TableHead>Total Carry (yd)</TableHead>
-              <TableHead>Ball Speed (mph)</TableHead>
-              <TableHead>Spin Rate (rpm)</TableHead>
-              <TableHead>Spin Axis (°)</TableHead>
-              <TableHead>Side Carry (yd)</TableHead>
-              <TableHead>Launch Angle (°)</TableHead>
-              <TableHead>Launch Direction (°)</TableHead>
-              <TableHead>Apex (ft)</TableHead>
+              <TableHead className="text-base font-medium">Carry (yd)</TableHead>
+              <TableHead className="text-base font-medium">Total Carry (yd)</TableHead>
+              <TableHead className="text-base font-medium">Ball Speed (mph)</TableHead>
+              <TableHead className="text-base font-medium">Spin Rate (rpm)</TableHead>
+              <TableHead className="text-base font-medium">Spin Axis (°)</TableHead>
+              <TableHead className="text-base font-medium">Side Carry (yd)</TableHead>
+              <TableHead className="text-base font-medium">Launch Angle (°)</TableHead>
+              <TableHead className="text-base font-medium">Launch Direction (°)</TableHead>
+              <TableHead className="text-base font-medium">Apex (ft)</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {!finalPoint ? (
               <TableRow>
-                <TableCell colSpan={9} className="text-center py-4">
+                <TableCell colSpan={9} className="text-center py-6 text-base">
                   No data available
                 </TableCell>
               </TableRow>
             ) : (
               <TableRow>
-                <TableCell>{metersToYards(finalPoint.carry).toFixed(1)}</TableCell>
-                <TableCell>{metersToYards(finalPoint.total).toFixed(1)}</TableCell>
-                <TableCell>{finalPoint.ballSpeed.toFixed(1)}</TableCell>
-                <TableCell>{finalPoint.spin}</TableCell>
-                <TableCell>{finalPoint.spinAxis}</TableCell>
-                <TableCell>{metersToYards(finalPoint.side).toFixed(1)}</TableCell>
-                <TableCell>{finalPoint.launchAngle.toFixed(1)}</TableCell>
-                <TableCell>{finalPoint.launchDirection.toFixed(1)}</TableCell>
-                <TableCell>{metersToFeet(finalPoint.altitude).toFixed(1)}</TableCell>
+                <TableCell className="text-lg font-barlow font-bold">{metersToYards(finalPoint.carry).toFixed(1)}</TableCell>
+                <TableCell className="text-lg font-barlow font-bold">{metersToYards(finalPoint.total).toFixed(1)}</TableCell>
+                <TableCell className="text-lg font-barlow font-bold">{finalPoint.ballSpeed.toFixed(1)}</TableCell>
+                <TableCell className="text-lg font-barlow font-bold">{finalPoint.spin}</TableCell>
+                <TableCell className="text-lg font-barlow font-bold">{finalPoint.spinAxis}</TableCell>
+                <TableCell className="text-lg font-barlow font-bold">{metersToYards(finalPoint.side).toFixed(1)}</TableCell>
+                <TableCell className="text-lg font-barlow font-bold">{finalPoint.launchAngle.toFixed(1)}</TableCell>
+                <TableCell className="text-lg font-barlow font-bold">{finalPoint.launchDirection.toFixed(1)}</TableCell>
+                <TableCell className="text-lg font-barlow font-bold">{metersToFeet(finalPoint.altitude).toFixed(1)}</TableCell>
               </TableRow>
             )}
           </TableBody>

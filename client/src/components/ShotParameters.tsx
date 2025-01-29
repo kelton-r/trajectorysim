@@ -16,7 +16,7 @@ interface ShotParametersProps {
 const BALL_TYPES = ['RPT Ball', 'Range Ball', 'Premium Ball'];
 const STORAGE_KEY = 'saved_shot_params';
 
-export function ShotParameters({ onCalculate }: ShotParametersProps) {
+const ShotParameters = ({ onCalculate }: ShotParametersProps) => {
   const { toast } = useToast();
   const [params, setParams] = useState<Partial<ShotParamsType>>({
     ballType: BALL_TYPES[0],
@@ -153,25 +153,25 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
   return (
     <Card className="bg-white">
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="text-lg font-semibold">Shot Parameters</CardTitle>
+        <CardTitle className="text-xl font-barlow font-bold">Shot Parameters</CardTitle>
         <div className="flex gap-2">
           <Button
             variant="outline"
             size="sm"
             onClick={handleSave}
-            className="flex items-center gap-1"
+            className="flex items-center gap-1 text-base"
           >
             <Save className="h-4 w-4" />
             Save
           </Button>
           {Object.keys(savedParams).length > 0 && (
             <Select onValueChange={handleLoad}>
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-[180px] text-base">
                 <SelectValue placeholder="Load saved..." />
               </SelectTrigger>
               <SelectContent>
                 {Object.entries(savedParams).map(([timestamp, _]) => (
-                  <SelectItem key={timestamp} value={timestamp}>
+                  <SelectItem key={timestamp} value={timestamp} className="text-base">
                     {new Date(timestamp).toLocaleTimeString()}
                   </SelectItem>
                 ))}
@@ -181,10 +181,10 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="launchDirection" className="flex items-center gap-2">
-              <ArrowRight className="h-4 w-4" />
+        <div className="grid grid-cols-2 gap-6">
+          <div className="space-y-3">
+            <Label htmlFor="launchDirection" className="flex items-center gap-2 text-base font-medium">
+              <ArrowRight className="h-5 w-5" />
               Launch Direction (°)
             </Label>
             <div className="flex gap-2">
@@ -196,26 +196,25 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
                 min={-90}
                 max={90}
                 step={0.1}
-                className="w-[60px]"
+                className="w-[80px] text-lg font-barlow font-bold h-12"
               />
               <Select
                 value={params.launchDirectionSide}
                 onValueChange={handleDirectionChange('launchDirectionSide')}
               >
-                <SelectTrigger className="w-[200px]">
+                <SelectTrigger className="w-[200px] text-base h-12">
                   <SelectValue placeholder="Direction" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="right">Right (+)</SelectItem>
-                  <SelectItem value="left">Left (-)</SelectItem>
+                  <SelectItem value="right" className="text-base">Right (+)</SelectItem>
+                  <SelectItem value="left" className="text-base">Left (-)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="launchAngle" className="flex items-center gap-2">
-              <ArrowRight className="h-4 w-4 rotate-90" />
+          <div className="space-y-3">
+            <Label htmlFor="launchAngle" className="flex items-center gap-2 text-base font-medium">
+              <ArrowRight className="h-5 w-5 rotate-90" />
               Launch Angle (°)
             </Label>
             <Input
@@ -226,13 +225,12 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
               min={0}
               max={90}
               step={0.1}
-              className="w-[100px]"
+              className="w-[120px] text-lg font-barlow font-bold h-12"
             />
           </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="spin" className="flex items-center gap-2">
-              <RotateCw className="h-4 w-4" />
+          <div className="space-y-3">
+            <Label htmlFor="spin" className="flex items-center gap-2 text-base font-medium">
+              <RotateCw className="h-5 w-5" />
               Spin Rate (rpm)
             </Label>
             <Input
@@ -243,14 +241,13 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
               min={0}
               max={10000}
               step={100}
-              className="w-[100px]"
+              className="w-[120px] text-lg font-barlow font-bold h-12"
               disabled={isSpinDisabled}
             />
           </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="spinAxis" className="flex items-center gap-2">
-              <RotateCw className="h-4 w-4 rotate-90" />
+          <div className="space-y-3">
+            <Label htmlFor="spinAxis" className="flex items-center gap-2 text-base font-medium">
+              <RotateCw className="h-5 w-5 rotate-90" />
               Spin Axis (°)
             </Label>
             <div className="flex gap-2">
@@ -262,7 +259,7 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
                 min={-90}
                 max={90}
                 step={1}
-                className="w-[60px]"
+                className="w-[80px] text-lg font-barlow font-bold h-12"
                 disabled={isSpinDisabled}
               />
               <Select
@@ -270,39 +267,37 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
                 onValueChange={handleDirectionChange('spinDirection')}
                 disabled={isSpinDisabled}
               >
-                <SelectTrigger className="w-[200px]">
+                <SelectTrigger className="w-[200px] text-base h-12">
                   <SelectValue placeholder="Direction" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="right">Right (+)</SelectItem>
-                  <SelectItem value="left">Left (-)</SelectItem>
+                  <SelectItem value="right" className="text-base">Right (+)</SelectItem>
+                  <SelectItem value="left" className="text-base">Left (-)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="ballType">Ball Type</Label>
+          <div className="space-y-3">
+            <Label htmlFor="ballType" className="text-base font-medium">Ball Type</Label>
             <Select
               value={params.ballType}
               onValueChange={handleDirectionChange('ballType')}
             >
-              <SelectTrigger id="ballType" className="text-sm">
+              <SelectTrigger id="ballType" className="text-base h-12">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 {BALL_TYPES.map(type => (
-                  <SelectItem key={type} value={type} className="text-sm">
+                  <SelectItem key={type} value={type} className="text-base">
                     {type}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="ballSpeed" className="flex items-center gap-2">
-              <Gauge className="h-4 w-4" />
+          <div className="space-y-3">
+            <Label htmlFor="ballSpeed" className="flex items-center gap-2 text-base font-medium">
+              <Gauge className="h-5 w-5" />
               Ball Speed (mph)
             </Label>
             <Input
@@ -313,14 +308,14 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
               min={0}
               max={200}
               step={1}
-              className="w-[100px]"
+              className="w-[120px] text-lg font-barlow font-bold h-12"
             />
           </div>
         </div>
       </CardContent>
       <CardFooter>
         <Button
-          className="w-full bg-black hover:bg-gray-800 text-white font-bold"
+          className="w-full bg-black hover:bg-gray-800 text-white font-bold text-lg h-14"
           onClick={handleCalculate}
           size="lg"
         >
@@ -329,4 +324,6 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
       </CardFooter>
     </Card>
   );
-}
+};
+
+export default ShotParameters;

@@ -1,4 +1,4 @@
-import { ShotParameters } from '../ShotParameters';
+import ShotParameters from '../ShotParameters';
 import { ShotParameters as ShotParamsType } from '@/types';
 
 interface SidebarProps {
