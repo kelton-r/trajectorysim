@@ -112,21 +112,47 @@ export function TrajectoryView3D({ data, autoPlay = false }: TrajectoryView3DPro
     };
   }, [data]);
 
+  const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      // Cleanup WebGL context on unmount
+      const canvas = document.querySelector('canvas');
+      if (canvas) {
+        const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
+        if (gl && 'getExtension' in gl) {
+          gl.getExtension('WEBGL_lose_context')?.loseContext();
+        }
+      }
+    };
+  }, []);
+
+  if (hasError) {
+    return (
+      <div className="relative w-full h-[600px] bg-white rounded-lg shadow-sm overflow-hidden flex items-center justify-center">
+        <p>Failed to initialize 3D view. Please refresh the page.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="relative w-full h-[600px] bg-white rounded-lg shadow-sm overflow-hidden">
       <Canvas
         shadows
+        onError={() => setHasError(true)}
         onContextLost={(event) => {
           event.preventDefault();
           console.warn('WebGL context lost, attempting recovery...');
         }}
         onContextRestored={() => {
           console.log('WebGL context restored');
+          setHasError(false);
         }}
         gl={{
           powerPreference: 'high-performance',
           antialias: true,
           preserveDrawingBuffer: true,
+          failIfMajorPerformanceCaveat: true,
         }}
       >
         <PerspectiveCamera
