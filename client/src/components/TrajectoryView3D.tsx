@@ -114,7 +114,21 @@ export function TrajectoryView3D({ data, autoPlay = false }: TrajectoryView3DPro
 
   return (
     <div className="relative w-full h-[600px] bg-white rounded-lg shadow-sm overflow-hidden">
-      <Canvas shadows>
+      <Canvas
+        shadows
+        onContextLost={(event) => {
+          event.preventDefault();
+          console.warn('WebGL context lost, attempting recovery...');
+        }}
+        onContextRestored={() => {
+          console.log('WebGL context restored');
+        }}
+        gl={{
+          powerPreference: 'high-performance',
+          antialias: true,
+          preserveDrawingBuffer: true,
+        }}
+      >
         <PerspectiveCamera
           makeDefault
           position={cameraSettings[viewMode].position}

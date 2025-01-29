@@ -1,4 +1,3 @@
-
 import '@testing-library/jest-dom';
 import { vi } from 'vitest';
 import React from 'react';
@@ -35,6 +34,17 @@ vi.mock('@react-three/fiber', () => ({
       setSize: vi.fn(),
       render: vi.fn(),
       capabilities: { isWebGL2: true },
+      getContext: vi.fn(() => ({
+        canvas: document.createElement('canvas'),
+        isContextLost: () => false,
+        loseContext: vi.fn(),
+        restoreContext: vi.fn(),
+      })),
+      dispose: vi.fn(),
+      info: {
+        autoReset: true,
+        reset: vi.fn(),
+      },
     },
     scene: {},
   })),
