@@ -2,10 +2,13 @@ import '@testing-library/jest-dom';
 import { vi } from 'vitest';
 import React from 'react';
 
-// Mock HTMLCanvasElement methods
-HTMLCanvasElement.prototype.getContext = vi.fn(() => ({
-  getParameter: vi.fn(),
-  getExtension: vi.fn(),
+// Mock WebGL context with proper shader precision format support
+const mockWebGLContext = {
+  getParameter: vi.fn(() => 'high'),
+  getExtension: vi.fn(() => ({
+    loseContext: vi.fn(),
+    restoreContext: vi.fn()
+  })),
   createShader: vi.fn(),
   createProgram: vi.fn(),
   createBuffer: vi.fn(),
@@ -17,11 +20,25 @@ HTMLCanvasElement.prototype.getContext = vi.fn(() => ({
   enable: vi.fn(),
   disable: vi.fn(),
   clear: vi.fn(),
-}));
+  getShaderPrecisionFormat: vi.fn(() => ({
+    precision: 'high',
+    rangeMin: 1,
+    rangeMax: 1
+  })),
+};
+
+// Mock HTMLCanvasElement methods
+HTMLCanvasElement.prototype.getContext = vi.fn((contextType) => {
+  if (contextType === 'webgl2' || contextType === 'webgl') {
+    return mockWebGLContext;
+  }
+  return null;
+});
 
 // Mock Three.js components
 vi.mock('@react-three/fiber', () => ({
-  Canvas: ({ children }: { children: React.ReactNode }) => React.createElement('div', { 'data-testid': 'three-canvas' }, children),
+  Canvas: ({ children }: { children: React.ReactNode }) => 
+    React.createElement('div', { 'data-testid': 'three-canvas' }, children),
   useFrame: vi.fn(),
   useThree: vi.fn(() => ({
     camera: {
@@ -33,13 +50,11 @@ vi.mock('@react-three/fiber', () => ({
       domElement: document.createElement('canvas'),
       setSize: vi.fn(),
       render: vi.fn(),
-      capabilities: { isWebGL2: true },
-      getContext: vi.fn(() => ({
-        canvas: document.createElement('canvas'),
-        isContextLost: () => false,
-        loseContext: vi.fn(),
-        restoreContext: vi.fn(),
-      })),
+      capabilities: { 
+        isWebGL2: true,
+        precision: 'high',
+      },
+      getContext: () => mockWebGLContext,
       dispose: vi.fn(),
       info: {
         autoReset: true,
@@ -55,8 +70,8 @@ vi.mock('@react-three/drei', () => ({
   OrbitControls: () => null,
 }));
 
-// Mock requestAnimationFrame
-global.requestAnimationFrame = vi.fn((cb) => setTimeout(cb, 0));
+// Mock requestAnimationFrame and cancelAnimationFrame
+global.requestAnimationFrame = vi.fn((cb) => setTimeout(() => cb(performance.now()), 0));
 global.cancelAnimationFrame = vi.fn();
 
 // Mock ResizeObserver
@@ -65,3 +80,14 @@ global.ResizeObserver = vi.fn().mockImplementation(() => ({
   unobserve: vi.fn(),
   disconnect: vi.fn(),
 }));
+
+// Set up WebGL context constructors
+Object.defineProperty(window, 'WebGLRenderingContext', {
+  value: vi.fn(() => mockWebGLContext),
+  writable: true,
+});
+
+Object.defineProperty(window, 'WebGL2RenderingContext', {
+  value: vi.fn(() => mockWebGLContext),
+  writable: true,
+});

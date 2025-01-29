@@ -1,4 +1,3 @@
-
 import { Canvas } from '@react-three/fiber';
 import { PerspectiveCamera } from '@react-three/drei';
 import { TrajectoryPoint } from '@/types';
@@ -43,6 +42,7 @@ function Ground({ size }: { size: number }) {
 export function TrajectoryView3D({ data, autoPlay = false }: TrajectoryView3DProps) {
   const [progress, setProgress] = useState(0);
   const [viewMode, setViewMode] = useState<'default' | 'side'>('default');
+  const [hasError, setHasError] = useState(false);
 
   const points = useMemo(() => {
     return data.map(point => [point.x, point.y, point.z]);
@@ -70,9 +70,7 @@ export function TrajectoryView3D({ data, autoPlay = false }: TrajectoryView3DPro
         }
       };
 
-      if (autoPlay) {
-        animationFrame = requestAnimationFrame(animate);
-      }
+      animationFrame = requestAnimationFrame(animate);
 
       return () => {
         if (animationFrame) {
@@ -80,21 +78,19 @@ export function TrajectoryView3D({ data, autoPlay = false }: TrajectoryView3DPro
         }
       };
     }
-  }, [data, autoPlay]);
+  }, [data]);
 
   const cameraSettings = useMemo(() => {
-    if (data.length === 0) {
-      return {
-        default: {
-          position: [-2, 1.8, -2.4],
-          rotation: [0, Math.PI / 2, 0]
-        },
-        side: {
-          position: [0, 3, -8],
-          rotation: [0, Math.PI / 2, 0]
-        }
-      };
-    }
+    if (data.length === 0) return {
+      default: {
+        position: new THREE.Vector3(-2, 1.8, -2.4),
+        rotation: new THREE.Euler(0, Math.PI / 2, 0)
+      },
+      side: {
+        position: new THREE.Vector3(0, 3, -8),
+        rotation: new THREE.Euler(0, Math.PI / 2, 0)
+      }
+    };
 
     const maxX = Math.max(...data.map(p => p.x));
     const maxZ = Math.max(...data.map(p => Math.abs(p.z)));
@@ -102,30 +98,15 @@ export function TrajectoryView3D({ data, autoPlay = false }: TrajectoryView3DPro
 
     return {
       default: {
-        position: [-2, 1.8, -2.4],
-        rotation: [0, Math.PI / 2, 0]
+        position: new THREE.Vector3(-distance * 0.3, 1.8, -2.4),
+        rotation: new THREE.Euler(0, Math.PI / 2, 0)
       },
       side: {
-        position: [-distance * 0.3, 1.8, -2.4],
-        rotation: [0, Math.PI / 2, 0]
+        position: new THREE.Vector3(-distance * 0.3, distance * 0.4, 0),
+        rotation: new THREE.Euler(0, Math.PI / 2, 0)
       }
     };
   }, [data]);
-
-  const [hasError, setHasError] = useState(false);
-
-  useEffect(() => {
-    return () => {
-      // Cleanup WebGL context on unmount
-      const canvas = document.querySelector('canvas');
-      if (canvas) {
-        const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
-        if (gl && 'getExtension' in gl) {
-          gl.getExtension('WEBGL_lose_context')?.loseContext();
-        }
-      }
-    };
-  }, []);
 
   if (hasError) {
     return (
@@ -140,14 +121,6 @@ export function TrajectoryView3D({ data, autoPlay = false }: TrajectoryView3DPro
       <Canvas
         shadows
         onError={() => setHasError(true)}
-        onContextLost={(event) => {
-          event.preventDefault();
-          console.warn('WebGL context lost, attempting recovery...');
-        }}
-        onContextRestored={() => {
-          console.log('WebGL context restored');
-          setHasError(false);
-        }}
         gl={{
           powerPreference: 'high-performance',
           antialias: true,
