@@ -1,4 +1,4 @@
-import { ShotParameters, TrajectoryPoint, WeatherConditions } from '@/types';
+import { ShotParameters, TrajectoryPoint } from '@/types';
 
 const GRAVITY = 9.81; // m/s^2
 const TEMPERATURE = 21.1; // 70°F in Celsius
@@ -16,7 +16,8 @@ export function calculateTrajectory(
 
   // Convert angles to radians
   const launchAngleRad = params.launchAngle * Math.PI / 180;
-  const launchDirectionRad = params.launchDirection * Math.PI / 180;
+  const launchDirectionRad = params.launchDirection * Math.PI / 180 * 
+    (params.launchDirectionSide === 'right' ? 1 : -1);
 
   // Initial position
   let x = 0, y = 0, z = 0;
@@ -109,7 +110,8 @@ export function validateShotParameters(params: ShotParameters): boolean {
     params.spin <= 10000 &&
     params.spinAxis >= -90 &&
     params.spinAxis <= 90 &&
-    (params.spinDirection === 'right' || params.spinDirection === 'left')
+    (params.spinDirection === 'right' || params.spinDirection === 'left') &&
+    (params.launchDirectionSide === 'right' || params.launchDirectionSide === 'left')
   );
 }
 

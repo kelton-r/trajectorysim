@@ -21,6 +21,7 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
     ballSpeed: 150,
     launchAngle: 15,
     launchDirection: 0,
+    launchDirectionSide: 'right',
     spin: 2500,
     spinAxis: 0,
     spinDirection: 'right',
@@ -31,7 +32,7 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
     e: React.ChangeEvent<HTMLInputElement> | { value: string }
   ) => {
     const value = 'target' in e ? 
-      (key === 'spinDirection' ? e.target.value : Number(e.target.value)) 
+      (key === 'spinDirection' || key === 'launchDirectionSide' ? e.target.value : Number(e.target.value)) 
       : e.value;
     setParams(prev => ({ ...prev, [key]: value }));
   };
@@ -64,15 +65,29 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
               <ArrowRight className="h-4 w-4" />
               Launch Direction (°)
             </Label>
-            <Input
-              id="launchDirection"
-              type="number"
-              value={params.launchDirection}
-              onChange={handleChange('launchDirection')}
-              min={-90}
-              max={90}
-              step={0.1}
-            />
+            <div className="flex gap-2">
+              <Input
+                id="launchDirection"
+                type="number"
+                value={params.launchDirection}
+                onChange={handleChange('launchDirection')}
+                min={-90}
+                max={90}
+                step={0.1}
+              />
+              <Select
+                value={params.launchDirectionSide}
+                onValueChange={value => handleChange('launchDirectionSide')({ value })}
+              >
+                <SelectTrigger className="w-[100px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="right">Right</SelectItem>
+                  <SelectItem value="left">Left</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           <div className="space-y-2">
