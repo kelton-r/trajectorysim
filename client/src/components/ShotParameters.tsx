@@ -101,12 +101,12 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
                 value={params.launchDirectionSide}
                 onValueChange={handleDirectionChange('launchDirectionSide')}
               >
-                <SelectTrigger className="w-[182px]">
+                <SelectTrigger className="w-[150px] text-sm px-2">
                   <SelectValue placeholder="Direction" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="right">Right (+)</SelectItem>
-                  <SelectItem value="left">Left (-)</SelectItem>
+                  <SelectItem value="right" className="text-sm py-1 px-2">Right (+)</SelectItem>
+                  <SelectItem value="left" className="text-sm py-1 px-2">Left (-)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -164,12 +164,12 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
                 value={params.spinDirection}
                 onValueChange={handleDirectionChange('spinDirection')}
               >
-                <SelectTrigger className="w-[182px]">
+                <SelectTrigger className="w-[150px] text-sm px-2">
                   <SelectValue placeholder="Direction" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="right">Right (+)</SelectItem>
-                  <SelectItem value="left">Left (-)</SelectItem>
+                  <SelectItem value="right" className="text-sm py-1 px-2">Right (+)</SelectItem>
+                  <SelectItem value="left" className="text-sm py-1 px-2">Left (-)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -181,12 +181,12 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
               value={params.ballType}
               onValueChange={handleDirectionChange('ballType')}
             >
-              <SelectTrigger id="ballType">
+              <SelectTrigger id="ballType" className="text-sm">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 {BALL_TYPES.map(type => (
-                  <SelectItem key={type} value={type}>
+                  <SelectItem key={type} value={type} className="text-sm">
                     {type}
                   </SelectItem>
                 ))}
