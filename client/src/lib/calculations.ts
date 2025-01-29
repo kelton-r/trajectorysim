@@ -114,16 +114,17 @@ export function calculateTrajectory(params: ShotParameters): TrajectoryPoint[] {
   let vz = ballSpeedMS * Math.cos(launchAngleRad) * Math.sin(launchDirectionRad);
 
   let t = 0;
-  let lastPoint = { x: 0, y: 0, z: 0, velocity: ballSpeedMS };
+  let maxHeight = 0;
 
+  // Track trajectory points for apex calculation
   while (y >= 0 && t < 15) { // Max 15 seconds flight time
-    lastPoint = { x, y, z, velocity: Math.sqrt(vx * vx + vy * vy + vz * vz) };
+    maxHeight = Math.max(maxHeight, y);
 
     const velocity = Math.sqrt(vx * vx + vy * vy + vz * vz);
 
     // Calculate aerodynamic coefficients
-    const cd = calculateDragCoefficient(velocity, params.spin || 0, params.ballType);
-    const cl = calculateLiftCoefficient(params.spin || 0, velocity, params.ballType);
+    const cd = calculateDragCoefficient(velocity, params.spin || 0, params.ballType as keyof typeof BALL_TYPE_COEFFICIENTS);
+    const cl = calculateLiftCoefficient(params.spin || 0, velocity, params.ballType as keyof typeof BALL_TYPE_COEFFICIENTS);
 
     // Calculate forces
     const dragMagnitude = 0.5 * AIR_DENSITY * velocity * velocity * BALL_AREA * cd;
@@ -162,21 +163,21 @@ export function calculateTrajectory(params: ShotParameters): TrajectoryPoint[] {
   const landingAngle = Math.atan2(vy, Math.sqrt(vx * vx + vz * vz));
   const rollDistance = calculateRoll(landingVelocity, landingAngle, params.ballType === 'RPT Ball' ? params.spin : undefined);
 
-  // Final point with roll distance added
+  // Final point with all calculated values
   const finalPoint: TrajectoryPoint = {
     time: t,
-    x: lastPoint.x + rollDistance * Math.cos(landingAngle),
+    x: x + rollDistance * Math.cos(landingAngle),
     y: 0,
-    z: lastPoint.z + rollDistance * Math.sin(landingAngle),
+    z: z + rollDistance * Math.sin(landingAngle),
     velocity: landingVelocity,
     spin: params.spin || 0,
-    altitude: 0,
-    distance: Math.sqrt((lastPoint.x + rollDistance * Math.cos(landingAngle)) * (lastPoint.x + rollDistance * Math.cos(landingAngle)) + (lastPoint.z + rollDistance * Math.sin(landingAngle)) * (lastPoint.z + rollDistance * Math.sin(landingAngle))),
+    altitude: maxHeight, // Store the maximum height reached
+    distance: Math.sqrt((x + rollDistance * Math.cos(landingAngle)) * (x + rollDistance * Math.cos(landingAngle)) + (z + rollDistance * Math.sin(landingAngle)) * (z + rollDistance * Math.sin(landingAngle))),
     drag: 0,
     lift: 0,
-    side: lastPoint.z + rollDistance * Math.sin(landingAngle),
-    total: Math.sqrt((lastPoint.x + rollDistance * Math.cos(landingAngle)) * (lastPoint.x + rollDistance * Math.cos(landingAngle)) + (lastPoint.z + rollDistance * Math.sin(landingAngle)) * (lastPoint.z + rollDistance * Math.sin(landingAngle))),
-    carry: lastPoint.x,
+    side: z + rollDistance * Math.sin(landingAngle),
+    total: Math.sqrt((x + rollDistance * Math.cos(landingAngle)) * (x + rollDistance * Math.cos(landingAngle)) + (z + rollDistance * Math.sin(landingAngle)) * (z + rollDistance * Math.sin(landingAngle))),
+    carry: x,
     launchAngle: params.launchAngle,
     launchDirection: params.launchDirection * (params.launchDirectionSide === 'right' ? 1 : -1),
     spinAxis: params.spinAxis * (params.spinDirection === 'right' ? 1 : -1),
