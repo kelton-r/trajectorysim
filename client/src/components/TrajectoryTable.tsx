@@ -16,8 +16,12 @@ interface TrajectoryTableProps {
 }
 
 export function TrajectoryTable({ data, onExport }: TrajectoryTableProps) {
-  // Get only the final point of trajectory
   const finalPoint = data.length > 0 ? data[data.length - 1] : null;
+
+  // Unit conversion functions
+  const metersToYards = (meters: number) => meters * 1.09361;
+  const metersPerSecToMPH = (mps: number) => mps * 2.23694;
+  const metersToFeet = (meters: number) => meters * 3.28084;
 
   return (
     <div className="space-y-4">
@@ -56,15 +60,15 @@ export function TrajectoryTable({ data, onExport }: TrajectoryTableProps) {
               </TableRow>
             ) : (
               <TableRow>
-                <TableCell>{finalPoint.carry.toFixed(1)}</TableCell>
-                <TableCell>{finalPoint.total.toFixed(1)}</TableCell>
-                <TableCell>{finalPoint.velocity.toFixed(1)}</TableCell>
+                <TableCell>{metersToYards(finalPoint.carry).toFixed(1)}</TableCell>
+                <TableCell>{metersToYards(finalPoint.total).toFixed(1)}</TableCell>
+                <TableCell>{metersPerSecToMPH(finalPoint.velocity).toFixed(1)}</TableCell>
                 <TableCell>{finalPoint.spin}</TableCell>
-                <TableCell>{finalPoint.spinAxis || 'N/A'}</TableCell>
-                <TableCell>{finalPoint.side.toFixed(1)}</TableCell>
-                <TableCell>{finalPoint.launchAngle?.toFixed(1) || 'N/A'}</TableCell>
-                <TableCell>{finalPoint.launchDirection?.toFixed(1) || 'N/A'}</TableCell>
-                <TableCell>{Math.max(...data.map(p => p.altitude)).toFixed(1)}</TableCell>
+                <TableCell>{finalPoint.spinAxis}</TableCell>
+                <TableCell>{metersToYards(finalPoint.side).toFixed(1)}</TableCell>
+                <TableCell>{finalPoint.launchAngle.toFixed(1)}</TableCell>
+                <TableCell>{finalPoint.launchDirection.toFixed(1)}</TableCell>
+                <TableCell>{metersToFeet(Math.max(...data.map(p => p.altitude))).toFixed(1)}</TableCell>
               </TableRow>
             )}
           </TableBody>

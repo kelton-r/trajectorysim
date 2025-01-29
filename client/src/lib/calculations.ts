@@ -1,4 +1,4 @@
-import { ShotParameters, TrajectoryPoint } from '@/types';
+import { ShotParameters, TrajectoryPoint, WeatherConditions } from '@/types';
 
 // Constants for golf ball physics
 const GRAVITY = 9.81; // m/s^2
@@ -176,7 +176,10 @@ export function calculateTrajectory(params: ShotParameters): TrajectoryPoint[] {
     lift: 0,
     side: lastPoint.z + rollDistance * Math.sin(landingAngle),
     total: Math.sqrt((lastPoint.x + rollDistance * Math.cos(landingAngle)) * (lastPoint.x + rollDistance * Math.cos(landingAngle)) + (lastPoint.z + rollDistance * Math.sin(landingAngle)) * (lastPoint.z + rollDistance * Math.sin(landingAngle))),
-    carry: lastPoint.x
+    carry: lastPoint.x,
+    launchAngle: params.launchAngle,
+    launchDirection: params.launchDirection * (params.launchDirectionSide === 'right' ? 1 : -1),
+    spinAxis: params.spinAxis * (params.spinDirection === 'right' ? 1 : -1)
   };
 
   return [finalPoint];

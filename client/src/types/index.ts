@@ -23,6 +23,10 @@ export interface TrajectoryPoint {
   side: number;
   total: number;
   carry: number;
+  // Add shot parameter values for display
+  launchAngle: number;
+  launchDirection: number;
+  spinAxis: number;
 }
 
 export type Unit = 'imperial' | 'metric';
