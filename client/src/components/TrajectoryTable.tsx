@@ -25,7 +25,7 @@ export function TrajectoryTable({ data, onExport }: TrajectoryTableProps) {
   return (
     <div className="w-full max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-barlow font-bold">Shot Results</h2>
+        <h2 className="text-2xl font-condensed font-bold uppercase">SHOT RESULTS</h2>
         <Button 
           onClick={onExport}
           className="bg-[#D92429] hover:bg-[#B91C21] text-white h-12 px-8 text-lg"
@@ -40,7 +40,7 @@ export function TrajectoryTable({ data, onExport }: TrajectoryTableProps) {
           <div className="absolute inset-0 bg-black transform -skew-x-12"></div>
           <div className="relative p-6 text-white">
             <div className="text-4xl font-bold">{metersToYards(finalPoint?.carry || 0).toFixed(1)}</div>
-            <div className="text-lg">Carry Distance (yd)</div>
+            <div className="text-lg font-condensed uppercase">CARRY DISTANCE (YD)</div>
           </div>
         </div>
 
@@ -48,7 +48,7 @@ export function TrajectoryTable({ data, onExport }: TrajectoryTableProps) {
           <div className="absolute inset-0 bg-black transform -skew-x-12"></div>
           <div className="relative p-6 text-white">
             <div className="text-4xl font-bold">{finalPoint?.ballSpeed.toFixed(1) || 0}</div>
-            <div className="text-lg">Ball Speed (mph)</div>
+            <div className="text-lg font-condensed uppercase">BALL SPEED (MPH)</div>
           </div>
         </div>
 
@@ -56,7 +56,7 @@ export function TrajectoryTable({ data, onExport }: TrajectoryTableProps) {
           <div className="absolute inset-0 bg-black transform -skew-x-12"></div>
           <div className="relative p-6 text-white">
             <div className="text-4xl font-bold">{finalPoint?.spin || 0}</div>
-            <div className="text-lg">Spin Rate (rpm)</div>
+            <div className="text-lg font-condensed uppercase">SPIN RATE (RPM)</div>
           </div>
         </div>
 
@@ -64,7 +64,7 @@ export function TrajectoryTable({ data, onExport }: TrajectoryTableProps) {
           <div className="absolute inset-0 bg-black transform -skew-x-12"></div>
           <div className="relative p-6 text-white">
             <div className="text-4xl font-bold">{metersToYards(finalPoint?.total || 0).toFixed(1)}</div>
-            <div className="text-lg">Total Distance (yd)</div>
+            <div className="text-lg font-condensed uppercase">TOTAL DISTANCE (YD)</div>
           </div>
         </div>
 
@@ -72,7 +72,7 @@ export function TrajectoryTable({ data, onExport }: TrajectoryTableProps) {
           <div className="absolute inset-0 bg-black transform -skew-x-12"></div>
           <div className="relative p-6 text-white">
             <div className="text-4xl font-bold">{finalPoint?.launchAngle.toFixed(1) || 0}</div>
-            <div className="text-lg">Launch Angle (°)</div>
+            <div className="text-lg font-condensed uppercase">LAUNCH ANGLE (°)</div>
           </div>
         </div>
 
@@ -80,7 +80,7 @@ export function TrajectoryTable({ data, onExport }: TrajectoryTableProps) {
           <div className="absolute inset-0 bg-black transform -skew-x-12"></div>
           <div className="relative p-6 text-white">
             <div className="text-4xl font-bold">{metersToFeet(finalPoint?.altitude || 0).toFixed(1)}</div>
-            <div className="text-lg">Apex (ft)</div>
+            <div className="text-lg font-condensed uppercase">APEX (FT)</div>
           </div>
         </div>
 
@@ -88,7 +88,7 @@ export function TrajectoryTable({ data, onExport }: TrajectoryTableProps) {
           <div className="absolute inset-0 bg-black transform -skew-x-12"></div>
           <div className="relative p-6 text-white">
             <div className="text-4xl font-bold">{metersToYards(finalPoint?.side || 0).toFixed(1)}</div>
-            <div className="text-lg">Side Carry (yd)</div>
+            <div className="text-lg font-condensed uppercase">SIDE CARRY (YD)</div>
           </div>
         </div>
 
@@ -96,7 +96,7 @@ export function TrajectoryTable({ data, onExport }: TrajectoryTableProps) {
           <div className="absolute inset-0 bg-black transform -skew-x-12"></div>
           <div className="relative p-6 text-white">
             <div className="text-4xl font-bold">{finalPoint?.spinAxis || 0}</div>
-            <div className="text-lg">Spin Axis (°)</div>
+            <div className="text-lg font-condensed uppercase">SPIN AXIS (°)</div>
           </div>
         </div>
 
@@ -104,7 +104,7 @@ export function TrajectoryTable({ data, onExport }: TrajectoryTableProps) {
           <div className="absolute inset-0 bg-black transform -skew-x-12"></div>
           <div className="relative p-6 text-white">
             <div className="text-4xl font-bold">{finalPoint?.launchDirection.toFixed(1) || 0}</div>
-            <div className="text-lg">Launch Direction (°)</div>
+            <div className="text-lg font-condensed uppercase">LAUNCH DIRECTION (°)</div>
           </div>
         </div>
       </div>
