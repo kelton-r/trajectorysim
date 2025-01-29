@@ -19,11 +19,6 @@ import { TrajectoryPoint } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Eye, Loader2, Maximize2 } from 'lucide-react';
 
-interface TrajectoryViewProps {
-  data: TrajectoryPoint[];
-  autoPlay?: boolean;
-}
-
 // Constants for trajectory visualization
 const TEE_HEIGHT = 0.05; // 5cm off the ground for mat height
 const START_OFFSET = new Vector3(0, TEE_HEIGHT, 0);
@@ -34,6 +29,33 @@ const RANGE_SIZE = 125; // Increased by 25% from 100 meters
 const GRASS_TILE_SIZE = 2; // 2 meters per grass tile
 const WALL_HEIGHT = 15; // 15 meters high walls
 const WALL_THICKNESS = 1; // 1 meter thick walls
+
+// Update camera constants for optimal view
+const CAMERA_SETTINGS = {
+  default: {
+    alpha: Math.PI, // Behind the ball
+    beta: Math.PI * 0.35, // Slightly higher angle for better trajectory view
+    radius: 25, // Fixed distance
+    target: new Vector3(0, 2, 0) // Look slightly above ground
+  },
+  side: {
+    alpha: Math.PI * 1.5,
+    beta: Math.PI * 0.4,
+    radius: RANGE_SIZE * 0.4,
+    target: Vector3.Zero()
+  },
+  top: {
+    alpha: Math.PI,
+    beta: 0.1,
+    radius: RANGE_SIZE * 0.8,
+    target: Vector3.Zero()
+  }
+};
+
+interface TrajectoryViewProps {
+  data: TrajectoryPoint[];
+  autoPlay?: boolean;
+}
 
 function LoadingFallback() {
   return (
@@ -307,21 +329,19 @@ export const TrajectoryView: FC<TrajectoryViewProps> = ({ data, autoPlay = false
     const { scene } = sceneEventArgs;
     sceneRef.current = scene;
 
-    // Get reference to the camera
     const camera = scene.cameras[0] as BabylonArcRotateCamera;
     if (camera) {
       cameraRef.current = camera;
 
-      // Set camera constraints for behind-ball view
+      // Lock camera completely in default view
       if (viewMode === 'default') {
-        camera.lowerBetaLimit = Math.PI * 0.3; // Minimum vertical angle
-        camera.upperBetaLimit = Math.PI * 0.5; // Maximum vertical angle
-        camera.lowerRadiusLimit = RANGE_SIZE * 0.1; // Minimum zoom
-        camera.upperRadiusLimit = RANGE_SIZE * 0.3; // Maximum zoom
-        camera.panningSensibility = 0; // Disable panning
-        camera.pinchPrecision = 50; // Reduce pinch-to-zoom sensitivity
-        camera.wheelPrecision = 50; // Reduce wheel zoom sensitivity
-        camera.useBouncingBehavior = true; // Enable bouncing at limits
+        camera.inputs.clear(); // Disable all camera controls
+        camera.lowerBetaLimit = CAMERA_SETTINGS.default.beta;
+        camera.upperBetaLimit = CAMERA_SETTINGS.default.beta;
+        camera.lowerAlphaLimit = CAMERA_SETTINGS.default.alpha;
+        camera.upperAlphaLimit = CAMERA_SETTINGS.default.alpha;
+        camera.radius = CAMERA_SETTINGS.default.radius;
+        camera.setTarget(CAMERA_SETTINGS.default.target);
       }
     }
   };
@@ -342,27 +362,31 @@ export const TrajectoryView: FC<TrajectoryViewProps> = ({ data, autoPlay = false
     );
   }
 
-  const cameraPositions = {
-    default: { alpha: Math.PI, beta: Math.PI * 0.4, radius: RANGE_SIZE * 0.2 },
-    side: { alpha: Math.PI * 1.5, beta: Math.PI * 0.4, radius: RANGE_SIZE * 0.4 },
-    top: { alpha: Math.PI, beta: 0.1, radius: RANGE_SIZE * 0.8 }
-  };
 
   useEffect(() => {
-    if (cameraRef.current && viewMode === 'default') {
-      // Update camera constraints when switching to behind-ball view
-      cameraRef.current.lowerBetaLimit = Math.PI * 0.3;
-      cameraRef.current.upperBetaLimit = Math.PI * 0.5;
-      cameraRef.current.lowerRadiusLimit = RANGE_SIZE * 0.1;
-      cameraRef.current.upperRadiusLimit = RANGE_SIZE * 0.3;
-      cameraRef.current.panningSensibility = 0;
-    } else if (cameraRef.current) {
-      // Reset constraints for other views
-      cameraRef.current.lowerBetaLimit = 0.1;
-      cameraRef.current.upperBetaLimit = Math.PI - 0.1;
-      cameraRef.current.lowerRadiusLimit = RANGE_SIZE * 0.2;
-      cameraRef.current.upperRadiusLimit = RANGE_SIZE * 1.5;
-      cameraRef.current.panningSensibility = 1000;
+    if (!cameraRef.current) return;
+
+    const camera = cameraRef.current;
+    const settings = CAMERA_SETTINGS[viewMode];
+
+    if (viewMode === 'default') {
+      // Lock camera for default view
+      camera.inputs.clear();
+      camera.lowerBetaLimit = settings.beta;
+      camera.upperBetaLimit = settings.beta;
+      camera.lowerAlphaLimit = settings.alpha;
+      camera.upperAlphaLimit = settings.alpha;
+      camera.radius = settings.radius;
+      camera.setTarget(settings.target);
+    } else {
+      // Reset camera controls for other views
+      camera.inputs.addMouseWheel();
+      camera.inputs.addPointers();
+      camera.lowerBetaLimit = 0.1;
+      camera.upperBetaLimit = Math.PI - 0.1;
+      camera.lowerRadiusLimit = RANGE_SIZE * 0.2;
+      camera.upperRadiusLimit = RANGE_SIZE * 1.5;
+      camera.setTarget(settings.target);
     }
   }, [viewMode]);
 
@@ -391,10 +415,10 @@ export const TrajectoryView: FC<TrajectoryViewProps> = ({ data, autoPlay = false
         <Scene onSceneMount={handleSceneMount}>
           <arcRotateCamera
             name="camera"
-            target={Vector3.Zero()}
-            alpha={cameraPositions[viewMode].alpha}
-            beta={cameraPositions[viewMode].beta}
-            radius={cameraPositions[viewMode].radius}
+            target={CAMERA_SETTINGS[viewMode].target}
+            alpha={CAMERA_SETTINGS[viewMode].alpha}
+            beta={CAMERA_SETTINGS[viewMode].beta}
+            radius={CAMERA_SETTINGS[viewMode].radius}
           />
 
           <DrivingRange size={RANGE_SIZE} />
