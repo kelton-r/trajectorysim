@@ -17,9 +17,11 @@ function TrajectoryPath({ points }: { points: number[][] }) {
   }, [points]);
 
   return (
-    <line geometry={lineGeometry}>
-      <lineBasicMaterial color="#D92429" linewidth={3} />
-    </line>
+    <mesh>
+      <lineSegments geometry={lineGeometry}>
+        <lineBasicMaterial color="#D92429" linewidth={3} />
+      </lineSegments>
+    </mesh>
   );
 }
 
@@ -34,38 +36,12 @@ function BallMarker({ position }: { position: [number, number, number] }) {
 
 export function TrajectoryView3D({ data }: TrajectoryView3DProps) {
   const points = useMemo(() => {
-    if (data.length === 0) return [];
-
-    // Create trajectory points with proper height curve
-    const numPoints = 50;
-    const point = data[0]; // We have the start and end point
-    const maxHeight = point.altitude;
-
-    // Calculate control points for a smooth arc
-    const startPoint = [0, 0, 0];
-    const endPoint = [point.carry, 0, point.side];
-    const controlPoint = [
-      point.carry * 0.5,
-      maxHeight,
-      point.side * 0.5
-    ];
-
-    // Generate points along a quadratic curve
-    const points = [];
-    for (let i = 0; i <= numPoints; i++) {
-      const t = i / numPoints;
-      const x = (1 - t) * (1 - t) * startPoint[0] + 2 * (1 - t) * t * controlPoint[0] + t * t * endPoint[0];
-      const y = (1 - t) * (1 - t) * startPoint[1] + 2 * (1 - t) * t * controlPoint[1] + t * t * endPoint[1];
-      const z = (1 - t) * (1 - t) * startPoint[2] + 2 * (1 - t) * t * controlPoint[2] + t * t * endPoint[2];
-      points.push([x, y, z]);
-    }
-
-    return points;
+    return data.map(point => [point.x, point.y, point.z]);
   }, [data]);
 
   // Convert distances to yards for display
   const metersToYards = (meters: number) => meters * 1.09361;
-  const maxDistance = data.length > 0 ? metersToYards(Math.max(data[0].carry, data[0].total)) : 0;
+  const maxDistance = data.length > 0 ? metersToYards(Math.max(...data.map(p => p.carry))) : 0;
   const gridSize = Math.ceil(maxDistance / 10) * 10; // Round to nearest 10 yards
 
   return (
