@@ -11,6 +11,7 @@ import {
   Scene as BabylonScene,
   Engine as BabylonEngine,
   BackgroundMaterial,
+  GradientMaterial,
   HemisphericLight,
   DirectionalLight,
   ShadowGenerator,
@@ -37,16 +38,6 @@ const MAT_SIZE = { width: 1.5, length: 1.5 }; // Standard golf mat size in meter
 const RANGE_SIZE = 100; // 100 meters range length
 const GRASS_TILE_SIZE = 2; // 2 meters per grass tile
 
-// Camera constants
-const CAMERA_SETTINGS = {
-  DEFAULT_RADIUS: 20, // Starting distance from target
-  MIN_RADIUS: 5, // Minimum zoom distance
-  MAX_RADIUS: 150, // Maximum zoom distance
-  MIN_BETA: 0.1, // Minimum vertical angle (prevents going under ground)
-  MAX_BETA: Math.PI / 2, // Maximum vertical angle (directly above)
-  WHEEL_PRECISION: 0.05, // Zoom speed
-};
-
 function LoadingFallback() {
   return (
     <div className="absolute inset-0 flex items-center justify-center">
@@ -58,18 +49,11 @@ function LoadingFallback() {
 const DrivingRange: FC<{ size: number }> = ({ size }) => {
   return (
     <>
-      {/* Main lighting */}
+      {/* Sky dome */}
       <hemisphericLight 
         name="sunLight" 
         intensity={1.2}
         direction={new Vector3(0.45, 1.0, 0.45)}
-      />
-
-      <directionalLight
-        name="shadowLight"
-        intensity={0.8}
-        direction={new Vector3(-1, -2, -1)}
-        position={new Vector3(size/2, size, size/2)}
       />
 
       {/* Ground plane with grass texture */}
@@ -84,52 +68,10 @@ const DrivingRange: FC<{ size: number }> = ({ size }) => {
           name="grassMaterial"
           diffuseColor={new Color3(0.23, 0.37, 0.04)}
           specularColor={new Color3(0.1, 0.1, 0.1)}
+          roughness={1}
+          metallic={0}
         />
       </ground>
-
-      {/* Range boundaries - create walls to visually mark the limits */}
-      {/* Back wall */}
-      <box
-        name="backWall"
-        width={size}
-        height={3}
-        depth={0.2}
-        position={new Vector3(size/2, 1.5, size)}
-      >
-        <standardMaterial
-          name="wallMaterial"
-          diffuseColor={new Color3(0.8, 0.8, 0.8)}
-          alpha={0.5}
-        />
-      </box>
-
-      {/* Side walls */}
-      <box
-        name="leftWall"
-        width={0.2}
-        height={3}
-        depth={size}
-        position={new Vector3(0, 1.5, size/2)}
-      >
-        <standardMaterial
-          name="wallMaterial"
-          diffuseColor={new Color3(0.8, 0.8, 0.8)}
-          alpha={0.5}
-        />
-      </box>
-      <box
-        name="rightWall"
-        width={0.2}
-        height={3}
-        depth={size}
-        position={new Vector3(size, 1.5, size/2)}
-      >
-        <standardMaterial
-          name="wallMaterial"
-          diffuseColor={new Color3(0.8, 0.8, 0.8)}
-          alpha={0.5}
-        />
-      </box>
 
       {/* Hitting mat */}
       <box
@@ -149,9 +91,9 @@ const DrivingRange: FC<{ size: number }> = ({ size }) => {
       {/* Sky dome */}
       <sphere
         name="skyDome"
-        diameter={size * 3}
+        diameter={size * 2}
         segments={32}
-        position={new Vector3(size/2, 0, size/2)}
+        position={new Vector3(0, 0, 0)}
       >
         <standardMaterial
           name="skyMaterial"
@@ -310,13 +252,9 @@ export const TrajectoryView: FC<TrajectoryViewProps> = ({ data, autoPlay = false
   };
 
   const handleSceneMount = (sceneEventArgs: SceneEventArgs) => {
-    const { scene } = sceneEventArgs;
+    const { scene, engine } = sceneEventArgs;
     sceneRef.current = scene;
-
-    // Move camera target to center of the range
-    if (scene.activeCamera) {
-      (scene.activeCamera as any).setTarget(new Vector3(gridSize/2, 0, gridSize/2));
-    }
+    engineRef.current = engine;
   };
 
   useEffect(() => {
@@ -366,15 +304,13 @@ export const TrajectoryView: FC<TrajectoryViewProps> = ({ data, autoPlay = false
         <Scene onSceneMount={handleSceneMount}>
           <arcRotateCamera
             name="camera"
-            target={new Vector3(gridSize/2, 0, gridSize/2)}
+            target={Vector3.Zero()}
             alpha={cameraPositions[viewMode].alpha}
             beta={cameraPositions[viewMode].beta}
-            radius={CAMERA_SETTINGS.DEFAULT_RADIUS}
-            lowerRadiusLimit={CAMERA_SETTINGS.MIN_RADIUS}
-            upperRadiusLimit={CAMERA_SETTINGS.MAX_RADIUS}
-            lowerBetaLimit={CAMERA_SETTINGS.MIN_BETA}
-            upperBetaLimit={CAMERA_SETTINGS.MAX_BETA}
-            wheelPrecision={CAMERA_SETTINGS.WHEEL_PRECISION}
+            radius={gridSize * 0.8}
+            lowerRadiusLimit={gridSize * 0.3}
+            upperRadiusLimit={gridSize * 2}
+            wheelDeltaPercentage={0.01}
             minZ={0.1}
             maxZ={gridSize * 4}
           />
