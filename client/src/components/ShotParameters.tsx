@@ -23,7 +23,7 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
     launchDirectionSide: 'right',
   });
 
-  const handleNumericInput = (key: 'launchDirection' | 'spinAxis') => (
+  const handleNumericInput = (key: keyof ShotParamsType) => (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const value = e.target.value;
@@ -31,47 +31,12 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
       setParams(prev => ({ ...prev, [key]: undefined }));
       return;
     }
-
-    const numValue = Number(value);
-    const directionKey = key === 'launchDirection' ? 'launchDirectionSide' : 'spinDirection';
-
-    if (!isNaN(numValue)) {
-      // If value is negative, switch direction and use absolute value
-      if (numValue < 0) {
-        setParams(prev => ({
-          ...prev,
-          [key]: Math.abs(numValue),
-          [directionKey]: 'left'
-        }));
-      } else {
-        setParams(prev => ({
-          ...prev,
-          [key]: numValue,
-          [directionKey]: 'right'
-        }));
-      }
-    }
+    setParams(prev => ({ ...prev, [key]: Number(value) }));
   };
 
-  const handleDirectionChange = (key: 'launchDirectionSide' | 'spinDirection') => (
+  const handleDirectionChange = (key: 'launchDirectionSide' | 'spinDirection' | 'ballType') => (
     value: string
   ) => {
-    const numericKey = key === 'launchDirectionSide' ? 'launchDirection' : 'spinAxis';
-    const currentValue = params[numericKey];
-
-    setParams(prev => ({
-      ...prev,
-      [key]: value,
-      [numericKey]: currentValue // Maintain the absolute value when changing direction
-    }));
-  };
-
-  const handleOtherChanges = (key: keyof ShotParamsType) => (
-    e: React.ChangeEvent<HTMLInputElement> | { value: string }
-  ) => {
-    const value = 'target' in e ? 
-      (e.target.value === '' ? undefined : Number(e.target.value)) 
-      : e.value;
     setParams(prev => ({ ...prev, [key]: value }));
   };
 
@@ -135,14 +100,14 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
               />
               <Select
                 value={params.launchDirectionSide}
-                onValueChange={value => handleDirectionChange('launchDirectionSide')(value)}
+                onValueChange={handleDirectionChange('launchDirectionSide')}
               >
                 <SelectTrigger className="w-[100px]">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="right">Right</SelectItem>
-                  <SelectItem value="left">Left</SelectItem>
+                  <SelectItem value="right">Right (+)</SelectItem>
+                  <SelectItem value="left">Left (-)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -157,7 +122,7 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
               id="launchAngle"
               type="number"
               value={params.launchAngle ?? ''}
-              onChange={handleOtherChanges('launchAngle')}
+              onChange={handleNumericInput('launchAngle')}
               min={0}
               max={90}
               step={0.1}
@@ -173,7 +138,7 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
               id="spin"
               type="number"
               value={params.spin ?? ''}
-              onChange={handleOtherChanges('spin')}
+              onChange={handleNumericInput('spin')}
               min={0}
               max={10000}
               step={100}
@@ -197,14 +162,14 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
               />
               <Select
                 value={params.spinDirection}
-                onValueChange={value => handleDirectionChange('spinDirection')(value)}
+                onValueChange={handleDirectionChange('spinDirection')}
               >
                 <SelectTrigger className="w-[100px]">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="right">Right</SelectItem>
-                  <SelectItem value="left">Left</SelectItem>
+                  <SelectItem value="right">Right (+)</SelectItem>
+                  <SelectItem value="left">Left (-)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -214,7 +179,7 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
             <Label htmlFor="ballType">Ball Type</Label>
             <Select
               value={params.ballType}
-              onValueChange={value => handleOtherChanges('ballType')({ value })}
+              onValueChange={handleDirectionChange('ballType')}
             >
               <SelectTrigger id="ballType">
                 <SelectValue />
@@ -238,7 +203,7 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
               id="ballSpeed"
               type="number"
               value={params.ballSpeed ?? ''}
-              onChange={handleOtherChanges('ballSpeed')}
+              onChange={handleNumericInput('ballSpeed')}
               min={0}
               max={200}
               step={1}
