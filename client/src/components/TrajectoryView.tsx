@@ -376,28 +376,28 @@ export const TrajectoryView: FC<TrajectoryViewProps> = ({ data, autoPlay = false
     if (!cameraRef.current) return;
 
     const camera = cameraRef.current;
-    const settings = CAMERA_SETTINGS[viewMode];
-
-    if (viewMode === 'default') {
-      // Lock camera for default view
-      camera.inputs.clear();
-      camera.lowerBetaLimit = settings.beta;
-      camera.upperBetaLimit = settings.beta;
-      camera.lowerAlphaLimit = settings.alpha;
-      camera.upperAlphaLimit = settings.alpha;
-      camera.radius = settings.radius;
-      camera.setTarget(settings.target);
-    } else {
-      // Reset camera controls for other views
-      camera.inputs.addMouseWheel();
-      camera.inputs.addPointers();
-      camera.lowerBetaLimit = 0.1;
-      camera.upperBetaLimit = Math.PI - 0.1;
-      camera.lowerRadiusLimit = RANGE_SIZE * 0.2;
-      camera.upperRadiusLimit = RANGE_SIZE * 1.5;
-      camera.setTarget(settings.target);
-    }
-  }, [viewMode]);
+    
+    // Fixed behind-ball camera settings
+    camera.inputs.clear();
+    camera.alpha = Math.PI; // Camera directly behind ball
+    camera.beta = Math.PI * 0.35; // Camera angle from horizontal
+    camera.radius = RANGE_SIZE * 0.15; // Distance from ball
+    camera.setTarget(new Vector3(0, TEE_HEIGHT + 1, MAT_OFFSET_Z + RANGE_SIZE * 0.1));
+    
+    // Lock camera
+    camera.lowerBetaLimit = camera.beta;
+    camera.upperBetaLimit = camera.beta;
+    camera.lowerAlphaLimit = camera.alpha;
+    camera.upperAlphaLimit = camera.alpha;
+    
+    // Disable all camera controls
+    camera.allowUpsideDown = false;
+    camera.useAutoRotationBehavior = false;
+    camera.useBouncingBehavior = false;
+    camera.pinchPrecision = 0;
+    camera.wheelPrecision = 0;
+    camera.panningSensibility = 0;
+  }, []);
 
   return (
     <div 
@@ -443,7 +443,7 @@ export const TrajectoryView: FC<TrajectoryViewProps> = ({ data, autoPlay = false
       </Engine>
 
       {/* Controls */}
-      <div className="absolute bottom-4 right-4 flex gap-2">
+      <div className="absolute bottom-4 right-4">
         <Button
           variant="outline"
           size="icon"
@@ -452,18 +452,10 @@ export const TrajectoryView: FC<TrajectoryViewProps> = ({ data, autoPlay = false
         >
           <Maximize2 className="h-4 w-4" />
         </Button>
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => setViewMode(prev => prev === 'default' ? 'side' : 'default')}
-          className="bg-white hover:bg-gray-100"
-        >
-          <Eye className="h-4 w-4" />
-        </Button>
       </div>
 
       <div className="absolute top-4 right-4 bg-black/80 text-white px-3 py-1 rounded-full text-sm">
-        {viewMode === 'default' ? 'Behind Ball View' : viewMode === 'side' ? 'Side View' : 'Top View'}
+        Behind Ball View
       </div>
     </div>
   );
