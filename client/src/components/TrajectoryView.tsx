@@ -21,7 +21,6 @@ import { Eye, Loader2, Maximize2 } from 'lucide-react';
 
 // Constants for trajectory visualization
 const TEE_HEIGHT = 0.05; // 5cm off the ground for mat height
-const START_OFFSET = new Vector3(0, TEE_HEIGHT, 0);
 const MAT_SIZE = { width: 1.5, length: 1.5 }; // Standard golf mat size in meters
 
 // Scene constants
@@ -30,25 +29,29 @@ const GRASS_TILE_SIZE = 2; // 2 meters per grass tile
 const WALL_HEIGHT = 15; // 15 meters high walls
 const WALL_THICKNESS = 1; // 1 meter thick walls
 
+// Position the mat and starting point closer to the back
+const MAT_OFFSET_Z = -(RANGE_SIZE * 0.45); // 45% from the back wall
+const START_OFFSET = new Vector3(0, TEE_HEIGHT, MAT_OFFSET_Z);
+
 // Update camera constants for optimal view
 const CAMERA_SETTINGS = {
   default: {
     alpha: Math.PI, // Behind the ball
-    beta: Math.PI * 0.35, // Slightly higher angle for better trajectory view
-    radius: 25, // Fixed distance
-    target: new Vector3(0, 2, 0) // Look slightly above ground
+    beta: Math.PI * 0.32, // Optimal angle for trajectory view
+    radius: 20, // Fixed distance
+    target: new Vector3(0, 3, MAT_OFFSET_Z + 10) // Look ahead of the ball
   },
   side: {
     alpha: Math.PI * 1.5,
     beta: Math.PI * 0.4,
     radius: RANGE_SIZE * 0.4,
-    target: Vector3.Zero()
+    target: new Vector3(0, 2, MAT_OFFSET_Z)
   },
   top: {
     alpha: Math.PI,
     beta: 0.1,
     radius: RANGE_SIZE * 0.8,
-    target: Vector3.Zero()
+    target: new Vector3(0, 0, MAT_OFFSET_Z)
   }
 };
 
@@ -96,7 +99,7 @@ const DrivingRange: FC<{ size: number }> = ({ size }) => {
         width={MAT_SIZE.width}
         height={0.05}
         depth={MAT_SIZE.length}
-        position={new Vector3(0, TEE_HEIGHT / 2, 0)}
+        position={new Vector3(0, TEE_HEIGHT / 2, MAT_OFFSET_Z)}
       >
         <standardMaterial
           name="matMaterial"
@@ -333,15 +336,23 @@ export const TrajectoryView: FC<TrajectoryViewProps> = ({ data, autoPlay = false
     if (camera) {
       cameraRef.current = camera;
 
-      // Lock camera completely in default view
       if (viewMode === 'default') {
-        camera.inputs.clear(); // Disable all camera controls
+        // Completely lock the camera
+        camera.inputs.clear();
         camera.lowerBetaLimit = CAMERA_SETTINGS.default.beta;
         camera.upperBetaLimit = CAMERA_SETTINGS.default.beta;
         camera.lowerAlphaLimit = CAMERA_SETTINGS.default.alpha;
         camera.upperAlphaLimit = CAMERA_SETTINGS.default.alpha;
         camera.radius = CAMERA_SETTINGS.default.radius;
         camera.setTarget(CAMERA_SETTINGS.default.target);
+
+        // Additional restrictions
+        camera.allowUpsideDown = false;
+        camera.useAutoRotationBehavior = false;
+        camera.useBouncingBehavior = false;
+        camera.pinchPrecision = 0;
+        camera.wheelPrecision = 0;
+        camera.panningSensibility = 0;
       }
     }
   };
