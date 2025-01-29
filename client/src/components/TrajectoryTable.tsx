@@ -24,50 +24,50 @@ export function TrajectoryTable({ data, onExport }: TrajectoryTableProps) {
 
   return (
     <div className="space-y-4 w-full">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-barlow font-bold">Shot Results</h2>
         <Button 
           onClick={onExport}
-          className="bg-[#D92429] hover:bg-[#B91C21] text-white text-base h-12"
+          className="bg-[#D92429] hover:bg-[#B91C21] text-white h-10 px-6"
         >
-          <Download className="mr-2 h-5 w-5" />
-          EXPORT TO CSV
+          <Download className="mr-2 h-4 w-4" />
+          Export to CSV
         </Button>
       </div>
 
-      <div className="border rounded-lg overflow-hidden">
+      <div className="border rounded-lg overflow-hidden bg-white">
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead className="text-sm font-medium whitespace-nowrap">Carry (yd)</TableHead>
-              <TableHead className="text-sm font-medium whitespace-nowrap">Total Carry (yd)</TableHead>
-              <TableHead className="text-sm font-medium whitespace-nowrap">Ball Speed (mph)</TableHead>
-              <TableHead className="text-sm font-medium whitespace-nowrap">Spin Rate (rpm)</TableHead>
-              <TableHead className="text-sm font-medium whitespace-nowrap">Spin Axis (°)</TableHead>
-              <TableHead className="text-sm font-medium whitespace-nowrap">Side Carry (yd)</TableHead>
-              <TableHead className="text-sm font-medium whitespace-nowrap">Launch Angle (°)</TableHead>
-              <TableHead className="text-sm font-medium whitespace-nowrap">Launch Direction (°)</TableHead>
-              <TableHead className="text-sm font-medium whitespace-nowrap">Apex (ft)</TableHead>
+            <TableRow className="bg-gray-50 hover:bg-gray-50">
+              <TableHead className="py-4 text-xs font-semibold text-gray-600 whitespace-nowrap">Carry (yd)</TableHead>
+              <TableHead className="py-4 text-xs font-semibold text-gray-600 whitespace-nowrap">Total Carry (yd)</TableHead>
+              <TableHead className="py-4 text-xs font-semibold text-gray-600 whitespace-nowrap">Ball Speed (mph)</TableHead>
+              <TableHead className="py-4 text-xs font-semibold text-gray-600 whitespace-nowrap">Spin Rate (rpm)</TableHead>
+              <TableHead className="py-4 text-xs font-semibold text-gray-600 whitespace-nowrap">Spin Axis (°)</TableHead>
+              <TableHead className="py-4 text-xs font-semibold text-gray-600 whitespace-nowrap">Side Carry (yd)</TableHead>
+              <TableHead className="py-4 text-xs font-semibold text-gray-600 whitespace-nowrap">Launch Angle (°)</TableHead>
+              <TableHead className="py-4 text-xs font-semibold text-gray-600 whitespace-nowrap">Launch Direction (°)</TableHead>
+              <TableHead className="py-4 text-xs font-semibold text-gray-600 whitespace-nowrap">Apex (ft)</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {!finalPoint ? (
               <TableRow>
-                <TableCell colSpan={9} className="text-center py-6 text-base">
+                <TableCell colSpan={9} className="text-center py-8 text-gray-500">
                   No data available
                 </TableCell>
               </TableRow>
             ) : (
-              <TableRow>
-                <TableCell className="text-base font-barlow font-bold whitespace-nowrap">{metersToYards(finalPoint.carry).toFixed(1)}</TableCell>
-                <TableCell className="text-base font-barlow font-bold whitespace-nowrap">{metersToYards(finalPoint.total).toFixed(1)}</TableCell>
-                <TableCell className="text-base font-barlow font-bold whitespace-nowrap">{finalPoint.ballSpeed.toFixed(1)}</TableCell>
-                <TableCell className="text-base font-barlow font-bold whitespace-nowrap">{finalPoint.spin}</TableCell>
-                <TableCell className="text-base font-barlow font-bold whitespace-nowrap">{finalPoint.spinAxis}</TableCell>
-                <TableCell className="text-base font-barlow font-bold whitespace-nowrap">{metersToYards(finalPoint.side).toFixed(1)}</TableCell>
-                <TableCell className="text-base font-barlow font-bold whitespace-nowrap">{finalPoint.launchAngle.toFixed(1)}</TableCell>
-                <TableCell className="text-base font-barlow font-bold whitespace-nowrap">{finalPoint.launchDirection.toFixed(1)}</TableCell>
-                <TableCell className="text-base font-barlow font-bold whitespace-nowrap">{metersToFeet(finalPoint.altitude).toFixed(1)}</TableCell>
+              <TableRow className="hover:bg-gray-50">
+                <TableCell className="py-4 text-sm font-barlow font-semibold whitespace-nowrap">{metersToYards(finalPoint.carry).toFixed(1)}</TableCell>
+                <TableCell className="py-4 text-sm font-barlow font-semibold whitespace-nowrap">{metersToYards(finalPoint.total).toFixed(1)}</TableCell>
+                <TableCell className="py-4 text-sm font-barlow font-semibold whitespace-nowrap">{finalPoint.ballSpeed.toFixed(1)}</TableCell>
+                <TableCell className="py-4 text-sm font-barlow font-semibold whitespace-nowrap">{finalPoint.spin}</TableCell>
+                <TableCell className="py-4 text-sm font-barlow font-semibold whitespace-nowrap">{finalPoint.spinAxis}</TableCell>
+                <TableCell className="py-4 text-sm font-barlow font-semibold whitespace-nowrap">{metersToYards(finalPoint.side).toFixed(1)}</TableCell>
+                <TableCell className="py-4 text-sm font-barlow font-semibold whitespace-nowrap">{finalPoint.launchAngle.toFixed(1)}</TableCell>
+                <TableCell className="py-4 text-sm font-barlow font-semibold whitespace-nowrap">{finalPoint.launchDirection.toFixed(1)}</TableCell>
+                <TableCell className="py-4 text-sm font-barlow font-semibold whitespace-nowrap">{metersToFeet(finalPoint.altitude).toFixed(1)}</TableCell>
               </TableRow>
             )}
           </TableBody>
