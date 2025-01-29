@@ -38,14 +38,14 @@ interface DrivingRangeProps {
 }
 
 // Position the mat and starting point closer to the back
-const MAT_OFFSET_Z = -(RANGE_SIZE * 0.45); // 45% from the back wall
+const MAT_OFFSET_Z = -(RANGE_SIZE.length * 0.45); // 45% from the back wall
 const START_OFFSET = new Vector3(0, TEE_HEIGHT, MAT_OFFSET_Z);
 
 // Eye-level camera settings
 const CAMERA_SETTINGS = {
   alpha: Math.PI, // Fixed behind-ball view
   beta: Math.PI * 0.5, // Eye-level angle (90 degrees)
-  radius: RANGE_SIZE * 0.15, // Closer to the action
+  radius: RANGE_SIZE.length * 0.15, // Closer to the action
   target: new Vector3(0, 2, MAT_OFFSET_Z + 10) // Look at ball height
 };
 
@@ -111,10 +111,10 @@ const DrivingRange: FC<{ size: { width: number, length: number } }> = ({ size })
       {/* Back wall */}
       <box
         name="backWall"
-        width={size}
+        width={size.width}
         height={WALL_HEIGHT}
         depth={WALL_THICKNESS}
-        position={new Vector3(0, WALL_HEIGHT/2, size/2)}
+        position={new Vector3(0, WALL_HEIGHT/2, size.length/2)}
       >
         <standardMaterial
           name="wallMaterial"
@@ -125,10 +125,10 @@ const DrivingRange: FC<{ size: { width: number, length: number } }> = ({ size })
       {/* Front wall */}
       <box
         name="frontWall"
-        width={size}
+        width={size.width}
         height={WALL_HEIGHT}
         depth={WALL_THICKNESS}
-        position={new Vector3(0, WALL_HEIGHT/2, -size/2)}
+        position={new Vector3(0, WALL_HEIGHT/2, -size.length/2)}
       >
         <standardMaterial
           name="wallMaterial"
@@ -141,8 +141,8 @@ const DrivingRange: FC<{ size: { width: number, length: number } }> = ({ size })
         name="leftWall"
         width={WALL_THICKNESS}
         height={WALL_HEIGHT}
-        depth={size}
-        position={new Vector3(-size/2, WALL_HEIGHT/2, 0)}
+        depth={size.length}
+        position={new Vector3(-size.width/2, WALL_HEIGHT/2, 0)}
       >
         <standardMaterial
           name="wallMaterial"
@@ -155,8 +155,8 @@ const DrivingRange: FC<{ size: { width: number, length: number } }> = ({ size })
         name="rightWall"
         width={WALL_THICKNESS}
         height={WALL_HEIGHT}
-        depth={size}
-        position={new Vector3(size/2, WALL_HEIGHT/2, 0)}
+        depth={size.length}
+        position={new Vector3(size.width/2, WALL_HEIGHT/2, 0)}
       >
         <standardMaterial
           name="wallMaterial"
@@ -304,7 +304,7 @@ export const TrajectoryView: FC<TrajectoryViewProps> = ({ data, autoPlay = false
   const points = data.map(point => new Vector3(point.x, point.y, point.z));
   const maxDistance = data.length > 0 ? 
     Math.max(...data.map(p => Math.sqrt(p.x * p.x + p.z * p.z))) : 0;
-  const gridSize = Math.max(RANGE_SIZE, Math.ceil(maxDistance / 10) * 10);
+  const gridSize = Math.max(RANGE_SIZE.length, Math.ceil(maxDistance / 10) * 10);
 
   // Animation effect
   useEffect(() => {
@@ -350,8 +350,6 @@ export const TrajectoryView: FC<TrajectoryViewProps> = ({ data, autoPlay = false
     const camera = scene.cameras[0] as BabylonArcRotateCamera;
     if (camera) {
       cameraRef.current = camera;
-
-      
     }
   };
 
