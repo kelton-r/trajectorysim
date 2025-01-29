@@ -1,3 +1,4 @@
+
 import { Canvas } from '@react-three/fiber';
 import { PerspectiveCamera } from '@react-three/drei';
 import { TrajectoryPoint } from '@/types';
@@ -23,7 +24,7 @@ function TrajectoryPath({ points, progress = 1 }: { points: number[][], progress
   return (
     <line>
       <primitive object={lineGeometry} />
-      <lineBasicMaterial attach="material" color="#FF5F1F" linewidth={12} />
+      <lineBasicMaterial attach="material" color="#FF5F1F" linewidth={2} />
     </line>
   );
 }
@@ -53,15 +54,13 @@ export function TrajectoryView3D({ data, autoPlay = false }: TrajectoryView3DPro
 
   useEffect(() => {
     if (data.length > 0) {
-      // Reset progress when new data arrives or view changes
       setProgress(0);
-
-      let animationFrame: number;
       let startTime = performance.now();
+      let animationFrame: number;
 
       const animate = (currentTime: number) => {
         const elapsed = currentTime - startTime;
-        const duration = 7000; // 7 seconds for full animation
+        const duration = 2000; // 2 seconds for full animation
 
         const newProgress = Math.min(elapsed / duration, 1);
         setProgress(newProgress);
@@ -71,7 +70,9 @@ export function TrajectoryView3D({ data, autoPlay = false }: TrajectoryView3DPro
         }
       };
 
-      animationFrame = requestAnimationFrame(animate);
+      if (autoPlay) {
+        animationFrame = requestAnimationFrame(animate);
+      }
 
       return () => {
         if (animationFrame) {
@@ -79,9 +80,8 @@ export function TrajectoryView3D({ data, autoPlay = false }: TrajectoryView3DPro
         }
       };
     }
-  }, [data, viewMode]); // Re-run on data or view changes
+  }, [data, autoPlay]);
 
-  // Calculate camera positions and rotations based on trajectory
   const cameraSettings = useMemo(() => {
     if (data.length === 0) {
       return {
@@ -97,7 +97,6 @@ export function TrajectoryView3D({ data, autoPlay = false }: TrajectoryView3DPro
     }
 
     const maxX = Math.max(...data.map(p => p.x));
-    const maxY = Math.max(...data.map(p => p.y));
     const maxZ = Math.max(...data.map(p => Math.abs(p.z)));
     const distance = Math.sqrt(maxX * maxX + maxZ * maxZ);
 
@@ -121,8 +120,6 @@ export function TrajectoryView3D({ data, autoPlay = false }: TrajectoryView3DPro
           position={cameraSettings[viewMode].position}
           rotation={cameraSettings[viewMode].rotation}
           fov={60}
-          near={0.1}
-          far={1000}
         />
         <ambientLight intensity={0.5} />
         <directionalLight position={[10, 10, 5]} intensity={1} castShadow />
