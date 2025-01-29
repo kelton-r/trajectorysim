@@ -86,4 +86,8 @@
   .condensed-text {
     @apply font-condensed uppercase;
   }
+
+  .tab-header {
+    @apply font-condensed text-xl uppercase tracking-wide;
+  }
 }

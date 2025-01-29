@@ -74,13 +74,13 @@ export function HomePage() {
               <TabsList className="w-full rounded-lg border bg-card p-1">
                 <TabsTrigger 
                   value="data" 
-                  className="custom-tab flex-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                  className="custom-tab flex-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-bold text-xl"
                 >
                   Shot Data Analysis
                 </TabsTrigger>
                 <TabsTrigger 
                   value="visualization" 
-                  className="custom-tab flex-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                  className="custom-tab flex-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-bold text-xl"
                 >
                   3D Trajectory Visualization
                 </TabsTrigger>
