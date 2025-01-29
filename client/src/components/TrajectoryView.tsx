@@ -54,7 +54,7 @@ function LoadingFallback() {
   );
 }
 
-const DrivingRange: FC<{ size: number }> = ({ size }) => {
+const DrivingRange: FC<{ size: { width: number, length: number } }> = ({ size }) => {
   return (
     <>
       {/* Indoor lighting */}
@@ -69,12 +69,12 @@ const DrivingRange: FC<{ size: number }> = ({ size }) => {
         intensity={0.8}
       />
 
-      {/* Ground plane with grass texture */}
+      {/* Indoor floor plane */}
       <ground
         name="rangeGround"
-        width={size}
-        height={size}
-        subdivisions={size / GRASS_TILE_SIZE}
+        width={size.width}
+        height={size.length}
+        subdivisions={Math.max(size.width, size.length) / FLOOR_TILE_SIZE}
         receiveShadows={true}
       >
         <standardMaterial
