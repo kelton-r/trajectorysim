@@ -95,6 +95,7 @@ function calculateRoll(landingVelocity: number, landingAngle: number, spinRate: 
 export function calculateTrajectory(params: ShotParameters): TrajectoryPoint[] {
   const points: TrajectoryPoint[] = [];
   const dt = 0.001; // Smaller time step for more accuracy
+  const sampleInterval = 0.01; // Sample points every 0.01 seconds for visualization
 
   // Convert inputs to SI units
   const ballSpeedMS = params.ballSpeed * 0.44704; // mph to m/s
@@ -115,10 +116,36 @@ export function calculateTrajectory(params: ShotParameters): TrajectoryPoint[] {
 
   let t = 0;
   let maxHeight = 0;
+  let timeSinceLastSample = 0;
 
-  // Track trajectory points for apex calculation
+  // Track trajectory points during flight
   while (y >= 0 && t < 15) { // Max 15 seconds flight time
     maxHeight = Math.max(maxHeight, y);
+
+    // Sample points at regular intervals for visualization
+    if (timeSinceLastSample >= sampleInterval) {
+      const velocity = Math.sqrt(vx * vx + vy * vy + vz * vz);
+      points.push({
+        time: t,
+        x,
+        y,
+        z,
+        velocity,
+        spin: params.spin || 0,
+        altitude: y,
+        distance: Math.sqrt(x * x + z * z),
+        drag: 0, // Placeholder for now
+        lift: 0, // Placeholder for now
+        side: z,
+        total: Math.sqrt(x * x + z * z),
+        carry: x,
+        launchAngle: params.launchAngle,
+        launchDirection: params.launchDirection * (params.launchDirectionSide === 'right' ? 1 : -1),
+        spinAxis: params.spinAxis * (params.spinDirection === 'right' ? 1 : -1),
+        ballSpeed: params.ballSpeed
+      });
+      timeSinceLastSample = 0;
+    }
 
     const velocity = Math.sqrt(vx * vx + vy * vy + vz * vz);
 
@@ -156,6 +183,7 @@ export function calculateTrajectory(params: ShotParameters): TrajectoryPoint[] {
     z += vz * dt;
 
     t += dt;
+    timeSinceLastSample += dt;
   }
 
   // Calculate landing angle and roll
@@ -163,28 +191,36 @@ export function calculateTrajectory(params: ShotParameters): TrajectoryPoint[] {
   const landingAngle = Math.atan2(vy, Math.sqrt(vx * vx + vz * vz));
   const rollDistance = calculateRoll(landingVelocity, landingAngle, params.ballType === 'RPT Ball' ? params.spin : undefined);
 
-  // Final point with all calculated values
-  const finalPoint: TrajectoryPoint = {
-    time: t,
-    x: x + rollDistance * Math.cos(landingAngle),
-    y: 0,
-    z: z + rollDistance * Math.sin(landingAngle),
-    velocity: landingVelocity,
-    spin: params.spin || 0,
-    altitude: maxHeight, // Store the maximum height reached
-    distance: Math.sqrt((x + rollDistance * Math.cos(landingAngle)) * (x + rollDistance * Math.cos(landingAngle)) + (z + rollDistance * Math.sin(landingAngle)) * (z + rollDistance * Math.sin(landingAngle))),
-    drag: 0,
-    lift: 0,
-    side: z + rollDistance * Math.sin(landingAngle),
-    total: Math.sqrt((x + rollDistance * Math.cos(landingAngle)) * (x + rollDistance * Math.cos(landingAngle)) + (z + rollDistance * Math.sin(landingAngle)) * (z + rollDistance * Math.sin(landingAngle))),
-    carry: x,
-    launchAngle: params.launchAngle,
-    launchDirection: params.launchDirection * (params.launchDirectionSide === 'right' ? 1 : -1),
-    spinAxis: params.spinAxis * (params.spinDirection === 'right' ? 1 : -1),
-    ballSpeed: params.ballSpeed  // Store the original ball speed in mph
-  };
+  // Add rolling phase points
+  const numRollPoints = 10;
+  const rollDt = rollDistance / numRollPoints;
+  const finalX = x + rollDistance * Math.cos(landingAngle);
+  const finalZ = z + rollDistance * Math.sin(landingAngle);
 
-  return [finalPoint];
+  for (let i = 1; i <= numRollPoints; i++) {
+    const ratio = i / numRollPoints;
+    points.push({
+      time: t + ratio,
+      x: x + ratio * (finalX - x),
+      y: 0,
+      z: z + ratio * (finalZ - z),
+      velocity: landingVelocity * (1 - ratio), // Decreasing velocity during roll
+      spin: params.spin || 0,
+      altitude: 0,
+      distance: Math.sqrt(finalX * finalX + finalZ * finalZ),
+      drag: 0,
+      lift: 0,
+      side: finalZ,
+      total: Math.sqrt(finalX * finalX + finalZ * finalZ),
+      carry: x,
+      launchAngle: params.launchAngle,
+      launchDirection: params.launchDirection * (params.launchDirectionSide === 'right' ? 1 : -1),
+      spinAxis: params.spinAxis * (params.spinDirection === 'right' ? 1 : -1),
+      ballSpeed: params.ballSpeed
+    });
+  }
+
+  return points;
 }
 
 export function validateShotParameters(params: ShotParameters): boolean {
