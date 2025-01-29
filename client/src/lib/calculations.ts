@@ -20,8 +20,8 @@ const BALL_TYPE_COEFFICIENTS = {
 } as const;
 
 // Ground roll coefficients
-const ROLL_FRICTION = 0.15; // Rolling friction coefficient
-const BOUNCE_COEFFICIENT = 0.5; // Coefficient of restitution for bounce
+const ROLL_FRICTION = 0.3; // Increased rolling friction coefficient
+const BOUNCE_COEFFICIENT = 0.4; // Reduced bounce coefficient for more realistic behavior
 
 function calculateDragCoefficient(velocity: number, spinRate: number, ballType: keyof typeof BALL_TYPE_COEFFICIENTS): number {
   // Reynolds number-based drag coefficient
@@ -65,8 +65,8 @@ function calculateRoll(landingVelocity: number, landingAngle: number, ballType: 
   // After bounce velocity
   const bounceNormalVelocity = normalVelocity * BOUNCE_COEFFICIENT;
 
-  // Initial roll velocity (combination of bounce and forward momentum)
-  let rollVelocity = tangentialVelocity * 0.8 + bounceNormalVelocity * 0.3;
+  // Initial roll velocity (reduced momentum conversion factors)
+  let rollVelocity = tangentialVelocity * 0.6 + bounceNormalVelocity * 0.2;
 
   // Apply ball-specific roll factor
   rollVelocity *= BALL_TYPE_COEFFICIENTS[ballType].rollFactor;
