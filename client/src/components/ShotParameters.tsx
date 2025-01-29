@@ -20,6 +20,7 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
   const [params, setParams] = useState<ShotParamsType>({
     ballSpeed: 150,
     launchAngle: 15,
+    launchDirection: 0,
     spin: 2500,
     spinAxis: 0,
     spinDirection: 'right',
@@ -59,24 +60,24 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
       <CardContent>
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="ballSpeed" className="flex items-center gap-2">
-              <Gauge className="h-4 w-4" />
-              Ball Speed (mph)
+            <Label htmlFor="launchDirection" className="flex items-center gap-2">
+              <ArrowRight className="h-4 w-4" />
+              Launch Direction (°)
             </Label>
             <Input
-              id="ballSpeed"
+              id="launchDirection"
               type="number"
-              value={params.ballSpeed}
-              onChange={handleChange('ballSpeed')}
-              min={0}
-              max={200}
-              step={1}
+              value={params.launchDirection}
+              onChange={handleChange('launchDirection')}
+              min={-90}
+              max={90}
+              step={0.1}
             />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="launchAngle" className="flex items-center gap-2">
-              <ArrowRight className="h-4 w-4" />
+              <ArrowRight className="h-4 w-4 rotate-90" />
               Launch Angle (°)
             </Label>
             <Input
@@ -153,6 +154,22 @@ export function ShotParameters({ onCalculate }: ShotParametersProps) {
                 ))}
               </SelectContent>
             </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="ballSpeed" className="flex items-center gap-2">
+              <Gauge className="h-4 w-4" />
+              Ball Speed (mph)
+            </Label>
+            <Input
+              id="ballSpeed"
+              type="number"
+              value={params.ballSpeed}
+              onChange={handleChange('ballSpeed')}
+              min={0}
+              max={200}
+              step={1}
+            />
           </div>
         </div>
       </CardContent>

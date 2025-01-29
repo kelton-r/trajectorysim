@@ -1,4 +1,4 @@
-import { ShotParameters, TrajectoryPoint } from '@/types';
+import { ShotParameters, TrajectoryPoint, WeatherConditions } from '@/types';
 
 const GRAVITY = 9.81; // m/s^2
 const TEMPERATURE = 21.1; // 70°F in Celsius
@@ -14,14 +14,24 @@ export function calculateTrajectory(
   // Convert ball speed from mph to m/s
   const ballSpeedMS = params.ballSpeed * 0.44704;
 
-  let x = 0, y = 0, z = 0;
-  let vx = ballSpeedMS * Math.cos(params.launchAngle * Math.PI / 180);
-  let vy = ballSpeedMS * Math.sin(params.launchAngle * Math.PI / 180);
-  let vz = 0;
+  // Convert angles to radians
+  const launchAngleRad = params.launchAngle * Math.PI / 180;
+  const launchDirectionRad = params.launchDirection * Math.PI / 180;
 
-  // Apply spin axis effect to initial velocity
+  // Initial position
+  let x = 0, y = 0, z = 0;
+
+  // Calculate initial velocities using spherical coordinates
+  // vx = v * cos(vertical) * cos(horizontal)
+  // vy = v * sin(vertical)
+  // vz = v * cos(vertical) * sin(horizontal)
+  let vx = ballSpeedMS * Math.cos(launchAngleRad) * Math.cos(launchDirectionRad);
+  let vy = ballSpeedMS * Math.sin(launchAngleRad);
+  let vz = ballSpeedMS * Math.cos(launchAngleRad) * Math.sin(launchDirectionRad);
+
+  // Apply spin axis effect to side movement
   const spinAxisRad = params.spinAxis * (Math.PI / 180) * (params.spinDirection === 'right' ? 1 : -1);
-  vz = ballSpeedMS * Math.sin(spinAxisRad);
+  vz += ballSpeedMS * Math.sin(spinAxisRad) * 0.1; // Reduced effect of spin on initial direction
 
   let t = 0;
 
@@ -93,6 +103,8 @@ export function validateShotParameters(params: ShotParameters): boolean {
     params.ballSpeed <= 200 &&
     params.launchAngle >= 0 &&
     params.launchAngle <= 90 &&
+    params.launchDirection >= -90 &&
+    params.launchDirection <= 90 &&
     params.spin >= 0 &&
     params.spin <= 10000 &&
     params.spinAxis >= -90 &&

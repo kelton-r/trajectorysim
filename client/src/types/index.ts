@@ -1,6 +1,7 @@
 export interface ShotParameters {
   ballSpeed: number;
   launchAngle: number;
+  launchDirection: number;
   spin: number;
   spinAxis: number;
   spinDirection: 'right' | 'left';
