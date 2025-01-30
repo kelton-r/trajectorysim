@@ -36,13 +36,25 @@ export function TrajectoryTable({ data, onExport }: TrajectoryTableProps) {
       </div>
 
       <div className="grid grid-cols-3 gap-6">
-        <div className="relative overflow-hidden">
-          <div className="absolute inset-0 bg-black transform -skew-x-12 hover:scale-105 transition-transform duration-300"></div>
-          <div className="relative p-6 text-white cursor-default">
-            <div className="text-4xl font-bold">{metersToYards(finalPoint?.carry || 0).toFixed(1)} YD</div>
-            <div className="text-lg font-condensed uppercase">CARRY</div>
+        {[
+          { label: 'CARRY', value: finalPoint?.carry ? `${metersToYards(finalPoint.carry).toFixed(1)} YD` : '- YD' },
+          { label: 'BALL SPEED', value: finalPoint?.ballSpeed ? `${finalPoint.ballSpeed.toFixed(1)} MPH` : '- MPH' },
+          { label: 'SPIN RATE', value: finalPoint?.spin ? `${finalPoint.spin} RPM` : '- RPM' },
+          { label: 'TOTAL CARRY', value: finalPoint?.total ? `${metersToYards(finalPoint.total).toFixed(1)} YD` : '- YD' },
+          { label: 'LAUNCH ANGLE', value: finalPoint?.launchAngle ? `${finalPoint.launchAngle.toFixed(1)}°` : '-°' },
+          { label: 'APEX', value: finalPoint?.altitude ? `${metersToFeet(finalPoint.altitude).toFixed(1)} FT` : '- FT' },
+          { label: 'SIDE CARRY', value: finalPoint?.side ? `${metersToYards(finalPoint.side).toFixed(1)} YD` : '- YD' },
+          { label: 'SPIN AXIS', value: finalPoint?.spinAxis ? `${finalPoint.spinAxis}°` : '-°' },
+          { label: 'LAUNCH DIRECTION', value: finalPoint?.launchDirection ? `${finalPoint.launchDirection.toFixed(1)}°` : '-°' }
+        ].map(({ label, value }) => (
+          <div key={label} className="relative overflow-hidden">
+            <div className="absolute inset-0 bg-black transform -skew-x-12 hover:scale-105 transition-transform duration-300"></div>
+            <div className="relative p-6 text-white cursor-default flex flex-col justify-between h-full">
+              <div className="text-4xl font-bold font-condensed">{value}</div>
+              <div className="text-lg font-condensed uppercase mt-2">{label}</div>
+            </div>
           </div>
-        </div>
+        ))}
 
         <div className="relative overflow-hidden">
           <div className="absolute inset-0 bg-black transform -skew-x-12 hover:scale-105 transition-transform duration-300"></div>
