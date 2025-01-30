@@ -38,17 +38,23 @@ export function TrajectoryTable({ data, onExport }: TrajectoryTableProps) {
       <div className="grid grid-cols-3 gap-6">
         <div className="relative overflow-hidden">
           <div className="absolute inset-0 bg-black transform -skew-x-12 hover:scale-105 transition-transform duration-300"></div>
-          <div className="relative p-6 text-white cursor-default">
-            <div className="text-4xl font-bold">{metersToYards(finalPoint?.carry || 0).toFixed(1)} YD</div>
-            <div className="text-lg font-condensed uppercase">CARRY</div>
+          <div className="relative p-6 text-white cursor-default h-full flex flex-col">
+            <div className="text-4xl font-bold flex items-center gap-2">
+              {metersToYards(finalPoint?.carry || 0).toFixed(1)}
+              <span className="text-2xl">YD</span>
+            </div>
+            <div className="text-lg font-condensed uppercase mt-auto text-center w-full">CARRY</div>
           </div>
         </div>
 
         <div className="relative overflow-hidden">
           <div className="absolute inset-0 bg-black transform -skew-x-12 hover:scale-105 transition-transform duration-300"></div>
-          <div className="relative p-6 text-white cursor-default">
-            <div className="text-4xl font-bold">{finalPoint?.ballSpeed.toFixed(1)} MPH</div>
-            <div className="text-lg font-condensed uppercase">BALL SPEED</div>
+          <div className="relative p-6 text-white cursor-default h-full flex flex-col">
+            <div className="text-4xl font-bold flex items-center gap-2">
+              {finalPoint?.ballSpeed.toFixed(1)}
+              <span className="text-2xl">MPH</span>
+            </div>
+            <div className="text-lg font-condensed uppercase mt-auto text-center w-full">BALL SPEED</div>
           </div>
         </div>
 
@@ -70,9 +76,11 @@ export function TrajectoryTable({ data, onExport }: TrajectoryTableProps) {
 
         <div className="relative overflow-hidden">
           <div className="absolute inset-0 bg-black transform -skew-x-12 hover:scale-105 transition-transform duration-300"></div>
-          <div className="relative p-6 text-white cursor-default">
-            <div className="text-4xl font-bold">{finalPoint?.launchAngle.toFixed(1)}°</div>
-            <div className="text-lg font-condensed uppercase">LAUNCH ANGLE</div>
+          <div className="relative p-6 text-white cursor-default h-full flex flex-col">
+            <div className="text-4xl font-bold flex items-center justify-center flex-1">
+              {finalPoint?.launchAngle.toFixed(1)}°
+            </div>
+            <div className="text-lg font-condensed uppercase text-center w-full">LAUNCH ANGLE</div>
           </div>
         </div>
 
