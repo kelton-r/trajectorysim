@@ -273,30 +273,30 @@ export function TourAverages({ isExpanded = false }: TourAveragesProps) {
               <Table>
                 <TableHeader>
                   <TableRow className="hover:bg-transparent">
-                    <TableHead className="w-[140px] text-white">Tour</TableHead>
-                    <TableHead className="text-white">Club Speed</TableHead>
-                    <TableHead className="text-white">Ball Speed</TableHead>
-                    <TableHead className="text-white">Launch Angle</TableHead>
-                    <TableHead className="text-white">Spin Rate</TableHead>
-                    <TableHead className="text-white">Carry</TableHead>
+                    <TableHead className="w-[140px] text-white font-condensed text-lg uppercase">Tour</TableHead>
+                    <TableHead className="text-white font-condensed text-lg uppercase">Carry</TableHead>
+                    <TableHead className="text-white font-condensed text-lg uppercase">Club Speed</TableHead>
+                    <TableHead className="text-white font-condensed text-lg uppercase">Ball Speed</TableHead>
+                    <TableHead className="text-white font-condensed text-lg uppercase">Launch Angle</TableHead>
+                    <TableHead className="text-white font-condensed text-lg uppercase">Spin Rate</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   <TableRow className="hover:bg-black/60">
-                    <TableCell className="font-semibold text-white">PGA TOUR</TableCell>
-                    <TableCell className="text-white">{CLUB_DATA[selectedClub].pga.clubSpeed} mph</TableCell>
-                    <TableCell className="text-white">{CLUB_DATA[selectedClub].pga.ballSpeed} mph</TableCell>
-                    <TableCell className="text-white">{CLUB_DATA[selectedClub].pga.launchAngle}°</TableCell>
-                    <TableCell className="text-white">{CLUB_DATA[selectedClub].pga.spinRate}</TableCell>
-                    <TableCell className="text-white">{CLUB_DATA[selectedClub].pga.carry} yds</TableCell>
+                    <TableCell className="font-bold text-white text-xl">PGA TOUR</TableCell>
+                    <TableCell className="text-white text-xl">{CLUB_DATA[selectedClub].pga.carry} YDS</TableCell>
+                    <TableCell className="text-white text-xl">{CLUB_DATA[selectedClub].pga.clubSpeed} MPH</TableCell>
+                    <TableCell className="text-white text-xl">{CLUB_DATA[selectedClub].pga.ballSpeed} MPH</TableCell>
+                    <TableCell className="text-white text-xl">{CLUB_DATA[selectedClub].pga.launchAngle}°</TableCell>
+                    <TableCell className="text-white text-xl">{CLUB_DATA[selectedClub].pga.spinRate} RPM</TableCell>
                   </TableRow>
                   <TableRow className="hover:bg-black/60">
-                    <TableCell className="font-semibold text-white">LPGA TOUR</TableCell>
-                    <TableCell className="text-white">{CLUB_DATA[selectedClub].lpga.clubSpeed} mph</TableCell>
-                    <TableCell className="text-white">{CLUB_DATA[selectedClub].lpga.ballSpeed} mph</TableCell>
-                    <TableCell className="text-white">{CLUB_DATA[selectedClub].lpga.launchAngle}°</TableCell>
-                    <TableCell className="text-white">{CLUB_DATA[selectedClub].lpga.spinRate}</TableCell>
-                    <TableCell className="text-white">{CLUB_DATA[selectedClub].lpga.carry} yds</TableCell>
+                    <TableCell className="font-bold text-white text-xl">LPGA TOUR</TableCell>
+                    <TableCell className="text-white text-xl">{CLUB_DATA[selectedClub].lpga.carry} YDS</TableCell>
+                    <TableCell className="text-white text-xl">{CLUB_DATA[selectedClub].lpga.clubSpeed} MPH</TableCell>
+                    <TableCell className="text-white text-xl">{CLUB_DATA[selectedClub].lpga.ballSpeed} MPH</TableCell>
+                    <TableCell className="text-white text-xl">{CLUB_DATA[selectedClub].lpga.launchAngle}°</TableCell>
+                    <TableCell className="text-white text-xl">{CLUB_DATA[selectedClub].lpga.spinRate} RPM</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
