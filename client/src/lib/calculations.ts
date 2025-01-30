@@ -2,44 +2,54 @@ import { ShotParameters, TrajectoryPoint } from '@/types';
 
 // Constants for golf ball physics
 const GRAVITY = 9.81; // m/s^2
-const AIR_DENSITY = 1.225; // kg/m^3 at sea level
+const SEA_LEVEL_AIR_DENSITY = 1.225; // kg/m^3 at sea level
 const BALL_MASS = 0.0459; // kg (standard golf ball)
 const BALL_RADIUS = 0.02135; // m (standard golf ball)
 const BALL_AREA = Math.PI * BALL_RADIUS * BALL_RADIUS;
 
-// Golf-specific coefficients
-const CD_ZERO = 0.171; // Base drag coefficient for a golf ball
-const CL_ZERO = 0.171; // Base lift coefficient
-const SPIN_FACTOR = 0.0001; // Factor for spin effect on lift
+// Refined golf-specific coefficients
+const CD_ZERO = 0.25; // Base drag coefficient (increased to account for real ball behavior)
+const CL_ZERO = 0.22; // Base lift coefficient (adjusted based on wind tunnel data)
+const SPIN_FACTOR = 0.00009; // Reduced spin effect on lift
+const SPIN_DRAG_FACTOR = 0.000075; // Separate factor for spin's effect on drag
 
-// Ground interaction coefficients
-const BOUNCE_FRICTION = 0.35; // Friction coefficient during bounce
-const ROLL_FRICTION = 0.25; // Rolling friction coefficient
-const BOUNCE_COEFFICIENT = 0.4; // Base bounce coefficient
-const SPIN_ROLL_FACTOR = 0.0002; // How much spin affects roll distance
+// Enhanced ground interaction coefficients
+const BOUNCE_FRICTION = 0.4; // Increased friction during bounce
+const ROLL_FRICTION = 0.3; // Increased rolling friction
+const BOUNCE_COEFFICIENT = 0.35; // Reduced bounce coefficient for more realistic first bounce
+const SPIN_ROLL_FACTOR = 0.00015; // Reduced spin effect on roll
 
-// Ball type specific coefficients
+// Ball type specific coefficients with refined values
 const BALL_TYPE_COEFFICIENTS = {
   'RPT Ball': { drag: 1.0, lift: 1.0 },
-  'Range Ball': { drag: 1.2, lift: 0.8 }, // Higher drag, lower lift
-  'Premium Ball': { drag: 1.1, lift: 0.9 } // Slightly higher drag, slightly lower lift
+  'Range Ball': { drag: 1.3, lift: 0.7 }, // More drag, less lift for range balls
+  'Premium Ball': { drag: 1.15, lift: 0.85 } // More realistic premium ball behavior
 } as const;
 
+function calculateAirDensity(altitude: number): number {
+  // Simple atmospheric model
+  const scaleHeight = 7400; // meters
+  return SEA_LEVEL_AIR_DENSITY * Math.exp(-altitude / scaleHeight);
+}
+
 function calculateDragCoefficient(velocity: number, spinRate: number, ballType: keyof typeof BALL_TYPE_COEFFICIENTS): number {
-  // Reynolds number-based drag coefficient
-  const reynolds = (velocity * 2 * BALL_RADIUS * AIR_DENSITY) / (1.81e-5);
+  // Enhanced Reynolds number-based drag model
+  const reynolds = (velocity * 2 * BALL_RADIUS * SEA_LEVEL_AIR_DENSITY) / (1.81e-5);
   let cd = CD_ZERO * BALL_TYPE_COEFFICIENTS[ballType].drag;
 
-  // Adjust drag based on Reynolds number
-  if (reynolds < 7.5e4) {
-    cd += 0.1; // Increased drag in laminar flow
+  // More detailed Reynolds number effects
+  if (reynolds < 4e4) {
+    cd *= 1.5; // Significant increase in laminar flow
+  } else if (reynolds < 7.5e4) {
+    cd *= 1.2; // Transition region
   } else if (reynolds > 2e5) {
-    cd -= 0.05; // Decreased drag in turbulent flow
+    cd *= 0.85; // Turbulent flow reduction
   }
 
-  // Only apply spin effect for RPT balls
+  // Spin effects on drag (enhanced model)
   if (ballType === 'RPT Ball') {
-    cd += (spinRate / 10000) * 0.05;
+    const spinFactor = (2 * Math.PI * BALL_RADIUS * spinRate) / (60 * velocity);
+    cd += spinFactor * SPIN_DRAG_FACTOR;
   }
 
   return cd;
@@ -47,47 +57,51 @@ function calculateDragCoefficient(velocity: number, spinRate: number, ballType: 
 
 function calculateLiftCoefficient(spinRate: number, velocity: number, ballType: keyof typeof BALL_TYPE_COEFFICIENTS): number {
   if (ballType !== 'RPT Ball') {
-    // Non-RPT balls have reduced lift and no spin effects
     return CL_ZERO * BALL_TYPE_COEFFICIENTS[ballType].lift;
   }
 
-  // Calculate lift coefficient based on spin rate and velocity for RPT balls
+  // Enhanced Magnus effect model
   const spinFactor = (2 * Math.PI * BALL_RADIUS * spinRate) / (60 * velocity);
-  return (CL_ZERO + SPIN_FACTOR * spinFactor) * BALL_TYPE_COEFFICIENTS[ballType].lift;
+  const reynoldsEffect = Math.min(1, velocity / 50); // Reduced lift at lower speeds
+
+  return (CL_ZERO + SPIN_FACTOR * spinFactor * reynoldsEffect) * 
+    BALL_TYPE_COEFFICIENTS[ballType].lift;
 }
 
 function calculateRoll(landingVelocity: number, landingAngle: number, spinRate: number | undefined): number {
-  // Convert landing angle to radians if it's in degrees
   const landingAngleRad = landingAngle;
 
-  // Initial bounce
+  // Enhanced bounce model
   const normalVelocity = landingVelocity * Math.sin(landingAngleRad);
   const tangentialVelocity = landingVelocity * Math.cos(landingAngleRad);
 
-  // Adjust bounce based on landing angle
+  // More realistic bounce behavior
   let effectiveBounceCoeff = BOUNCE_COEFFICIENT;
-  if (landingAngleRad < Math.PI / 6) { // Less than 30 degrees
-    effectiveBounceCoeff *= (1 - Math.cos(landingAngleRad)); // Reduce bounce for shallow angles
+  if (landingAngleRad < Math.PI / 6) {
+    effectiveBounceCoeff *= (1 - Math.cos(landingAngleRad)) * 0.8;
+  }
+  if (landingVelocity > 30) {
+    effectiveBounceCoeff *= 0.9; // Reduced bounce for higher speeds
   }
 
-  // After bounce velocity
   const bounceNormalVelocity = normalVelocity * effectiveBounceCoeff;
+  let rollVelocity = tangentialVelocity * (1 - BOUNCE_FRICTION) + 
+    bounceNormalVelocity * Math.sin(landingAngleRad / 2);
 
-  // Initial roll velocity considering landing angle and bounce
-  let rollVelocity = tangentialVelocity * (1 - BOUNCE_FRICTION) + bounceNormalVelocity * Math.sin(landingAngleRad / 2);
-
-  // Apply spin effects if available (for RPT balls)
+  // Enhanced spin effects
   if (spinRate !== undefined) {
-    // Negative spin (backspin) reduces roll, positive spin increases it
-    const spinEffect = -spinRate * SPIN_ROLL_FACTOR;
+    const spinEffect = -spinRate * SPIN_ROLL_FACTOR * 
+      Math.exp(-Math.abs(landingAngleRad));
     rollVelocity *= (1 + spinEffect);
   }
 
-  // Calculate roll distance using a dynamic friction model
-  // Distance = (v²)/(2*μg) where μ is the rolling friction coefficient
-  // For steeper landing angles, increase effective friction
-  const effectiveFriction = ROLL_FRICTION * (1 + Math.abs(Math.sin(landingAngleRad)));
-  const rollDistance = Math.max(0, (rollVelocity * rollVelocity) / (2 * effectiveFriction * GRAVITY));
+  // Enhanced friction model
+  const effectiveFriction = ROLL_FRICTION * 
+    (1 + Math.abs(Math.sin(landingAngleRad))) * 
+    (1 + landingVelocity / 100);
+
+  const rollDistance = Math.max(0, 
+    (rollVelocity * rollVelocity) / (2 * effectiveFriction * GRAVITY));
 
   return rollDistance;
 }
@@ -147,8 +161,8 @@ export function calculateTrajectory(params: ShotParameters): TrajectoryPoint[] {
     const cl = calculateLiftCoefficient(params.spin || 0, velocity, params.ballType as keyof typeof BALL_TYPE_COEFFICIENTS);
 
     // Calculate forces
-    const dragMagnitude = 0.5 * AIR_DENSITY * velocity * velocity * BALL_AREA * cd;
-    const liftMagnitude = 0.5 * AIR_DENSITY * velocity * velocity * BALL_AREA * cl;
+    const dragMagnitude = 0.5 * calculateAirDensity(maxHeight) * velocity * velocity * BALL_AREA * cd;
+    const liftMagnitude = 0.5 * calculateAirDensity(maxHeight) * velocity * velocity * BALL_AREA * cl;
 
     // Unit vectors
     const dragUnitX = -vx / velocity;
