@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronDown, ChevronUp, Info } from 'lucide-react';
+import { Info } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -9,14 +9,9 @@ import {
   TableRow
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { cn } from '@/lib/utils';
 
-interface TourAverageData {
+interface ClubData {
   clubSpeed: number;
   ballSpeed: number;
   launchAngle: number;
@@ -24,50 +19,140 @@ interface TourAverageData {
   carry: number;
 }
 
-interface TourAveragesProps {
-  isExpanded?: boolean;
+interface TourData {
+  pga: ClubData;
+  lpga: ClubData;
 }
 
-const TOUR_DATA: Record<string, TourAverageData[]> = {
-  "PGA Tour": [
-    {
+type ClubType = 'DR' | '3W' | '5W' | '3I' | '5I' | '7I' | 'PW';
+
+const CLUB_DATA: Record<ClubType, TourData> = {
+  'DR': {
+    pga: {
       clubSpeed: 113,
       ballSpeed: 167,
       launchAngle: 10.9,
       spinRate: 2686,
       carry: 275,
     },
-    {
-      clubSpeed: 108,
-      ballSpeed: 160,
-      launchAngle: 11.2,
-      spinRate: 2789,
-      carry: 260,
-    }
-  ],
-  "LPGA Tour": [
-    {
+    lpga: {
       clubSpeed: 94,
       ballSpeed: 138,
       launchAngle: 13.1,
       spinRate: 2850,
       carry: 218,
+    }
+  },
+  '3W': {
+    pga: {
+      clubSpeed: 107,
+      ballSpeed: 158,
+      launchAngle: 11.5,
+      spinRate: 3100,
+      carry: 243,
     },
-    {
+    lpga: {
       clubSpeed: 90,
       ballSpeed: 132,
-      launchAngle: 13.4,
-      spinRate: 2900,
-      carry: 210,
+      launchAngle: 13.8,
+      spinRate: 3300,
+      carry: 195,
     }
-  ]
+  },
+  '5W': {
+    pga: {
+      clubSpeed: 104,
+      ballSpeed: 152,
+      launchAngle: 12.8,
+      spinRate: 3400,
+      carry: 230,
+    },
+    lpga: {
+      clubSpeed: 87,
+      ballSpeed: 127,
+      launchAngle: 14.5,
+      spinRate: 3600,
+      carry: 185,
+    }
+  },
+  '3I': {
+    pga: {
+      clubSpeed: 102,
+      ballSpeed: 148,
+      launchAngle: 13.5,
+      spinRate: 3800,
+      carry: 215,
+    },
+    lpga: {
+      clubSpeed: 85,
+      ballSpeed: 123,
+      launchAngle: 15.2,
+      spinRate: 4000,
+      carry: 175,
+    }
+  },
+  '5I': {
+    pga: {
+      clubSpeed: 98,
+      ballSpeed: 142,
+      launchAngle: 14.8,
+      spinRate: 4200,
+      carry: 195,
+    },
+    lpga: {
+      clubSpeed: 82,
+      ballSpeed: 118,
+      launchAngle: 16.5,
+      spinRate: 4400,
+      carry: 160,
+    }
+  },
+  '7I': {
+    pga: {
+      clubSpeed: 94,
+      ballSpeed: 135,
+      launchAngle: 16.5,
+      spinRate: 5000,
+      carry: 175,
+    },
+    lpga: {
+      clubSpeed: 78,
+      ballSpeed: 112,
+      launchAngle: 18.2,
+      spinRate: 5200,
+      carry: 145,
+    }
+  },
+  'PW': {
+    pga: {
+      clubSpeed: 88,
+      ballSpeed: 125,
+      launchAngle: 24.0,
+      spinRate: 7500,
+      carry: 140,
+    },
+    lpga: {
+      clubSpeed: 73,
+      ballSpeed: 103,
+      launchAngle: 26.0,
+      spinRate: 7700,
+      carry: 115,
+    }
+  }
 };
+
+interface TourAveragesProps {
+  isExpanded?: boolean;
+}
 
 export function TourAverages({ isExpanded = false }: TourAveragesProps) {
   const [expanded, setExpanded] = useState(isExpanded);
+  const [selectedClub, setSelectedClub] = useState<ClubType | null>(null);
+
+  const clubs: ClubType[] = ['DR', '3W', '5W', '3I', '5I', '7I', 'PW'];
 
   return (
-    <div className="mt-8 bg-white rounded-lg shadow-sm">
+    <div className="mt-8 bg-white rounded-lg shadow-sm overflow-hidden">
       <Button
         variant="ghost"
         className="w-full flex items-center justify-between p-6 hover:bg-gray-50"
@@ -77,48 +162,60 @@ export function TourAverages({ isExpanded = false }: TourAveragesProps) {
           <Info className="h-5 w-5" />
           <span className="text-xl font-condensed font-bold">TOUR AVERAGES</span>
         </div>
-        {expanded ? (
-          <ChevronUp className="h-5 w-5" />
-        ) : (
-          <ChevronDown className="h-5 w-5" />
-        )}
       </Button>
 
       {expanded && (
-        <div className="p-6 pt-0">
-          <Accordion type="single" collapsible className="space-y-4">
-            {Object.entries(TOUR_DATA).map(([tour, data]) => (
-              <AccordionItem key={tour} value={tour} className="border rounded-lg">
-                <AccordionTrigger className="px-4 hover:bg-gray-50 rounded-t-lg">
-                  <span className="text-lg font-condensed">{tour}</span>
-                </AccordionTrigger>
-                <AccordionContent className="px-4">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Club Speed (mph)</TableHead>
-                        <TableHead>Ball Speed (mph)</TableHead>
-                        <TableHead>Launch Angle (°)</TableHead>
-                        <TableHead>Spin Rate (rpm)</TableHead>
-                        <TableHead>Carry (yards)</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {data.map((row, index) => (
-                        <TableRow key={index}>
-                          <TableCell>{row.clubSpeed}</TableCell>
-                          <TableCell>{row.ballSpeed}</TableCell>
-                          <TableCell>{row.launchAngle}</TableCell>
-                          <TableCell>{row.spinRate}</TableCell>
-                          <TableCell>{row.carry}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </AccordionContent>
-              </AccordionItem>
+        <div className="p-6 pt-0 space-y-6">
+          <div className="flex justify-center gap-4">
+            {clubs.map((club) => (
+              <Button
+                key={club}
+                variant="outline"
+                className={cn(
+                  "w-12 h-12 rounded-full p-0 font-bold",
+                  selectedClub === club && "bg-black text-white hover:bg-black/90"
+                )}
+                onClick={() => setSelectedClub(club)}
+              >
+                {club}
+              </Button>
             ))}
-          </Accordion>
+          </div>
+
+          {selectedClub && (
+            <div className="animate-in fade-in slide-in-from-top-4 duration-300">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[140px]">Tour</TableHead>
+                    <TableHead>Club Speed (mph)</TableHead>
+                    <TableHead>Ball Speed (mph)</TableHead>
+                    <TableHead>Launch Angle (°)</TableHead>
+                    <TableHead>Spin Rate (rpm)</TableHead>
+                    <TableHead>Carry (yards)</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow>
+                    <TableCell className="font-semibold">PGA TOUR</TableCell>
+                    <TableCell>{CLUB_DATA[selectedClub].pga.clubSpeed}</TableCell>
+                    <TableCell>{CLUB_DATA[selectedClub].pga.ballSpeed}</TableCell>
+                    <TableCell>{CLUB_DATA[selectedClub].pga.launchAngle}</TableCell>
+                    <TableCell>{CLUB_DATA[selectedClub].pga.spinRate}</TableCell>
+                    <TableCell>{CLUB_DATA[selectedClub].pga.carry}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-semibold">LPGA TOUR</TableCell>
+                    <TableCell>{CLUB_DATA[selectedClub].lpga.clubSpeed}</TableCell>
+                    <TableCell>{CLUB_DATA[selectedClub].lpga.ballSpeed}</TableCell>
+                    <TableCell>{CLUB_DATA[selectedClub].lpga.launchAngle}</TableCell>
+                    <TableCell>{CLUB_DATA[selectedClub].lpga.spinRate}</TableCell>
+                    <TableCell>{CLUB_DATA[selectedClub].lpga.carry}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </div>
+          )}
         </div>
       )}
     </div>
