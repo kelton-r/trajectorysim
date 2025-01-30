@@ -155,7 +155,7 @@ export function TourAverages({ isExpanded = false }: TourAveragesProps) {
     <div className="mt-8 bg-black rounded-lg shadow-lg overflow-hidden">
       <Button
         variant="ghost"
-        className="w-full flex items-center justify-between p-6 hover:bg-black/90 text-white"
+        className="w-full flex items-center justify-between p-6 hover:bg-red-600/90 text-white"
         onClick={() => setExpanded(!expanded)}
       >
         <div className="flex items-center gap-2">
@@ -177,8 +177,8 @@ export function TourAverages({ isExpanded = false }: TourAveragesProps) {
                 className={cn(
                   "w-14 h-14 rounded-full p-0 font-bold transition-all duration-200",
                   "border-2 hover:scale-105",
-                  selectedClub === club 
-                    ? "bg-red-600 text-white border-red-600 hover:bg-red-700 hover:border-red-700" 
+                  selectedClub === club
+                    ? "bg-red-600 text-white border-red-600 hover:bg-red-700 hover:border-red-700"
                     : "bg-white text-black border-gray-300 hover:border-red-600"
                 )}
                 onClick={() => setSelectedClub(club)}
