@@ -3,6 +3,7 @@ import { Header } from '@/components/layout/Header';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { TrajectoryTable } from '@/components/TrajectoryTable';
 import { TrajectoryView } from '@/components/TrajectoryView';
+import { TourAverages } from '@/components/TourAverages';
 import { ShotParameters, TrajectoryPoint } from '@/types';
 import { calculateTrajectory } from '@/lib/calculations';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -92,6 +93,7 @@ export function HomePage() {
                     data={trajectoryData}
                     onExport={handleExport}
                   />
+                  <TourAverages isExpanded={false} />
                 </div>
               </TabsContent>
 
