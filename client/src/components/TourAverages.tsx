@@ -231,6 +231,10 @@ export function TourAverages({ isExpanded = false }: TourAveragesProps) {
 
   const clubs: ClubType[] = ['DR', '3W', '5W', '3H', '3I', '4I', '5I', '6I', '7I', '8I', '9I', 'PW'];
 
+  const calculateSmashFactor = (ballSpeed: number, clubSpeed: number) => {
+    return (ballSpeed / clubSpeed).toFixed(2);
+  };
+
   return (
     <div className="mt-8 bg-black rounded-lg shadow-lg overflow-hidden">
       <Button
@@ -273,10 +277,11 @@ export function TourAverages({ isExpanded = false }: TourAveragesProps) {
               <Table>
                 <TableHeader>
                   <TableRow className="hover:bg-transparent">
-                    <TableHead className="w-[140px] text-white font-condensed text-lg uppercase">Tour</TableHead>
+                    <TableHead className="w-[120px] text-white font-condensed text-lg uppercase">Tour</TableHead>
                     <TableHead className="text-white font-condensed text-lg uppercase">Carry</TableHead>
                     <TableHead className="text-white font-condensed text-lg uppercase">Club Speed</TableHead>
                     <TableHead className="text-white font-condensed text-lg uppercase">Ball Speed</TableHead>
+                    <TableHead className="text-white font-condensed text-lg uppercase">Smash Factor</TableHead>
                     <TableHead className="text-white font-condensed text-lg uppercase">Launch Angle</TableHead>
                     <TableHead className="text-white font-condensed text-lg uppercase">Spin Rate</TableHead>
                   </TableRow>
@@ -287,6 +292,7 @@ export function TourAverages({ isExpanded = false }: TourAveragesProps) {
                     <TableCell className="text-white text-xl">{CLUB_DATA[selectedClub].pga.carry} YDS</TableCell>
                     <TableCell className="text-white text-xl">{CLUB_DATA[selectedClub].pga.clubSpeed} MPH</TableCell>
                     <TableCell className="text-white text-xl">{CLUB_DATA[selectedClub].pga.ballSpeed} MPH</TableCell>
+                    <TableCell className="text-white text-xl">{calculateSmashFactor(CLUB_DATA[selectedClub].pga.ballSpeed, CLUB_DATA[selectedClub].pga.clubSpeed)}</TableCell>
                     <TableCell className="text-white text-xl">{CLUB_DATA[selectedClub].pga.launchAngle}°</TableCell>
                     <TableCell className="text-white text-xl">{CLUB_DATA[selectedClub].pga.spinRate} RPM</TableCell>
                   </TableRow>
@@ -295,6 +301,7 @@ export function TourAverages({ isExpanded = false }: TourAveragesProps) {
                     <TableCell className="text-white text-xl">{CLUB_DATA[selectedClub].lpga.carry} YDS</TableCell>
                     <TableCell className="text-white text-xl">{CLUB_DATA[selectedClub].lpga.clubSpeed} MPH</TableCell>
                     <TableCell className="text-white text-xl">{CLUB_DATA[selectedClub].lpga.ballSpeed} MPH</TableCell>
+                    <TableCell className="text-white text-xl">{calculateSmashFactor(CLUB_DATA[selectedClub].lpga.ballSpeed, CLUB_DATA[selectedClub].lpga.clubSpeed)}</TableCell>
                     <TableCell className="text-white text-xl">{CLUB_DATA[selectedClub].lpga.launchAngle}°</TableCell>
                     <TableCell className="text-white text-xl">{CLUB_DATA[selectedClub].lpga.spinRate} RPM</TableCell>
                   </TableRow>
