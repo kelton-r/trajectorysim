@@ -36,11 +36,11 @@ export function Header() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem>
-              Units: Imperial
+            <DropdownMenuItem onClick={() => useUnitStore.getState().setUnit('imperial')}>
+              Units: Imperial {useUnitStore((state) => state.unit) === 'imperial' && '✓'}
             </DropdownMenuItem>
-            <DropdownMenuItem>
-              Settings
+            <DropdownMenuItem onClick={() => useUnitStore.getState().setUnit('metric')}>
+              Units: Metric {useUnitStore((state) => state.unit) === 'metric' && '✓'}
             </DropdownMenuItem>
             <DropdownMenuItem>
               Help
