@@ -155,7 +155,7 @@ export function TourAverages({ isExpanded = false }: TourAveragesProps) {
     <div className="mt-8 bg-black rounded-lg shadow-lg overflow-hidden">
       <Button
         variant="ghost"
-        className="w-full flex items-center justify-between p-6 hover:bg-red-600/90 text-white"
+        className="w-full flex items-center justify-between p-6 hover:bg-red-600/90 text-white hover:text-white"
         onClick={() => setExpanded(!expanded)}
       >
         <div className="flex items-center gap-2">
