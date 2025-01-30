@@ -24,7 +24,7 @@ interface TourData {
   lpga: ClubData;
 }
 
-type ClubType = 'DR' | '3W' | '5W' | '3I' | '5I' | '7I' | 'PW';
+type ClubType = 'DR' | '3W' | '5W' | '3H' | '3I' | '4I' | '5I' | '6I' | '7I' | '8I' | '9I' | 'PW';
 
 const CLUB_DATA: Record<ClubType, TourData> = {
   'DR': {
@@ -75,6 +75,22 @@ const CLUB_DATA: Record<ClubType, TourData> = {
       carry: 185,
     }
   },
+  '3H': {
+    pga: {
+      clubSpeed: 103,
+      ballSpeed: 149,
+      launchAngle: 13.2,
+      spinRate: 3600,
+      carry: 220,
+    },
+    lpga: {
+      clubSpeed: 86,
+      ballSpeed: 124,
+      launchAngle: 15.0,
+      spinRate: 3800,
+      carry: 180,
+    }
+  },
   '3I': {
     pga: {
       clubSpeed: 102,
@@ -89,6 +105,22 @@ const CLUB_DATA: Record<ClubType, TourData> = {
       launchAngle: 15.2,
       spinRate: 4000,
       carry: 175,
+    }
+  },
+  '4I': {
+    pga: {
+      clubSpeed: 100,
+      ballSpeed: 145,
+      launchAngle: 14.2,
+      spinRate: 4000,
+      carry: 205,
+    },
+    lpga: {
+      clubSpeed: 83,
+      ballSpeed: 120,
+      launchAngle: 15.8,
+      spinRate: 4200,
+      carry: 167,
     }
   },
   '5I': {
@@ -107,6 +139,22 @@ const CLUB_DATA: Record<ClubType, TourData> = {
       carry: 160,
     }
   },
+  '6I': {
+    pga: {
+      clubSpeed: 96,
+      ballSpeed: 138,
+      launchAngle: 15.5,
+      spinRate: 4600,
+      carry: 185,
+    },
+    lpga: {
+      clubSpeed: 80,
+      ballSpeed: 115,
+      launchAngle: 17.2,
+      spinRate: 4800,
+      carry: 152,
+    }
+  },
   '7I': {
     pga: {
       clubSpeed: 94,
@@ -121,6 +169,38 @@ const CLUB_DATA: Record<ClubType, TourData> = {
       launchAngle: 18.2,
       spinRate: 5200,
       carry: 145,
+    }
+  },
+  '8I': {
+    pga: {
+      clubSpeed: 92,
+      ballSpeed: 131,
+      launchAngle: 18.5,
+      spinRate: 5800,
+      carry: 165,
+    },
+    lpga: {
+      clubSpeed: 76,
+      ballSpeed: 108,
+      launchAngle: 20.2,
+      spinRate: 6000,
+      carry: 135,
+    }
+  },
+  '9I': {
+    pga: {
+      clubSpeed: 90,
+      ballSpeed: 128,
+      launchAngle: 21.0,
+      spinRate: 6500,
+      carry: 155,
+    },
+    lpga: {
+      clubSpeed: 74,
+      ballSpeed: 105,
+      launchAngle: 23.0,
+      spinRate: 6800,
+      carry: 125,
     }
   },
   'PW': {
@@ -149,7 +229,7 @@ export function TourAverages({ isExpanded = false }: TourAveragesProps) {
   const [expanded, setExpanded] = useState(isExpanded);
   const [selectedClub, setSelectedClub] = useState<ClubType | null>(null);
 
-  const clubs: ClubType[] = ['DR', '3W', '5W', '3I', '5I', '7I', 'PW'];
+  const clubs: ClubType[] = ['DR', '3W', '5W', '3H', '3I', '4I', '5I', '6I', '7I', '8I', '9I', 'PW'];
 
   return (
     <div className="mt-8 bg-black rounded-lg shadow-lg overflow-hidden">
@@ -169,7 +249,7 @@ export function TourAverages({ isExpanded = false }: TourAveragesProps) {
         expanded ? "h-auto opacity-100" : "h-0 opacity-0 overflow-hidden"
       )}>
         <div className="p-6 pt-0 space-y-6">
-          <div className="flex justify-center gap-3">
+          <div className="flex justify-center gap-3 flex-wrap">
             {clubs.map((club) => (
               <Button
                 key={club}
