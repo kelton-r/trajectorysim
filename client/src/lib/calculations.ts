@@ -8,10 +8,10 @@ const BALL_RADIUS = 0.02135; // m (standard golf ball)
 const BALL_AREA = Math.PI * BALL_RADIUS * BALL_RADIUS;
 
 // Refined golf-specific coefficients
-const CD_ZERO = 0.25; // Base drag coefficient (increased to account for real ball behavior)
-const CL_ZERO = 0.22; // Base lift coefficient (adjusted based on wind tunnel data)
-const SPIN_FACTOR = 0.00009; // Reduced spin effect on lift
-const SPIN_DRAG_FACTOR = 0.000075; // Separate factor for spin's effect on drag
+const CD_ZERO = 0.33; // Increased base drag coefficient for more realistic distance
+const CL_ZERO = 0.20; // Reduced base lift coefficient
+const SPIN_FACTOR = 0.00007; // Further reduced spin effect on lift
+const SPIN_DRAG_FACTOR = 0.0001; // Increased spin's effect on drag
 
 // Enhanced ground interaction coefficients
 const BOUNCE_FRICTION = 0.4; // Increased friction during bounce
@@ -27,9 +27,11 @@ const BALL_TYPE_COEFFICIENTS = {
 } as const;
 
 function calculateAirDensity(altitude: number): number {
-  // Simple atmospheric model
-  const scaleHeight = 7400; // meters
-  return SEA_LEVEL_AIR_DENSITY * Math.exp(-altitude / scaleHeight);
+  // Enhanced atmospheric model with more pronounced effect
+  const scaleHeight = 7000; // Reduced scale height for more altitude effect
+  const density = SEA_LEVEL_AIR_DENSITY * Math.exp(-altitude / scaleHeight);
+  // Additional density reduction factor based on altitude
+  return density * (1 - (altitude / 30000)); // Progressive density reduction
 }
 
 function calculateDragCoefficient(velocity: number, spinRate: number, ballType: keyof typeof BALL_TYPE_COEFFICIENTS): number {
@@ -37,19 +39,19 @@ function calculateDragCoefficient(velocity: number, spinRate: number, ballType: 
   const reynolds = (velocity * 2 * BALL_RADIUS * SEA_LEVEL_AIR_DENSITY) / (1.81e-5);
   let cd = CD_ZERO * BALL_TYPE_COEFFICIENTS[ballType].drag;
 
-  // More detailed Reynolds number effects
+  // More pronounced Reynolds number effects
   if (reynolds < 4e4) {
-    cd *= 1.5; // Significant increase in laminar flow
+    cd *= 1.6; // Further increased drag in laminar flow
   } else if (reynolds < 7.5e4) {
-    cd *= 1.2; // Transition region
+    cd *= 1.3; // Increased transition region drag
   } else if (reynolds > 2e5) {
-    cd *= 0.85; // Turbulent flow reduction
+    cd *= 0.9; // Slightly reduced turbulent flow benefit
   }
 
-  // Spin effects on drag (enhanced model)
+  // Enhanced spin effects on drag
   if (ballType === 'RPT Ball') {
     const spinFactor = (2 * Math.PI * BALL_RADIUS * spinRate) / (60 * velocity);
-    cd += spinFactor * SPIN_DRAG_FACTOR;
+    cd += spinFactor * SPIN_DRAG_FACTOR * (1 + velocity / 100); // Progressive spin drag
   }
 
   return cd;
