@@ -8,10 +8,10 @@ const BALL_RADIUS = 0.02135; // m (standard golf ball)
 const BALL_AREA = Math.PI * BALL_RADIUS * BALL_RADIUS;
 
 // Refined golf-specific coefficients
-const CD_ZERO = 0.33; // Increased base drag coefficient for more realistic distance
-const CL_ZERO = 0.20; // Reduced base lift coefficient
-const SPIN_FACTOR = 0.00007; // Further reduced spin effect on lift
-const SPIN_DRAG_FACTOR = 0.0001; // Increased spin's effect on drag
+const CD_ZERO = 0.31; // Optimized drag coefficient
+const CL_ZERO = 0.22; // Slightly increased lift coefficient
+const SPIN_FACTOR = 0.00008; // Adjusted spin effect on lift
+const SPIN_DRAG_FACTOR = 0.00009; // Balanced spin drag factor
 
 // Enhanced ground interaction coefficients
 const BOUNCE_FRICTION = 0.4; // Increased friction during bounce
@@ -27,11 +27,11 @@ const BALL_TYPE_COEFFICIENTS = {
 } as const;
 
 function calculateAirDensity(altitude: number): number {
-  // Enhanced atmospheric model with more pronounced effect
-  const scaleHeight = 7000; // Reduced scale height for more altitude effect
+  // Enhanced atmospheric model with more realistic altitude effect
+  const scaleHeight = 7200; // Adjusted scale height
   const density = SEA_LEVEL_AIR_DENSITY * Math.exp(-altitude / scaleHeight);
-  // Additional density reduction factor based on altitude
-  return density * (1 - (altitude / 30000)); // Progressive density reduction
+  // Progressive density reduction with altitude
+  return density * (1 - (altitude / 35000));
 }
 
 function calculateDragCoefficient(velocity: number, spinRate: number, ballType: keyof typeof BALL_TYPE_COEFFICIENTS): number {
@@ -41,17 +41,17 @@ function calculateDragCoefficient(velocity: number, spinRate: number, ballType: 
 
   // More pronounced Reynolds number effects
   if (reynolds < 4e4) {
-    cd *= 1.6; // Further increased drag in laminar flow
+    cd *= 1.5; // Adjusted laminar flow drag
   } else if (reynolds < 7.5e4) {
-    cd *= 1.3; // Increased transition region drag
+    cd *= 1.25; // Fine-tuned transition region drag
   } else if (reynolds > 2e5) {
-    cd *= 0.9; // Slightly reduced turbulent flow benefit
+    cd *= 0.85; // Optimized turbulent flow reduction
   }
 
   // Enhanced spin effects on drag
   if (ballType === 'RPT Ball') {
     const spinFactor = (2 * Math.PI * BALL_RADIUS * spinRate) / (60 * velocity);
-    cd += spinFactor * SPIN_DRAG_FACTOR * (1 + velocity / 100); // Progressive spin drag
+    cd += spinFactor * SPIN_DRAG_FACTOR * (1 + velocity / 120); // More gradual spin drag progression
   }
 
   return cd;
@@ -64,7 +64,7 @@ function calculateLiftCoefficient(spinRate: number, velocity: number, ballType: 
 
   // Enhanced Magnus effect model
   const spinFactor = (2 * Math.PI * BALL_RADIUS * spinRate) / (60 * velocity);
-  const reynoldsEffect = Math.min(1, velocity / 50); // Reduced lift at lower speeds
+  const reynoldsEffect = Math.min(1, velocity / 45); // Adjusted velocity effect on lift
 
   return (CL_ZERO + SPIN_FACTOR * spinFactor * reynoldsEffect) * 
     BALL_TYPE_COEFFICIENTS[ballType].lift;
