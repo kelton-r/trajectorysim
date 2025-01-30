@@ -152,10 +152,10 @@ export function TourAverages({ isExpanded = false }: TourAveragesProps) {
   const clubs: ClubType[] = ['DR', '3W', '5W', '3I', '5I', '7I', 'PW'];
 
   return (
-    <div className="mt-8 bg-white rounded-lg shadow-sm overflow-hidden">
+    <div className="mt-8 bg-black rounded-lg shadow-lg overflow-hidden">
       <Button
         variant="ghost"
-        className="w-full flex items-center justify-between p-6 hover:bg-gray-50"
+        className="w-full flex items-center justify-between p-6 hover:bg-black/90 text-white"
         onClick={() => setExpanded(!expanded)}
       >
         <div className="flex items-center gap-2">
@@ -164,16 +164,22 @@ export function TourAverages({ isExpanded = false }: TourAveragesProps) {
         </div>
       </Button>
 
-      {expanded && (
+      <div className={cn(
+        "transition-all duration-300 ease-in-out",
+        expanded ? "h-auto opacity-100" : "h-0 opacity-0 overflow-hidden"
+      )}>
         <div className="p-6 pt-0 space-y-6">
-          <div className="flex justify-center gap-4">
+          <div className="flex justify-center gap-3">
             {clubs.map((club) => (
               <Button
                 key={club}
                 variant="outline"
                 className={cn(
-                  "w-12 h-12 rounded-full p-0 font-bold",
-                  selectedClub === club && "bg-black text-white hover:bg-black/90"
+                  "w-14 h-14 rounded-full p-0 font-bold transition-all duration-200",
+                  "border-2 hover:scale-105",
+                  selectedClub === club 
+                    ? "bg-red-600 text-white border-red-600 hover:bg-red-700 hover:border-red-700" 
+                    : "bg-white text-black border-gray-300 hover:border-red-600"
                 )}
                 onClick={() => setSelectedClub(club)}
               >
@@ -186,38 +192,38 @@ export function TourAverages({ isExpanded = false }: TourAveragesProps) {
             <div className="animate-in fade-in slide-in-from-top-4 duration-300">
               <Table>
                 <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-[140px]">Tour</TableHead>
-                    <TableHead>Club Speed (mph)</TableHead>
-                    <TableHead>Ball Speed (mph)</TableHead>
-                    <TableHead>Launch Angle (°)</TableHead>
-                    <TableHead>Spin Rate (rpm)</TableHead>
-                    <TableHead>Carry (yards)</TableHead>
+                  <TableRow className="hover:bg-transparent">
+                    <TableHead className="w-[140px] text-white">Tour</TableHead>
+                    <TableHead className="text-white">Club Speed</TableHead>
+                    <TableHead className="text-white">Ball Speed</TableHead>
+                    <TableHead className="text-white">Launch Angle</TableHead>
+                    <TableHead className="text-white">Spin Rate</TableHead>
+                    <TableHead className="text-white">Carry</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  <TableRow>
-                    <TableCell className="font-semibold">PGA TOUR</TableCell>
-                    <TableCell>{CLUB_DATA[selectedClub].pga.clubSpeed}</TableCell>
-                    <TableCell>{CLUB_DATA[selectedClub].pga.ballSpeed}</TableCell>
-                    <TableCell>{CLUB_DATA[selectedClub].pga.launchAngle}</TableCell>
-                    <TableCell>{CLUB_DATA[selectedClub].pga.spinRate}</TableCell>
-                    <TableCell>{CLUB_DATA[selectedClub].pga.carry}</TableCell>
+                  <TableRow className="hover:bg-black/60">
+                    <TableCell className="font-semibold text-white">PGA TOUR</TableCell>
+                    <TableCell className="text-white">{CLUB_DATA[selectedClub].pga.clubSpeed} mph</TableCell>
+                    <TableCell className="text-white">{CLUB_DATA[selectedClub].pga.ballSpeed} mph</TableCell>
+                    <TableCell className="text-white">{CLUB_DATA[selectedClub].pga.launchAngle}°</TableCell>
+                    <TableCell className="text-white">{CLUB_DATA[selectedClub].pga.spinRate}</TableCell>
+                    <TableCell className="text-white">{CLUB_DATA[selectedClub].pga.carry} yds</TableCell>
                   </TableRow>
-                  <TableRow>
-                    <TableCell className="font-semibold">LPGA TOUR</TableCell>
-                    <TableCell>{CLUB_DATA[selectedClub].lpga.clubSpeed}</TableCell>
-                    <TableCell>{CLUB_DATA[selectedClub].lpga.ballSpeed}</TableCell>
-                    <TableCell>{CLUB_DATA[selectedClub].lpga.launchAngle}</TableCell>
-                    <TableCell>{CLUB_DATA[selectedClub].lpga.spinRate}</TableCell>
-                    <TableCell>{CLUB_DATA[selectedClub].lpga.carry}</TableCell>
+                  <TableRow className="hover:bg-black/60">
+                    <TableCell className="font-semibold text-white">LPGA TOUR</TableCell>
+                    <TableCell className="text-white">{CLUB_DATA[selectedClub].lpga.clubSpeed} mph</TableCell>
+                    <TableCell className="text-white">{CLUB_DATA[selectedClub].lpga.ballSpeed} mph</TableCell>
+                    <TableCell className="text-white">{CLUB_DATA[selectedClub].lpga.launchAngle}°</TableCell>
+                    <TableCell className="text-white">{CLUB_DATA[selectedClub].lpga.spinRate}</TableCell>
+                    <TableCell className="text-white">{CLUB_DATA[selectedClub].lpga.carry} yds</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
             </div>
           )}
         </div>
-      )}
+      </div>
     </div>
   );
 }
