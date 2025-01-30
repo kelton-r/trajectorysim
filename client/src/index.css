@@ -5,6 +5,20 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .hover-scale {
+    @apply transition-all duration-200 ease-in-out hover:scale-[1.02] hover:shadow-lg;
+  }
+  
+  .hover-lift {
+    @apply transition-all duration-200 ease-in-out hover:-translate-y-1 hover:shadow-lg;
+  }
+
+  .red-button-hover {
+    @apply transition-all duration-200 ease-in-out hover:brightness-110 hover:shadow-md hover:shadow-red-500/20;
+  }
+}
+
 @layer base {
   * {
     @apply border-border font-barlow;
